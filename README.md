@@ -77,7 +77,7 @@ POS-UNIVERSAL/
     ├── completar-pago.html   # Modal "Completar pago" sobre venta oscurecida
     ├── logo.jpg               # Logo real (única imagen usada por el código)
     ├── js/                    # ← Parte 0 + 1 completadas
-    │   ├── data.js            # Modelo de datos: negocios, productos, ventas (localStorage)
+    │       ├── data.js            # Modelo de datos: negocios, productos, ventas, carrito (localStorage)
     │   ├── app.js             # Shell: menú activo, logout, navegación global
     │   ├── login.js           # Login + registro (lógica específica del login)
     │   ├── venta.js         # Pantalla POS: catálogo, filtros, carrito, pago
@@ -313,7 +313,7 @@ Trabajo por partes, en orden:
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `0f4ec77` — `feat: resumen dinamico - KPIs, grafica SVG, ultimas ventas desde data.js`
+- **Último commit:** `c8ecc25` — `docs: README actualizado - Pago completado`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
