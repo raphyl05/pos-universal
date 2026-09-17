@@ -304,18 +304,25 @@ Trabajo por partes, en orden:
 8. ✅ Pago — validación, cobrar con cambio, registrar venta → `8a30163`
 9. ✅ Completar Pago — modal, recibido, cambio en vivo → `6e46c30`
 10. ✅ Venta mejoras — foco buscador, teclado, orden carrito → `905d7f3`
-11. ⏳ Inventario → Nuevo Producto → Apertura/Cierre Caja
+11. ✅ Venta rediseñada — carrito principal, inventario overlay, precio editable → `5dbe74c`
+12. ⏳ Inventario → Nuevo Producto → Apertura/Cierre Caja
 
-### Mejoras UX — Pantalla Venta (17/09/2026)
+### Ventana `venta.html` — Rediseño (17/09/2026)
 
-| Mejora | Detalle |
+La ventana de venta es la más usada. Se rediseña con la factura como vista principal:
+
+| Característica | Detalle |
 |---|---|
-| **Foco siempre en buscador** | Al hacer clic fuera de inputs/buttons, el foco vuelve al buscador. Soporte para escáner de código de barras. Tecla `/` enfoca directamente |
-| **Navegación por teclado** | Flechas direccionales navegan tarjetas de productos (con resaltado `.selected`). Enter agrega al carrito. Disabled cuando el foco está en un input |
-| **Producto recién agregado primero** | El carrito muestra ítems en orden inverso (el más reciente arriba) |
-| **Layout carrito 500px** | Carrito agrandado de 465px a 500px en escritorio. 4 filas visibles de ítems con scroll interno |
-| **Botón Cobrar** | Formato mejorado: ancho completo, 50px alto, bold 16px, índice blanco |
-| **Responsive ajustado** | 3 breakpoints: ≥1000px (500px + 3 col), ≤900px (400px + 2 col), ≤700px (apilado + compacto), ≤480px (2 col mínimos) |
+| **Carrito = vista principal** | La factura ocupa toda la pantalla. No es un panel lateral |
+| **Filas tipo tabla** | Código (SKU + código barras) \| Producto \| Cantidad \| Precio \| Total |
+| **Precio editable** | Cada fila permite modificar el precio unitario. Totales recalculan en vivo |
+| **Inventario overlay** | Botón "Inventario" abre catálogo completo (pestañas + buscador + grid) sobre la factura. Agregar con cantidad. El carrito permanece visible |
+| **Foco siempre en código** | Al cargar y tras cada interacción, el cursor vuelve al campo de código. Soporte para escáner de código de barras (Enter para agregar) |
+| **Datos del cliente** | Fila opcional: Nombre, Teléfono, Cédula, Dirección. Se guardan con la venta |
+| **Cobrar** | Abre `completar-pago.html` con todos los datos en sessionStorage |
+| **Guardar venta** | Registra venta como "Pendiente" con datos del cliente |
+
+Las mejoras de la versión anterior (foco, teclado, orden, formato) están incluidas en este rediseño.
 
 ## Próxima apertura — dónde continuar
 
@@ -326,7 +333,7 @@ Trabajo por partes, en orden:
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `905d7f3` — `feat: venta mejoras — foco en buscador, navegación teclado, orden carrito, formato cobrar`
+- **Último commit:** `5dbe74c` — `feat: venta rediseñada - carrito principal, inventario overlay, precio editable, cliente opcional`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
