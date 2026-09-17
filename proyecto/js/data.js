@@ -229,6 +229,83 @@
     return getData();
   }
 
+  /* --- Carrito de compras --- */
+  var STORAGE_CART_KEY = "pos_cart";
+
+  function getCart() {
+    try {
+      var raw = localStorage.getItem(STORAGE_CART_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) { return []; }
+  }
+
+  function setCart(items) {
+    try { localStorage.setItem(STORAGE_CART_KEY, JSON.stringify(items)); }
+    catch (e) { console.warn("[data.js] No se pudo guardar el carrito.", e); }
+  }
+
+  function addToCart(productId) {
+    var numId = Number(productId);
+    if (!Number.isInteger(numId) || numId <= 0) return { error: "ID de producto inválido." };
+    var cart = getCart();
+    var existing = cart.find(function (item) { return item.id === numId; });
+    if (existing) {
+      existing.quantity++;
+    } else {
+      cart.push({ id: numId, quantity: 1 });
+    }
+    setCart(cart);
+    return { exito: true, cart: cart };
+  }
+
+  function removeFromCart(productId) {
+    var numId = Number(productId);
+    if (!Number.isInteger(numId) || numId <= 0) return { error: "ID de producto inválido." };
+    var cart = getCart().filter(function (item) { return item.id !== numId; });
+    setCart(cart);
+    return { exito: true };
+  }
+
+  function updateCartQuantity(productId, quantity) {
+    var numId = Number(productId);
+    var qty = Number(quantity);
+    if (!Number.isInteger(numId) || numId <= 0) return { error: "ID de producto inválido." };
+    if (!Number.isInteger(qty) || qty < 0) return { error: "Cantidad inválida." };
+    var cart = getCart();
+    if (qty === 0) {
+      cart = cart.filter(function (item) { return item.id !== numId; });
+    } else {
+      var existing = cart.find(function (item) { return item.id === numId; });
+      if (existing) {
+        existing.quantity = qty;
+      } else {
+        cart.push({ id: numId, quantity: qty });
+      }
+    }
+    setCart(cart);
+    return { exito: true, cart: cart };
+  }
+
+  function clearCart() {
+    setCart([]);
+    return { exito: true };
+  }
+
+  function calculateCart(discountPercent) {
+    var cart = getCart();
+    var products = getProductos();
+    var subtotal = 0;
+    cart.forEach(function (item) {
+      var product = products.find(function (p) { return p.id === item.id; });
+      if (product) subtotal += Number(product.precioVenta) * Number(item.quantity);
+    });
+    var discount = Number(discountPercent) || 0;
+    var descuento = subtotal * discount / 100;
+    var impuestos = subtotal * 0.18;
+    var total = subtotal - descuento + impuestos;
+    return { subtotal: subtotal, descuento: descuento, impuestos: impuestos, total: total, items: cart.length };
+  }
+
   /* --- Exportación --- */
   if (typeof module !== "undefined" && module.exports) {
     module.exports = {
@@ -240,7 +317,9 @@
       registrarUsuario: registrarUsuario, loginUsuario: loginUsuario,
       setSession: setSession, getSession: getSession, clearSession: clearSession,
       isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,
-      eliminarUsuario: eliminarUsuario, resetData: resetData
+      eliminarUsuario: eliminarUsuario, resetData: resetData,
+      getCart: getCart, addToCart: addToCart, removeFromCart: removeFromCart,
+      updateCartQuantity: updateCartQuantity, clearCart: clearCart, calculateCart: calculateCart
     };
   } else {
     window.POS_DATA = {
@@ -252,7 +331,9 @@
       registrarUsuario: registrarUsuario, loginUsuario: loginUsuario,
       setSession: setSession, getSession: getSession, clearSession: clearSession,
       isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,
-      eliminarUsuario: eliminarUsuario, resetData: resetData
+      eliminarUsuario: eliminarUsuario, resetData: resetData,
+      getCart: getCart, addToCart: addToCart, removeFromCart: removeFromCart,
+      updateCartQuantity: updateCartQuantity, clearCart: clearCart, calculateCart: calculateCart
     };
   }
 })();

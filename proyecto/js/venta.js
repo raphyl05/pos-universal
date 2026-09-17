@@ -63,6 +63,10 @@
         '<h3 class="p-name">' + escapeHtml(p.nombre) + '</h3>' +
         '<p class="p-price">RD$ ' + Number(p.precioVenta).toFixed(2) + '</p>' +
         '<p class="p-stock">Stock: ' + Number(p.stock) + ' ' + escapeHtml(p.unidad || "und") + '</p>';
+      card.addEventListener("click", function () {
+        POS_DATA.addToCart(p.id);
+        renderCart();
+      });
       grid.appendChild(card);
     });
   }
@@ -98,10 +102,131 @@
     });
   }
 
+  /* Renderizar carrito desde POS_DATA.getCart() */
+  function renderCart() {
+    var list = $(".cart-list");
+    if (!list) return;
+
+    var cart = POS_DATA.getCart();
+    var products = POS_DATA.getProductos();
+
+    list.innerHTML = "";
+
+    if (cart.length === 0) {
+      var empty = document.createElement("div");
+      empty.className = "cart-empty";
+      empty.textContent = "Agrega productos al carrito";
+      list.appendChild(empty);
+      updateTotals();
+      return;
+    }
+
+    cart.forEach(function (item) {
+      var product = products.find(function (p) { return p.id === item.id; });
+      if (!product) return;
+
+      var total = Number(product.precioVenta) * Number(item.quantity);
+
+      var el = document.createElement("div");
+      el.className = "cart-item";
+      el.innerHTML =
+        '<div class="item-thumb"><span>' + escapeHtml(product.icono || "📦") + '</span></div>' +
+        '<p class="item-name">' + escapeHtml(product.nombre) + '</p>' +
+        '<button class="remove-btn" aria-label="Eliminar ítem">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+        '</button>' +
+        '<div class="stepper">' +
+          '<button class="step-btn" type="button" aria-label="Disminuir cantidad">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
+          '</button>' +
+          '<span class="step-value">' + item.quantity + '</span>' +
+          '<button class="step-btn" type="button" aria-label="Aumentar cantidad">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
+          '</button>' +
+        '</div>' +
+        '<p class="item-total">RD$ ' + Number(total).toFixed(2) + '</p>';
+
+      el.querySelector(".remove-btn").addEventListener("click", function (e) {
+        e.stopPropagation();
+        POS_DATA.removeFromCart(product.id);
+        renderCart();
+      });
+
+      var btns = el.querySelectorAll(".step-btn");
+      btns[0].addEventListener("click", function (e) {
+        e.stopPropagation();
+        POS_DATA.updateCartQuantity(product.id, item.quantity - 1);
+        renderCart();
+      });
+      btns[1].addEventListener("click", function (e) {
+        e.stopPropagation();
+        POS_DATA.updateCartQuantity(product.id, item.quantity + 1);
+        renderCart();
+      });
+
+      list.appendChild(el);
+    });
+
+    updateTotals();
+  }
+
+  function updateTotals() {
+    var discountInput = $("#discount-input");
+    var discount = discountInput ? parseFloat(discountInput.value) || 0 : 0;
+    var calc = POS_DATA.calculateCart(discount);
+
+    var el;
+    el = $("#cart-subtotal"); if (el) el.textContent = "RD$ " + Number(calc.subtotal).toFixed(2);
+    el = $("#cart-discount"); if (el) el.textContent = "RD$ " + Number(calc.descuento).toFixed(2);
+    el = $("#cart-tax"); if (el) el.textContent = "RD$ " + Number(calc.impuestos).toFixed(2);
+    el = $("#cart-total"); if (el) el.textContent = "RD$ " + Number(calc.total).toFixed(2);
+  }
+
+  function initPaymentMethods() {
+    var btns = $$(".pay-btn");
+    btns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        btns.forEach(function (b) { b.classList.remove("selected"); });
+        btn.classList.add("selected");
+      });
+    });
+  }
+
+  function initCart() {
+    var discountInput = $("#discount-input");
+    if (discountInput) {
+      discountInput.addEventListener("input", updateTotals);
+    }
+
+    var cobrarBtn = $(".btn-cobrar");
+    if (cobrarBtn) {
+      cobrarBtn.addEventListener("click", function () {
+        var cart = POS_DATA.getCart();
+        if (cart.length === 0) return;
+        var calc = POS_DATA.calculateCart(parseFloat($("#discount-input").value) || 0);
+        alert("Cobrar: RD$ " + Number(calc.total).toFixed(2) + " (" + calc.items + " ítems)");
+      });
+    }
+
+    var guardarBtn = $(".btn-guardar");
+    if (guardarBtn) {
+      guardarBtn.addEventListener("click", function () {
+        var cart = POS_DATA.getCart();
+        if (cart.length === 0) return;
+        alert("Venta guardada con éxito.");
+        POS_DATA.clearCart();
+        renderCart();
+      });
+    }
+  }
+
   function init() {
     renderProducts();
     initTabs();
     initSearch();
+    renderCart();
+    initCart();
+    initPaymentMethods();
   }
 
   if (document.readyState === "loading") {

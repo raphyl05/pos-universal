@@ -436,6 +436,14 @@ body {
     white-space: nowrap;
 }
 
+/* Carrito vacío */
+.cart-empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--text-3);
+    font-size: 14px;
+}
+
 /* ===== Totales ===== */
 .totals {
     border-top: 1px solid var(--border);
@@ -469,6 +477,53 @@ body {
 .totals .total-row:nth-child(2) .total-value {
     font-weight: 500;
     color: var(--text);
+}
+
+/* Fila de descuento */
+.discount-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 24px;
+}
+
+.discount-row label {
+    font-size: 13px;
+    color: var(--text-2);
+    white-space: nowrap;
+}
+
+.discount-input {
+    width: 70px;
+    height: 32px;
+    padding: 0 8px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-step);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    text-align: right;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.discount-input:focus {
+    border-color: var(--indigo);
+}
+
+/* Total final con peso bold */
+.total-final .total-label,
+.total-final .total-value {
+    font-weight: 700;
+    color: var(--text);
+}
+
+.total-final {
+    padding-top: 8px;
+    margin-top: 4px;
+    border-top: 1px dashed var(--border-input);
 }
 
 /* ===== Métodos de pago ===== */
@@ -556,8 +611,6 @@ body {
 .btn-guardar:hover {
     background: #DCDFE6;
 }
-
-/* ===== Responsive ===== */
 
 /* ===== Responsive ===== */
 
