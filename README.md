@@ -280,8 +280,16 @@ Trabajo por partes, en orden:
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `1e75e67` — `feat: maqueta frontend estática - 9 pantallas HTML/CSS optimizadas`
+- **Último commit:** `a131944` — `docs: comentarios en data.js, app.js, login.js`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
+
+### Estructura JS comentada
+
+| Archivo | Comentarios | Contenido |
+|---|---|---|
+| `proyecto/js/data.js` | Sección por sección (Persistencia, Getters, Auth, Sesión, CRUD) | Modelo: negocios, productos, ventas, usuarios, denominaciones + funciones auth |
+| `proyecto/js/app.js` | Cada función documentada | Shell: verificación de sesión, navegación, menú activo, logout, render usuario |
+| `proyecto/js/login.js` | Sección por sección (Referencias, Toggle, Login, Registro, Auto-redirect) | Lógica de login/registro: validación, creación de cuentas, sesión |
 
 ---
 
