@@ -268,13 +268,14 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
 Trabajo por partes, en orden:
 1. ✅ Planificación (este documento)
 2. ✅ FUNDAMENTO: `js/data.js` + `js/app.js` → `fd05e85`
-3. ✅ Login + Registro con roles (admin/cajero) → `de9a0fc` (incluye refactor a `js/login.js`)
-4. ⏳ Dashboard → Resumen → Venta (Pt.1 → Pt.2) → Completar Pago → Inventario → Nuevo Producto → Apertura Caja → Cierre Caja
+3. ✅ Login + Registro con roles (admin/cajero) → `de9a0fc`
+4. ✅ Dashboard render dinámico → `09ae92b`
+5. ⏳ Resumen → Venta (Pt.1 → Pt.2) → Completar Pago → Inventario → Nuevo Producto → Apertura Caja → Cierre Caja
 
 ## Próxima apertura — dónde continuar
 
-> **Retomar con: Parte 4 — Dashboard.**
-> Renderizar negocios desde `data.js`, "Entrar" → `resumen.html`, sidebar dinámico según rol.
+> **Retomar con: Parte 5 — Resumen.**
+> KPIs dinámicos desde data.js, gráfica SVG con datos reales, tabla últimas ventas.
 
 ## Control de versión
 
@@ -290,6 +291,7 @@ Trabajo por partes, en orden:
 | `proyecto/js/data.js` | Sección por sección (Persistencia, Getters, Auth, Sesión, CRUD) | Modelo: negocios, productos, ventas, usuarios, denominaciones + funciones auth |
 | `proyecto/js/app.js` | Cada función documentada | Shell: verificación de sesión, navegación, menú activo, logout, render usuario |
 | `proyecto/js/login.js` | Sección por sección (Referencias, Toggle, Login, Registro, Auto-redirect) | Lógica de login/registro: validación, creación de cuentas, sesión |
+| `proyecto/js/dashboard.js` | Sección por sección (Iconos, Render, Escape, Init) | Render dinámico de tarjetas de negocios desde data.js |
 
 ---
 
