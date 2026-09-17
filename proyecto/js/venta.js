@@ -198,17 +198,6 @@
       discountInput.addEventListener("input", updateTotals);
     }
 
-    var payBtns = $$(".pay-btn");
-    var changeRow = $("#change-row");
-    payBtns.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        payBtns.forEach(function (b) { b.classList.remove("selected"); });
-        btn.classList.add("selected");
-        var isCash = btn.querySelector("span").textContent.trim() === "Efectivo";
-        if (changeRow) changeRow.style.display = isCash ? "" : "none";
-      });
-    });
-
     var cobrarBtn = $(".btn-cobrar");
     if (cobrarBtn) {
       cobrarBtn.addEventListener("click", function () {
@@ -220,27 +209,15 @@
         var discount = parseFloat($("#discount-input").value) || 0;
         var calc = POS_DATA.calculateCart(discount);
 
-        if (paymentMethod === "Efectivo") {
-          var changeRow = $("#change-row");
-          if (changeRow) changeRow.style.display = "";
-          var received = parseFloat(prompt("Monto recibido:\nRD$ " + calc.total.toFixed(2)));
-          if (isNaN(received)) { alert("Cancelado."); return; }
-          if (received < calc.total) {
-            alert("Monto insuficiente. Faltan RD$ " + (calc.total - received).toFixed(2));
-            return;
-          }
-          var change = received - calc.total;
-          var changeEl = $("#cart-change");
-          if (changeEl) changeEl.textContent = "RD$ " + Number(change).toFixed(2);
-          var result = POS_DATA.registrarVenta(paymentMethod, discount);
-          if (result.error) { alert(result.error); return; }
-          alert("Venta " + result.venta.numero + " registrada.\nCambio: RD$ " + Number(change).toFixed(2));
-        } else {
-          var result = POS_DATA.registrarVenta(paymentMethod, discount);
-          if (result.error) { alert(result.error); return; }
-          alert("Venta " + result.venta.numero + " registrada.\nTotal: RD$ " + calc.total.toFixed(2));
-        }
-        renderCart();
+        var saleData = {
+          cart: cart,
+          discount: discount,
+          paymentMethod: paymentMethod,
+          calc: calc
+        };
+        try { sessionStorage.setItem("pos_sale_data", JSON.stringify(saleData)); }
+        catch (e) { alert("Error al guardar datos de venta."); return; }
+        window.location.href = "completar-pago.html";
       });
     }
 

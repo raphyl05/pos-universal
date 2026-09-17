@@ -100,8 +100,8 @@
                     </div>
                     <div class="bg-divider"></div>
                     <div class="bg-sum-row">
-                        <span>Total</span>
-                        <strong>RD$ 0.00</strong>
+                        <span>Total a pagar</span>
+                        <strong id="bg-total">RD$ 0.00</strong>
                     </div>
                     <div class="bg-sum-row big">
                         <span>Total a pagar</span>
@@ -124,7 +124,7 @@
             <!-- Bloque total -->
             <div class="total-block">
                 <span class="t-label">Total a pagar</span>
-                <strong class="t-value">RD$ 2,450.00</strong>
+                <strong class="t-value" id="total-a-pagar">RD$ 0.00</strong>
             </div>
 
             <!-- Métodos de pago -->
@@ -159,14 +159,14 @@
 
             <!-- Recibido / Cambio -->
             <div class="money-row">
-                <div class="money-col">
-                    <span class="m-label">Recibido</span>
-                    <strong class="m-value">RD$ 3,000.00</strong>
-                </div>
-                <div class="money-col right">
-                    <span class="m-label">Cambio</span>
-                    <strong class="m-value">RD$ 550.00</strong>
-                </div>
+                    <div class="money-col">
+                        <span class="m-label">Recibido</span>
+                        <input type="number" class="m-value" id="recibido-input" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="money-col right">
+                        <span class="m-label">Cambio</span>
+                        <strong class="m-value" id="cambio-value">RD$ 0.00</strong>
+                    </div>
             </div>
 
             <!-- Acciones -->
@@ -186,5 +186,6 @@
 
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
+<script src="js/completar-pago.js"></script>
 
 </html>

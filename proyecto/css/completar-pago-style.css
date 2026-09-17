@@ -494,6 +494,24 @@ body {
     color: var(--text-strong);
 }
 
+/* Recibido como input editable */
+input.m-value {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--border-input);
+    padding: 0 0 4px;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text-strong);
+    font-family: inherit;
+    outline: none;
+    width: 100%;
+}
+
+input.m-value:focus {
+    border-bottom-color: var(--indigo);
+}
+
 /* ===== Botón primario con badge verde del check ===== */
 .btn-confirm {
     position: relative;          /* Ancla el badge verde */
