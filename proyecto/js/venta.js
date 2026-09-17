@@ -4,6 +4,11 @@
   function $(sel) { return document.querySelector(sel); }
   function $$(sel) { return document.querySelectorAll(sel); }
 
+  var invCategory = "Todos";
+  var invSearchTerm = "";
+  var invSelectedIndex = -1;
+  var sugIndex = -1;
+
   /* ===== Utilidades ===== */
   function formatPrice(value) {
     return "RD$ " + Number(value).toFixed(2);
@@ -25,50 +30,6 @@
       return (p.sku && p.sku.toLowerCase() === termLower) ||
              (p.codigoBarras && p.codigoBarras === term);
     });
-  }
-
-  /* ===== Sugerencias de codigo ===== */
-  function renderSuggestions(term) {
-    var dropdown = $("#code-suggestions");
-    if (!dropdown) return;
-    if (!term || term.trim() === "") {
-      dropdown.classList.remove("open");
-      dropdown.innerHTML = "";
-      return;
-    }
-    var products = POS_DATA.getProductos();
-    var termLower = term.trim().toLowerCase();
-    var matches = products.filter(function (p) {
-      var matchName = p.nombre && p.nombre.toLowerCase().indexOf(termLower) !== -1;
-      var matchSku = p.sku && p.sku.toLowerCase().indexOf(termLower) !== -1;
-      var matchCat = p.categoria && p.categoria.toLowerCase().indexOf(termLower) !== -1;
-      var matchBar = p.codigoBarras && p.codigoBarras.toLowerCase().indexOf(termLower) !== -1;
-      return matchName || matchSku || matchCat || matchBar;
-    }).slice(0, 6);
-    if (matches.length === 0) {
-      dropdown.classList.remove("open");
-      dropdown.innerHTML = "";
-      return;
-    }
-    dropdown.innerHTML = "";
-    matches.forEach(function (p) {
-      var item = document.createElement("div");
-      item.className = "code-suggestion";
-      item.innerHTML =
-        '<span class="sug-icon">' + escapeHtml(p.icono || "") + '</span>' +
-        '<span class="sug-name">' + escapeHtml(p.nombre) + '</span>' +
-        '<span class="sug-sku">' + escapeHtml(p.sku || "") + '</span>' +
-        '<span class="sug-price">RD$ ' + Number(p.precioVenta).toFixed(2) + '</span>';
-      item.addEventListener("click", function () {
-        POS_DATA.addToCart(p.id);
-        renderCartTable();
-        codeInput.value = "";
-        dropdown.classList.remove("open");
-        focusSearch();
-      });
-      dropdown.appendChild(item);
-    });
-    dropdown.classList.add("open");
   }
 
   /* ===== Renderizar tabla del carrito ===== */
@@ -177,10 +138,7 @@
     }
   }
 
-  /* ===== Inventario ===== */
-  var invCategory = "Todos";
-  var invSearchTerm = "";
-
+  /* ===== Stock ===== */
   function renderInventory() {
     var grid = $(".inv-grid");
     if (!grid) return;
@@ -189,24 +147,22 @@
     var term = invSearchTerm.trim().toLowerCase();
 
     var filtered = productos.filter(function (p) {
-      /* Filtro por categoría */
       if (invCategory !== "Todos" && invCategory !== "") {
         if (p.categoria !== invCategory) return false;
       }
-
-      /* Filtro por texto (nombre, SKU, categoría) */
       if (term) {
         var matchName = p.nombre && p.nombre.toLowerCase().indexOf(term) !== -1;
         var matchSku = p.sku && p.sku.toLowerCase().indexOf(term) !== -1;
         var matchCat = p.categoria && p.categoria.toLowerCase().indexOf(term) !== -1;
-        var matchBar = p.codigoBarras && p.codigoBarras.indexOf(term) !== -1;
+        var matchBar = p.codigoBarras && p.codigoBarras.toLowerCase().indexOf(term) !== -1;
         if (!matchName && !matchSku && !matchCat && !matchBar) return false;
       }
-
       return true;
     });
 
     grid.innerHTML = "";
+    invSelectedIndex = -1;
+
     if (filtered.length === 0) {
       var empty = document.createElement("div");
       empty.className = "inv-empty";
@@ -239,11 +195,44 @@
         if (!Number.isInteger(qty) || qty < 1) qty = 1;
         POS_DATA.addToCart(p.id, qty);
         renderCartTable();
-        focusSearch();
       });
 
       grid.appendChild(card);
     });
+  }
+
+  function highlightInvCard() {
+    var cards = $$(".inv-card");
+    cards.forEach(function (c) { c.classList.remove("selected"); });
+    if (invSelectedIndex >= 0 && invSelectedIndex < cards.length) {
+      cards[invSelectedIndex].classList.add("selected");
+      cards[invSelectedIndex].scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function navigateInvCards(direction) {
+    var grid = $(".inv-grid");
+    if (!grid) return;
+    var cards = grid.querySelectorAll(".inv-card");
+    if (cards.length === 0) return;
+    if (direction === "next") {
+      invSelectedIndex = invSelectedIndex < cards.length - 1 ? invSelectedIndex + 1 : 0;
+    } else {
+      invSelectedIndex = invSelectedIndex > 0 ? invSelectedIndex - 1 : cards.length - 1;
+    }
+    highlightInvCard();
+  }
+
+  function addInvSelected() {
+    var cards = $$(".inv-card");
+    if (invSelectedIndex >= 0 && invSelectedIndex < cards.length) {
+      var id = cards[invSelectedIndex].getAttribute("data-id");
+      var qtyInput = cards[invSelectedIndex].querySelector(".inv-qty");
+      var qty = parseInt(qtyInput.value, 10);
+      if (!Number.isInteger(qty) || qty < 1) qty = 1;
+      POS_DATA.addToCart(id, qty);
+      renderCartTable();
+    }
   }
 
   function openInventory() {
@@ -251,6 +240,7 @@
     if (overlay) {
       overlay.classList.add("open");
       invCategory = "Todos";
+      invSelectedIndex = -1;
       $$(".inv-tab").forEach(function (t) { t.classList.toggle("active", t.textContent.trim() === "Todos"); });
       renderInventory();
       var searchInput = $("#inv-search-input");
@@ -266,7 +256,99 @@
     }
   }
 
-  /* ===== Foco siempre en codigo ===== */
+  /* ===== Sugerencias ===== */
+  function renderSuggestions(term) {
+    var dropdown = $("#code-suggestions");
+    if (!dropdown) return;
+    if (!term || term.trim() === "") {
+      dropdown.classList.remove("open");
+      dropdown.innerHTML = "";
+      sugIndex = -1;
+      return;
+    }
+    var products = POS_DATA.getProductos();
+    var termLower = term.trim().toLowerCase();
+    var matches = products.filter(function (p) {
+      var matchName = p.nombre && p.nombre.toLowerCase().indexOf(termLower) !== -1;
+      var matchSku = p.sku && p.sku.toLowerCase().indexOf(termLower) !== -1;
+      var matchCat = p.categoria && p.categoria.toLowerCase().indexOf(termLower) !== -1;
+      var matchBar = p.codigoBarras && p.codigoBarras.toLowerCase().indexOf(termLower) !== -1;
+      return matchName || matchSku || matchCat || matchBar;
+    }).slice(0, 6);
+    if (matches.length === 0) {
+      dropdown.classList.remove("open");
+      dropdown.innerHTML = "";
+      sugIndex = -1;
+      return;
+    }
+    dropdown.innerHTML = "";
+    matches.forEach(function (p) {
+      var item = document.createElement("div");
+      item.className = "code-suggestion";
+      item.setAttribute("data-id", p.id);
+      item.innerHTML =
+        '<span class="sug-icon">' + escapeHtml(p.icono || "") + '</span>' +
+        '<span class="sug-name">' + escapeHtml(p.nombre) + '</span>' +
+        '<span class="sug-sku">' + escapeHtml(p.sku || "") + '</span>' +
+        '<span class="sug-price">RD$ ' + Number(p.precioVenta).toFixed(2) + '</span>';
+      item.addEventListener("click", function () {
+        POS_DATA.addToCart(p.id);
+        renderCartTable();
+        codeInput.value = "";
+        dropdown.classList.remove("open");
+        focusSearch();
+      });
+      dropdown.appendChild(item);
+    });
+    sugIndex = -1;
+    dropdown.classList.add("open");
+  }
+
+  function highlightSuggestion() {
+    var items = $$("#code-suggestions .code-suggestion");
+    items.forEach(function (item) { item.style.background = ""; });
+    if (sugIndex >= 0 && sugIndex < items.length) {
+      items[sugIndex].style.background = "var(--selected-bg)";
+      items[sugIndex].scrollIntoView({ block: "nearest" });
+    }
+  }
+
+  function navigateSuggestions(direction) {
+    var items = $$("#code-suggestions .code-suggestion");
+    if (items.length === 0) return;
+    if (direction === "next") {
+      sugIndex = sugIndex < items.length - 1 ? sugIndex + 1 : 0;
+    } else {
+      sugIndex = sugIndex > 0 ? sugIndex - 1 : items.length - 1;
+    }
+    highlightSuggestion();
+  }
+
+  function addSuggestedProduct() {
+    var items = $$("#code-suggestions .code-suggestion");
+    if (sugIndex >= 0 && sugIndex < items.length) {
+      /* Find product by index in the original list */
+      var allMatches = POS_DATA.getProductos().filter(function (p) {
+        return true; /* simplified */
+      });
+      /* Actually we need the product id from the suggestion */
+      /* The suggestion element doesn't have data-id, let me use a different approach */
+      var nameEl = items[sugIndex].querySelector(".sug-name");
+      if (nameEl) {
+        var name = nameEl.textContent.trim();
+        var product = POS_DATA.getProductos().find(function (p) { return p.nombre === name; });
+        if (product) {
+          POS_DATA.addToCart(product.id);
+          renderCartTable();
+        }
+      }
+      codeInput.value = "";
+      $("#code-suggestions").classList.remove("open");
+      focusSearch();
+    }
+  }
+
+  /* ===== Foco ===== */
   function focusSearch() {
     var overlay = $("#inv-overlay");
     if (overlay && overlay.classList.contains("open")) {
@@ -274,10 +356,7 @@
       if (input) { input.focus(); return; }
     }
     var input2 = $("#code-input");
-    if (input2) {
-      input2.focus();
-      input2.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    }
+    if (input2) { input2.focus(); }
   }
 
   /* ===== Datos del cliente ===== */
@@ -295,11 +374,12 @@
   }
 
   /* ===== Inicializar ===== */
+  var codeInput;
+
   function init() {
     renderCartTable();
 
-    /* Codigo de barras / SKU */
-    var codeInput = $("#code-input");
+    codeInput = $("#code-input");
     if (codeInput) {
       codeInput.addEventListener("input", function () {
         renderSuggestions(codeInput.value);
@@ -310,6 +390,12 @@
           if (dropdown) dropdown.classList.remove("open");
           return;
         }
+        if ($("#code-suggestions").classList.contains("open")) {
+          if (e.key === "ArrowDown") { e.preventDefault(); navigateSuggestions("next"); return; }
+          if (e.key === "ArrowUp") { e.preventDefault(); navigateSuggestions("prev"); return; }
+          if (e.key === "Enter") { e.preventDefault(); addSuggestedProduct(); return; }
+          return;
+        }
         if (e.key === "Enter") {
           var code = codeInput.value.trim();
           if (code) {
@@ -318,8 +404,6 @@
               POS_DATA.addToCart(product.id);
               renderCartTable();
               codeInput.value = "";
-              var dropdown = $("#code-suggestions");
-              if (dropdown) dropdown.classList.remove("open");
               focusSearch();
             }
           }
@@ -333,19 +417,13 @@
       });
     }
 
-    /* Boton inventario */
+    /* Stock */
     var invBtn = $("#btn-inventario");
-    if (invBtn) {
-      invBtn.addEventListener("click", function () { openInventory(); });
-    }
+    if (invBtn) { invBtn.addEventListener("click", function () { openInventory(); }); }
 
-    /* Cerrar inventario */
     var invClose = $("#inv-close");
-    if (invClose) {
-      invClose.addEventListener("click", function () { closeInventory(); });
-    }
+    if (invClose) { invClose.addEventListener("click", function () { closeInventory(); }); }
 
-    /* Pestaas inventario */
     $$(".inv-tab").forEach(function (tab) {
       tab.addEventListener("click", function () {
         $$(".inv-tab").forEach(function (t) { t.classList.remove("active"); });
@@ -355,7 +433,6 @@
       });
     });
 
-    /* Buscador inventario */
     var invSearch = $("#inv-search-input");
     if (invSearch) {
       invSearch.addEventListener("input", function () {
@@ -366,9 +443,10 @@
 
     /* Descuento */
     var discountInput = $("#discount-input");
-    if (discountInput) {
-      discountInput.addEventListener("input", updateCartTotals);
-    }
+    if (discountInput) { discountInput.addEventListener("input", updateCartTotals); }
+
+    /* Método de pago */
+    var paymentSelect = $("#payment-method");
 
     /* Cobrar */
     var cobrarBtn = $(".btn-cobrar");
@@ -377,12 +455,10 @@
         var cart = POS_DATA.getCart();
         if (cart.length === 0) { alert("El carrito est vacio."); return; }
         var clientData = getClientData();
-        var paymentMethod = "Efectivo";
-        var selected = document.querySelector(".pay-btn.selected");
-        if (selected) { paymentMethod = selected.querySelector("span").textContent.trim(); }
-        var discount = parseFloat(discountInput.value) || 0;
+        var method = paymentSelect ? paymentSelect.value : "Efectivo";
+        var discount = discountInput ? parseFloat(discountInput.value) || 0 : 0;
         var calc = POS_DATA.calculateCart(discount);
-        try { sessionStorage.setItem("pos_sale_data", JSON.stringify({ cart: cart, discount: discount, calc: calc, clientData: clientData, paymentMethod: paymentMethod })); }
+        try { sessionStorage.setItem("pos_sale_data", JSON.stringify({ cart: cart, discount: discount, calc: calc, clientData: clientData, paymentMethod: method })); }
         catch (e) { alert("Error al guardar datos de venta."); return; }
         window.location.href = "completar-pago.html";
       });
@@ -395,26 +471,16 @@
         var cart = POS_DATA.getCart();
         if (cart.length === 0) { alert("El carrito est vacio."); return; }
         var clientData = getClientData();
-        var paymentMethod = "Pendiente";
-        var selected = document.querySelector(".pay-btn.selected");
-        if (selected) { paymentMethod = selected.querySelector("span").textContent.trim(); }
-        var discount = parseFloat(discountInput.value) || 0;
-        var result = POS_DATA.registrarVenta(paymentMethod, discount, clientData, "Pendiente");
+        var method = paymentSelect ? paymentSelect.value : "Pendiente";
+        var discount = discountInput ? parseFloat(discountInput.value) || 0 : 0;
+        var result = POS_DATA.registrarVenta(method, discount, clientData, "Pendiente");
         if (result.error) { alert(result.error); return; }
         alert("Venta " + result.venta.numero + " guardada como pendiente.\nTotal: RD$ " + result.venta.total.toFixed(2));
         renderCartTable();
       });
     }
 
-    /* Métodos de pago */
-    $$(".pay-btn").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        $$(".pay-btn").forEach(function (b) { b.classList.remove("selected"); });
-        btn.classList.add("selected");
-      });
-    });
-
-    /* Foco siempre en codigo: recuperar al interactuar (teclado) */
+    /* Foco siempre en codigo */
     document.addEventListener("click", function (e) {
       var tag = (e.target.tagName || "").toLowerCase();
       if (tag !== "input" && tag !== "button" && tag !== "textarea" && tag !== "select") {
@@ -426,22 +492,39 @@
       }
     });
 
-    /* Teclado: Escape cierra inventario, / enfoca codigo */
+    /* Teclado global */
     document.addEventListener("keydown", function (e) {
       var tag = (e.target.tagName || "").toLowerCase();
       var inInput = tag === "input" || tag === "textarea" || tag === "select";
 
       if (e.key === "Escape") {
         e.preventDefault();
+        var dropdown = $("#code-suggestions");
+        if (dropdown) dropdown.classList.remove("open");
         closeInventory();
         return;
       }
 
-      if (inInput) return;
+      /* Stock modal con teclado */
+      var overlay = $("#inv-overlay");
+      if (overlay && overlay.classList.contains("open")) {
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); navigateInvCards("next"); return; }
+        if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); navigateInvCards("prev"); return; }
+        if (e.key === "Enter") { e.preventDefault(); addInvSelected(); return; }
+        return;
+      }
 
-      if (e.key === "/") {
-        e.preventDefault();
-        focusSearch();
+      /* Sugerencias con teclado */
+      if ($("#code-suggestions").classList.contains("open")) {
+        if (e.key === "ArrowDown") { e.preventDefault(); navigateSuggestions("next"); return; }
+        if (e.key === "ArrowUp") { e.preventDefault(); navigateSuggestions("prev"); return; }
+        if (e.key === "Enter") { e.preventDefault(); addSuggestedProduct(); return; }
+        return;
+      }
+
+      /* En campo de código */
+      if (tag === "input" && codeInput && e.target === codeInput) {
+        /* Already handled by codeInput keydown */
       }
     });
 
