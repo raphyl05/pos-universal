@@ -27,6 +27,50 @@
     });
   }
 
+  /* ===== Sugerencias de codigo ===== */
+  function renderSuggestions(term) {
+    var dropdown = $("#code-suggestions");
+    if (!dropdown) return;
+    if (!term || term.trim() === "") {
+      dropdown.classList.remove("open");
+      dropdown.innerHTML = "";
+      return;
+    }
+    var products = POS_DATA.getProductos();
+    var termLower = term.trim().toLowerCase();
+    var matches = products.filter(function (p) {
+      var matchName = p.nombre && p.nombre.toLowerCase().indexOf(termLower) !== -1;
+      var matchSku = p.sku && p.sku.toLowerCase().indexOf(termLower) !== -1;
+      var matchCat = p.categoria && p.categoria.toLowerCase().indexOf(termLower) !== -1;
+      var matchBar = p.codigoBarras && p.codigoBarras.toLowerCase().indexOf(termLower) !== -1;
+      return matchName || matchSku || matchCat || matchBar;
+    }).slice(0, 6);
+    if (matches.length === 0) {
+      dropdown.classList.remove("open");
+      dropdown.innerHTML = "";
+      return;
+    }
+    dropdown.innerHTML = "";
+    matches.forEach(function (p) {
+      var item = document.createElement("div");
+      item.className = "code-suggestion";
+      item.innerHTML =
+        '<span class="sug-icon">' + escapeHtml(p.icono || "") + '</span>' +
+        '<span class="sug-name">' + escapeHtml(p.nombre) + '</span>' +
+        '<span class="sug-sku">' + escapeHtml(p.sku || "") + '</span>' +
+        '<span class="sug-price">RD$ ' + Number(p.precioVenta).toFixed(2) + '</span>';
+      item.addEventListener("click", function () {
+        POS_DATA.addToCart(p.id);
+        renderCartTable();
+        codeInput.value = "";
+        dropdown.classList.remove("open");
+        focusSearch();
+      });
+      dropdown.appendChild(item);
+    });
+    dropdown.classList.add("open");
+  }
+
   /* ===== Renderizar tabla del carrito ===== */
   function renderCartTable() {
     var list = $("#cart-list");
@@ -254,10 +298,18 @@
   function init() {
     renderCartTable();
 
-    /* Codigo de barras / SKU al presionar Enter */
+    /* Codigo de barras / SKU */
     var codeInput = $("#code-input");
     if (codeInput) {
+      codeInput.addEventListener("input", function () {
+        renderSuggestions(codeInput.value);
+      });
       codeInput.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          var dropdown = $("#code-suggestions");
+          if (dropdown) dropdown.classList.remove("open");
+          return;
+        }
         if (e.key === "Enter") {
           var code = codeInput.value.trim();
           if (code) {
@@ -265,11 +317,19 @@
             if (product) {
               POS_DATA.addToCart(product.id);
               renderCartTable();
+              codeInput.value = "";
+              var dropdown = $("#code-suggestions");
+              if (dropdown) dropdown.classList.remove("open");
+              focusSearch();
             }
-            codeInput.value = "";
-            focusSearch();
           }
         }
+      });
+      codeInput.addEventListener("blur", function () {
+        setTimeout(function () {
+          var dropdown = $("#code-suggestions");
+          if (dropdown) dropdown.classList.remove("open");
+        }, 200);
       });
     }
 
@@ -359,6 +419,10 @@
       var tag = (e.target.tagName || "").toLowerCase();
       if (tag !== "input" && tag !== "button" && tag !== "textarea" && tag !== "select") {
         focusSearch();
+      }
+      var dropdown = $("#code-suggestions");
+      if (dropdown && !e.target.closest(".code-suggestion") && !e.target.closest(".search-box")) {
+        dropdown.classList.remove("open");
       }
     });
 
