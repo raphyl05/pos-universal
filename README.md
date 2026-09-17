@@ -75,9 +75,10 @@ POS-UNIVERSAL/
     ├── apertura-caja.html     # Apertura de caja (fondo inicial + denominaciones)
     ├── completar-pago.html   # Modal "Completar pago" sobre venta oscurecida
     ├── logo.jpg               # Logo real (única imagen usada por el código)
-├── js/                    # ← Parte 0 completada
-│   ├── data.js            # Modelo de datos: negocios, productos, ventas (localStorage)
-│   └── app.js             # Shell: menú activo, logout, navegación global
+    ├── js/                    # ← Parte 0 + 1 completadas
+    │   ├── data.js            # Modelo de datos: negocios, productos, ventas (localStorage)
+    │   ├── app.js             # Shell: menú activo, logout, navegación global
+    │   └── login.js           # Login + registro (lógica específica del login)
     └── css/
         ├── login-style.css          # Estilos del login
         ├── dashboard-style.css      # Estilos del dashboard
@@ -267,7 +268,7 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
 Trabajo por partes, en orden:
 1. ✅ Planificación (este documento)
 2. ✅ FUNDAMENTO: `js/data.js` + `js/app.js` → `fd05e85`
-3. ✅ Login + Registro con roles (admin/cajero) → `e50d8f3`
+3. ✅ Login + Registro con roles (admin/cajero) → `de9a0fc` (incluye refactor a `js/login.js`)
 4. ⏳ Dashboard → Resumen → Venta (Pt.1 → Pt.2) → Completar Pago → Inventario → Nuevo Producto → Apertura Caja → Cierre Caja
 
 ## Próxima apertura — dónde continuar
