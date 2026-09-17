@@ -139,6 +139,20 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
   - ≤600px: header apilado, buscador a ancho completo, grid de 1 columna, tabla con scroll horizontal, nombre de usuario oculto.
   - Valores con `clamp()`/`min()` y elementos largos truncados con ellipsis para evitar desbordes.
 
+### Ventana nueva: `nuevo-negocio.html` + `css/nuevo-negocio-style.css` (17/09/2026)
+- Pantalla "Crear nuevo negocio" (formulario 2 columnas: formulario | vista previa).
+- Formulario con campos: nombre, tipo (select), dirección, teléfono, dueño, fecha activa desde.
+- Vista previa en vivo del nombre y tipo mientras se escribe.
+- Validación de teléfono: solo números y caracteres de formato (+ - ( ) ).
+- Guarda en data.js → redirige a dashboard.html.
+
+### Fixes aplicados (17/09/2026)
+- **Errores visuales top-right en `nuevo-negocio.html`**: se añadió `.topbar-right { display: flex; align-items: center; gap: 16px; }` a `css/nuevo-negocio-style.css` para que search-box, campana y usuario se alineen horizontalmente.
+- **Botón "Eliminar negocio" en dashboard**: cada tarjeta ahora incluye botón Eliminar con confirmación. Añadido `eliminarNegocio(id)` en `js/data.js` (con validación de tipo: ID debe ser entero positivo), `js/dashboard.js` (render + evento + confirmación), `css/dashboard-style.css` (estilos `.btn-delete`, `.card-actions`, `.error-msg`).
+- **Validación de tipos de datos**: `registrarNegocio()` ahora verifica `typeof nombre === "string"`. `eliminarNegocio()` verifica `Number.isInteger(numId)`.
+- **Seguridad**: `nuevo-negocio.html` añadido a `PAGES_REQUIRE_LOGIN` en `js/app.js` (requiere sesión activa).
+- **Indentación corregida**: `<script>` tags en `dashboard.html` alineados consistentemente.
+
 ### Ventana nueva: `cierre-caja.html` + `css/cierre-caja-style.css` (16/09/2026)
 - Pantalla "Cierre de caja" según guía (escritorio ≈1456×880): sidebar ≈270px blanco-humo, header ≈80px
   con buscador + usuario (Lissette Díaz / Administrador) con avatar y campana con punto rojo.
