@@ -183,7 +183,7 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
 - Pantalla "Venta #000184" (POS / punto de venta), escritorio ≈1456×880, según la guía.
   **Sin sidebar ni header global**: solo contenido sobre fondo gris azulado `#ECEFF3`.
 - Encabezado de página: título "Venta #000184" (≈30px extrabold) + botón de tres puntos a la derecha.
-- Layout 2 columnas: `grid-template-columns: minmax(0,1fr) 465px` con gap 24px.
+- Layout 2 columnas: `grid-template-columns: minmax(0,1fr) 500px` con gap 24px.
 - **Columna izquierda (catálogo)**: scrollbar vertical decorativa (thumb índigo ≈75% + track gris),
   buscador (lupa + placeholder "Buscar producto, código o escanear..."), pestañas de categoría
   ("Todos" activa con subrayado índigo bajo una línea divisoria, "Bebidas", "Alimentos", "Limpieza",
@@ -303,7 +303,19 @@ Trabajo por partes, en orden:
 7. ✅ Venta Pt.2 — carrito funcional, totales en vivo → `07c01dd`
 8. ✅ Pago — validación, cobrar con cambio, registrar venta → `8a30163`
 9. ✅ Completar Pago — modal, recibido, cambio en vivo → `6e46c30`
-10. ⏳ Inventario → Nuevo Producto → Apertura/Cierre Caja
+10. ✅ Venta mejoras — foco buscador, teclado, orden carrito → `905d7f3`
+11. ⏳ Inventario → Nuevo Producto → Apertura/Cierre Caja
+
+### Mejoras UX — Pantalla Venta (17/09/2026)
+
+| Mejora | Detalle |
+|---|---|
+| **Foco siempre en buscador** | Al hacer clic fuera de inputs/buttons, el foco vuelve al buscador. Soporte para escáner de código de barras. Tecla `/` enfoca directamente |
+| **Navegación por teclado** | Flechas direccionales navegan tarjetas de productos (con resaltado `.selected`). Enter agrega al carrito. Disabled cuando el foco está en un input |
+| **Producto recién agregado primero** | El carrito muestra ítems en orden inverso (el más reciente arriba) |
+| **Layout carrito 500px** | Carrito agrandado de 465px a 500px en escritorio. 4 filas visibles de ítems con scroll interno |
+| **Botón Cobrar** | Formato mejorado: ancho completo, 50px alto, bold 16px, índice blanco |
+| **Responsive ajustado** | 3 breakpoints: ≥1000px (500px + 3 col), ≤900px (400px + 2 col), ≤700px (apilado + compacto), ≤480px (2 col mínimos) |
 
 ## Próxima apertura — dónde continuar
 
@@ -314,7 +326,7 @@ Trabajo por partes, en orden:
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `6e46c30` — `feat: completar pago - modal con recibido, cambio en vivo, validacion`
+- **Último commit:** `905d7f3` — `feat: venta mejoras — foco en buscador, navegación teclado, orden carrito, formato cobrar`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
