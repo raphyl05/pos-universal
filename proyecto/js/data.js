@@ -300,9 +300,9 @@
       if (product) subtotal += Number(product.precioVenta) * Number(item.quantity);
     });
     var discount = Number(discountPercent) || 0;
-    var descuento = subtotal * discount / 100;
     var impuestos = subtotal * 0.18;
-    var total = subtotal - descuento + impuestos;
+    var descuento = subtotal * discount / 100;
+    var total = subtotal + impuestos - descuento;
     return { subtotal: subtotal, descuento: descuento, impuestos: impuestos, total: total, items: cart.length };
   }
 

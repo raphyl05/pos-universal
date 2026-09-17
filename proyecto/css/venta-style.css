@@ -52,6 +52,9 @@ body {
 
 /* ===== Contenedor general ===== */
 .pos {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
     max-width: 1500px;
     margin: 0 auto;
     padding: 0 32px 32px;
@@ -64,6 +67,7 @@ body {
     justify-content: space-between;
     padding-top: 28px;
     margin-bottom: 24px;
+    flex-shrink: 0;
 }
 
 .page-head h1 {
@@ -102,14 +106,19 @@ body {
     grid-template-columns: minmax(0, 1fr) 465px;
     gap: 24px;
     align-items: stretch;
+    flex: 1;
+    min-height: 0;
 }
 
 /* ===== Columna izquierda: Catálogo ===== */
 .catalog {
     position: relative;
     min-width: 0;
-    padding-left: 38px;          /* Espacio para la scrollbar decorativa */
+    padding-left: 38px;
     padding-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 /* Scrollbar vertical decorativa en el borde izquierdo:
@@ -135,6 +144,7 @@ body {
     position: relative;
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .search-box svg {
@@ -176,6 +186,7 @@ body {
     border-bottom: 1px solid var(--border-input);
     margin-top: 20px;
     margin-bottom: 24px;
+    flex-shrink: 0;
 }
 
 .tab {
@@ -212,11 +223,13 @@ body {
     background: var(--indigo);
 }
 
-/* ===== Grid de productos: 5 columnas × 3 filas ===== */
+/* ===== Grid de productos: 3 columnas, scroll interno ===== */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
+    flex: 1;
+    overflow-y: auto;
 }
 
 /* Tarjeta de producto */
@@ -291,12 +304,14 @@ body {
     display: flex;
     flex-direction: column;
     min-width: 0;
+    overflow: hidden;
 }
 
 /* Header del carrito */
 .cart-head {
     padding: 20px 24px;
     border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
 }
 
 .cart-head h2 {
@@ -309,6 +324,8 @@ body {
 .cart-list {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
 }
 
 .cart-item {
@@ -452,6 +469,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    flex-shrink: 0;
 }
 
 .total-row {
@@ -474,7 +492,7 @@ body {
 }
 
 /* Descuento con peso medium */
-.totals .total-row:nth-child(2) .total-value {
+.totals .total-row:nth-child(3) .total-value {
     font-weight: 500;
     color: var(--text);
 }
@@ -486,6 +504,7 @@ body {
     justify-content: space-between;
     gap: 12px;
     padding: 10px 24px;
+    flex-shrink: 0;
 }
 
 .discount-row label {
@@ -532,6 +551,7 @@ body {
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     padding: 20px 24px 16px;
+    flex-shrink: 0;
 }
 
 .pay-btn {
@@ -576,18 +596,19 @@ body {
 }
 
 /* ===== Botones de acción ===== */
-.btn-cobrar {
-    margin: 0 24px;
+.btn-guardar {
+    margin: 10px 24px 24px;
     height: 44px;
-    background: var(--indigo-btn);
-    color: #FFFFFF;
+    background: var(--btn-secondary);
+    color: var(--text-strong);
     border: none;
     border-radius: var(--radius-btn);
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 700;
     font-family: inherit;
     cursor: pointer;
     transition: background 0.2s;
+    flex-shrink: 0;
 }
 
 .btn-cobrar:hover {
@@ -614,7 +635,28 @@ body {
 
 /* ===== Responsive ===== */
 
-/* Estado vacío cuando no hay productos */
+/* Scrollbar personalizado para catálogo y carrito */
+.product-grid::-webkit-scrollbar {
+    width: 6px;
+}
+.product-grid::-webkit-scrollbar-track {
+    background: var(--track);
+    border-radius: 3px;
+}
+.product-grid::-webkit-scrollbar-thumb {
+    background: var(--thumb);
+    border-radius: 3px;
+}
+.cart-list::-webkit-scrollbar {
+    width: 6px;
+}
+.cart-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.cart-list::-webkit-scrollbar-thumb {
+    background: var(--thumb);
+    border-radius: 3px;
+}
 .empty-state {
     grid-column: 1 / -1;
     text-align: center;
@@ -623,105 +665,86 @@ body {
     font-size: 15px;
 }
 
-/* Pantallas medianas: el catálogo pasa a 4 columnas */
-@media (max-width: 1320px) {
+/* ===== Responsive ===== */
+
+/* ≤900px: catálogo a 2 columnas, carrito más estrecho */
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: minmax(0, 1fr) 400px;
+    }
     .product-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-/* Laptops/tablets: catálogo y carrito se apilan */
-@media (max-width: 1080px) {
+/* ≤700px: apilar, carrito arriba con scroll */
+@media (max-width: 700px) {
     .layout {
         grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
     }
-
     .cart {
-        max-width: 600px;
+        max-height: 45vh;
     }
-
-    .tabs {
-        overflow-x: auto;
-        scrollbar-width: none;
-    }
-
-    .tabs::-webkit-scrollbar {
-        display: none;
-    }
-}
-
-/* Tablets pequeñas: el catálogo pasa a 3 columnas */
-@media (max-width: 860px) {
     .product-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-
     .pos {
-        padding: 0 20px 24px;
+        padding: 0 20px 20px;
     }
-}
-
-/* Móvil: 2 columnas de productos y paleta de pago más compacta */
-@media (max-width: 600px) {
     .page-head h1 {
-        font-size: 24px;
+        font-size: 26px;
     }
-
     .tabs {
-        gap: 24px;
+        gap: 20px;
     }
-
-    .product-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
+    .search-box input {
+        height: 42px;
     }
-
-    .product-card {
-        padding: 12px;
-    }
-
     .cart-item {
-        flex-wrap: wrap;
-        padding: 14px 16px;
-        gap: 10px;
+        padding: 12px 16px;
+        gap: 8px;
     }
-
     .item-name {
-        flex-basis: calc(100% - 64px);
+        font-size: 13px;
     }
-
-    .item-total {
-        margin-left: auto;
-    }
-
     .pay-methods {
-        grid-template-columns: repeat(2, 1fr);
-        padding: 16px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        padding: 12px 16px;
     }
-
+    .pay-btn {
+        height: 52px;
+    }
     .btn-cobrar,
     .btn-guardar {
         margin-left: 16px;
         margin-right: 16px;
     }
-
-    .btn-guardar {
-        margin-bottom: 16px;
-    }
-
     .totals {
-        padding: 16px;
+        padding: 12px 16px;
     }
-
+    .discount-row {
+        padding: 8px 16px;
+    }
     .cart-head {
-        padding: 16px;
+        padding: 14px 16px;
     }
+}
 
-    .catalog {
-        padding-left: 30px;
+/* Móvil pequeño: 2 columnas, más compacto */
+@media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
     }
-
-    .catalog-scrollbar {
-        left: 10px;
+    .pos {
+        padding: 0 16px 16px;
+    }
+    .product-card {
+        padding: 10px;
+    }
+    .pay-methods {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
