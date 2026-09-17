@@ -68,6 +68,7 @@ POS-UNIVERSAL/
     ├── login.html             # Página de inicio de sesión
     ├── dashboard.html         # Dashboard: listado de negocios
     ├── resumen.html           # Resumen del negocio (KPI, gráfica, últimas ventas)
+    ├── nuevo-negocio.html     # Formulario "Crear nuevo negocio"
     ├── cierre-caja.html       # Cierre de caja (resumen + conteo de denominaciones)
     ├── venta.html             # Pantalla de venta POS (catálogo + carrito)
     ├── inventario.html        # Inventario: listado de productos (tabla + filtros)
@@ -78,11 +79,15 @@ POS-UNIVERSAL/
     ├── js/                    # ← Parte 0 + 1 completadas
     │   ├── data.js            # Modelo de datos: negocios, productos, ventas (localStorage)
     │   ├── app.js             # Shell: menú activo, logout, navegación global
-    │   └── login.js           # Login + registro (lógica específica del login)
+    │   ├── login.js           # Login + registro (lógica específica del login)
+    │   ├── dashboard.js       # Render dinámico de tarjetas de negocios desde data.js
+    │   ├── resumen.js         # KPIs dinámicos, gráfica SVG, últimas ventas desde data.js
+    │   └── nuevo-negocio.js   # Formulario "Crear nuevo negocio" (preview, guardado, redirect)
     └── css/
         ├── login-style.css          # Estilos del login
         ├── dashboard-style.css      # Estilos del dashboard
         ├── resumen-style.css        # Estilos del resumen del negocio
+        ├── nuevo-negocio-style.css  # Estilos del formulario de nuevo negocio
         ├── cierre-caja-style.css    # Estilos del cierre de caja
         └── venta-style.css          # Estilos de la pantalla de venta
         └── inventario-style.css     # Estilos del inventario de productos
@@ -270,18 +275,18 @@ Trabajo por partes, en orden:
 2. ✅ FUNDAMENTO: `js/data.js` + `js/app.js` → `fd05e85`
 3. ✅ Login + Registro con roles (admin/cajero) → `de9a0fc`
 4. ✅ Dashboard render dinámico → `09ae92b`
-5. ⏳ Resumen → Venta (Pt.1 → Pt.2) → Completar Pago → Inventario → Nuevo Producto → Apertura Caja → Cierre Caja
+5. ✅ Resumen dinámico (KPIs, gráfica SVG, últimas ventas) → `0f4ec77`
 
 ## Próxima apertura — dónde continuar
 
-> **Retomar con: Parte 5 — Resumen.**
-> KPIs dinámicos desde data.js, gráfica SVG con datos reales, tabla últimas ventas.
+> **Retomar con: Parte 6 — Venta Pt.1.**
+> Render dinámico del catálogo de productos desde data.js, filtros por categoría, pestañas activas.
 
 ## Control de versión
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `a131944` — `docs: comentarios en data.js, app.js, login.js`
+- **Último commit:** `0f4ec77` — `feat: resumen dinamico - KPIs, grafica SVG, ultimas ventas desde data.js`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
@@ -292,6 +297,8 @@ Trabajo por partes, en orden:
 | `proyecto/js/app.js` | Cada función documentada | Shell: verificación de sesión, navegación, menú activo, logout, render usuario |
 | `proyecto/js/login.js` | Sección por sección (Referencias, Toggle, Login, Registro, Auto-redirect) | Lógica de login/registro: validación, creación de cuentas, sesión |
 | `proyecto/js/dashboard.js` | Sección por sección (Iconos, Render, Escape, Init) | Render dinámico de tarjetas de negocios desde data.js |
+| `proyecto/js/resumen.js` | Init (KPIs, Gráfica, Productos, Ventas) | KPIs dinámicos, gráfica SVG, productos más vendidos y últimas ventas desde data.js |
+| `proyecto/js/nuevo-negocio.js` | Init (Preview, Guardar, Error) | Formulario "Crear nuevo negocio": preview en vivo, validación, guardado en data.js, redirect a dashboard |
 
 ---
 
