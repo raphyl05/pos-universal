@@ -10,52 +10,92 @@
 
 <body>
     <div class="pos">
-        <!-- Encabezado de página: título a la izquierda, ellipsis a la derecha -->
+        <!-- Encabezado de página -->
         <header class="page-head">
             <h1>Venta #000184</h1>
-            <button class="more-btn" aria-label="Más opciones">
+            <button class="more-btn" aria-label="Ms opciones">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1" /><circle
                     cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /></svg>
             </button>
         </header>
 
-        <div class="layout">
-            <!-- ===== Columna izquierda: Catálogo ===== -->
-            <section class="catalog" aria-label="Catálogo de productos">
-                <!-- Scrollbar vertical decorativa (thumb índigo ≈75 % + track gris) -->
-                <div class="catalog-scrollbar" aria-hidden="true"></div>
-
-                <!-- Buscador -->
-                <div class="search-box">
+        <!-- ===== OVERLAY DE INVENTARIO ===== -->
+        <div class="inv-overlay" id="inv-overlay" aria-hidden="true">
+            <div class="inv-modal" role="dialog" aria-label="Inventario">
+                <div class="inv-head">
+                    <h2>Inventario</h2>
+                    <button class="inv-close" id="inv-close" aria-label="Cerrar inventario">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line
+                            x1="6" y1="6" x2="18" y2="18" /></svg>
+                    </button>
+                </div>
+                <div class="inv-search">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line
                         x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
-                    <input type="text" placeholder="Buscar producto, código o escanear..." autofocus>
+                    <input type="text" id="inv-search-input" placeholder="Buscar producto, codigo o escanear..." autofocus>
+                </div>
+                <nav class="inv-tabs" aria-label="Categoras inventario">
+                    <button class="inv-tab active" type="button">Todos</button>
+                    <button class="inv-tab" type="button">Bebidas</button>
+                    <button class="inv-tab" type="button">Alimentos</button>
+                    <button class="inv-tab" type="button">Limpieza</button>
+                    <button class="inv-tab" type="button">Cuidado personal</button>
+                    <button class="inv-tab" type="button">Otros</button>
+                </nav>
+                <div class="inv-grid"></div>
+            </div>
+        </div>
+
+        <!-- ===== LAYOUT PRINCIPAL: CARRITO ===== -->
+        <div class="layout">
+            <aside class="cart" aria-label="Factura">
+
+                <!-- Barra superior: buscador + botn inventario -->
+                <div class="cart-topbar">
+                    <div class="search-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line
+                            x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                        <input type="text" id="code-input" placeholder="Codigo o escanear..." autofocus>
+                    </div>
+                    <button class="btn-inventario" id="btn-inventario" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1" /><rect
+                            x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect
+                            x="14" y="14" width="7" height="7" rx="1" /></svg>
+                        Inventario
+                    </button>
                 </div>
 
-                <!-- Pestañas de categoría -->
-                <nav class="tabs" aria-label="Categorías">
-                    <button class="tab active" type="button">Todos</button>
-                    <button class="tab" type="button">Bebidas</button>
-                    <button class="tab" type="button">Alimentos</button>
-                    <button class="tab" type="button">Limpieza</button>
-                    <button class="tab" type="button">Cuidado personal</button>
-                    <button class="tab" type="button">Otros</button>
-                </nav>
+                <!-- Encabezado carrito -->
+                <div class="cart-head">
+                    <h2>Factura</h2>
+                    <span class="cart-count" id="cart-count">0 items</span>
+                </div>
 
-                <!-- Grid de productos (renderizado dinámico desde js/venta.js) -->
-                <div class="product-grid"></div>
-            </section>
+                <!-- Tabla del carrito -->
+                <div class="cart-table">
+                    <div class="cart-row cart-row-head">
+                        <span class="col-cod">Código</span>
+                        <span class="col-product">Producto</span>
+                        <span class="col-qty">Cant</span>
+                        <span class="col-price">Precio</span>
+                        <span class="col-total">Total</span>
+                        <span class="col-action"></span>
+                    </div>
+                    <div class="cart-list" id="cart-list"></div>
+                </div>
 
-            <!-- ===== Columna derecha: Carrito ===== -->
-            <aside class="cart" aria-label="Carrito de compras">
-                <header class="cart-head">
-                    <h2>Carrito</h2>
-                </header>
-
-                <!-- Lista de ítems -->
-                <div class="cart-list"></div>
+                <!-- Datos del cliente (opcional) -->
+                <div class="client-row" id="client-row">
+                    <input type="text" id="client-nombre" placeholder="Nombre cliente">
+                    <input type="text" id="client-telefono" placeholder="Teléfono">
+                    <input type="text" id="client-cedula" placeholder="Cédula">
+                    <input type="text" id="client-direccion" placeholder="Dirección">
+                </div>
 
                 <!-- Descuento -->
                 <div class="discount-row">
@@ -64,7 +104,7 @@
                 </div>
 
                 <!-- Totales -->
-                <div class="totals">
+                <div class="totals" id="totals-section">
                     <div class="total-row">
                         <span class="total-label">Subtotal</span>
                         <span class="total-value" id="cart-subtotal">RD$ 0.00</span>
@@ -84,7 +124,7 @@
                 </div>
 
                 <!-- Métodos de pago -->
-                <div class="pay-methods">
+                <div class="pay-methods" id="pay-methods">
                     <button class="pay-btn selected" type="button">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20"
@@ -101,9 +141,9 @@
                     <button class="pay-btn" type="button">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21"
-                            y2="22" /><line x1="6" y1="18" x2="6" y2="11" /><line x1="10" y1="18"
-                            x2="10" y2="11" /><line x1="14" y1="18" x2="14" y2="11" /><line x1="18" y1="18"
-                            x2="18" y2="11" /><polygon points="12 2 20 7 4 7" /></svg>
+                            y2="22" /><line x1="6" y1="18" x2="6" y2="11" /><line x1="10" y1="18" x2="10" y2="11" /><line
+                            x1="14" y1="18" x2="14" y2="11" /><line x1="18" y1="18" x2="18" y2="11" /><polygon
+                            points="12 2 20 7 4 7" /></svg>
                         <span>Transferencia</span>
                     </button>
                     <button class="pay-btn" type="button">
@@ -116,15 +156,17 @@
                 </div>
 
                 <!-- Acciones -->
-                <button class="btn-cobrar" type="button">Cobrar</button>
-                <button class="btn-guardar" type="button">Guardar venta</button>
+                <div class="cart-actions">
+                    <button class="btn-cobrar" type="button">Cobrar</button>
+                    <button class="btn-guardar" type="button">Guardar venta</button>
+                </div>
             </aside>
         </div>
     </div>
 
-<script src="js/data.js"></script>
-<script src="js/venta.js"></script>
-<script src="js/app.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/venta.js"></script>
+    <script src="js/app.js"></script>
 
 </body>
 

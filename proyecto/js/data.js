@@ -244,15 +244,30 @@
     catch (e) { console.warn("[data.js] No se pudo guardar el carrito.", e); }
   }
 
-  function addToCart(productId) {
+  function addToCart(productId, quantity) {
     var numId = Number(productId);
     if (!Number.isInteger(numId) || numId <= 0) return { error: "ID de producto inválido." };
+    var qty = (typeof quantity === "number" && Number.isInteger(quantity)) ? quantity : 1;
     var cart = getCart();
     var existing = cart.find(function (item) { return item.id === numId; });
     if (existing) {
-      existing.quantity++;
+      existing.quantity += qty;
     } else {
-      cart.push({ id: numId, quantity: 1 });
+      cart.push({ id: numId, quantity: qty });
+    }
+    setCart(cart);
+    return { exito: true, cart: cart };
+  }
+
+  function updateCartPrice(productId, price) {
+    var numId = Number(productId);
+    if (!Number.isInteger(numId) || numId <= 0) return { error: "ID de producto inválido." };
+    var p = Number(price);
+    if (!Number.isFinite(p) || p < 0) return { error: "Precio inválido." };
+    var cart = getCart();
+    var existing = cart.find(function (item) { return item.id === numId; });
+    if (existing) {
+      existing.priceOverride = p;
     }
     setCart(cart);
     return { exito: true, cart: cart };
@@ -297,7 +312,10 @@
     var subtotal = 0;
     cart.forEach(function (item) {
       var product = products.find(function (p) { return p.id === item.id; });
-      if (product) subtotal += Number(product.precioVenta) * Number(item.quantity);
+      if (product) {
+        var price = item.priceOverride != null ? Number(item.priceOverride) : Number(product.precioVenta);
+        subtotal += price * Number(item.quantity);
+      }
     });
     var discount = Number(discountPercent) || 0;
     var impuestos = subtotal * 0.18;
@@ -317,17 +335,29 @@
     return (max + 1).toString();
   }
 
-  /* Registra una venta. Retorna { error } o { exito, venta }. */
-  function registrarVenta(paymentMethod, discountPercent, clientName, estado) {
+  /* Registra una venta. Retorna { error } o { exito, venta }.
+     clientData: string (nombre) u objeto { nombre, telefono, cedula, direccion } */
+  function registrarVenta(paymentMethod, discountPercent, clientData, estado) {
     var cart = getCart();
+    var products = getProductos();
     if (cart.length === 0) return { error: "El carrito está vacío." };
     if (!paymentMethod) return { error: "Selecciona un método de pago." };
 
     var calc = calculateCart(discountPercent);
+    var clientName = "Contado";
+    if (clientData) {
+      if (typeof clientData === "string") {
+        clientName = clientData;
+      } else if (typeof clientData === "object" && clientData.nombre) {
+        clientName = clientData.nombre;
+      }
+    }
+
     var sale = {
       id: Date.now(),
       numero: getNumeroVenta(),
-      cliente: clientName || "Contado",
+      cliente: clientName,
+      clienteData: (typeof clientData === "object") ? clientData : null,
       pago: paymentMethod,
       subtotal: calc.subtotal,
       descuento: calc.descuento,
@@ -335,7 +365,11 @@
       total: calc.total,
       fecha: new Date().toISOString(),
       estado: estado || "Pagado",
-      productos: cart.map(function (item) { return { id: item.id, quantity: item.quantity }; })
+      productos: cart.map(function (item) {
+        var product = products.find(function (p) { return p.id === item.id; });
+        var price = item.priceOverride != null ? item.priceOverride : (product ? product.precioVenta : 0);
+        return { id: item.id, quantity: item.quantity, price: price };
+      })
     };
 
     var data = getData();
@@ -358,7 +392,7 @@
       isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,
       eliminarUsuario: eliminarUsuario, resetData: resetData,
       getCart: getCart, addToCart: addToCart, removeFromCart: removeFromCart,
-      updateCartQuantity: updateCartQuantity, clearCart: clearCart, calculateCart: calculateCart,
+      updateCartQuantity: updateCartQuantity, updateCartPrice: updateCartPrice, clearCart: clearCart, calculateCart: calculateCart,
       registrarVenta: registrarVenta
     };
   } else {
@@ -373,7 +407,7 @@
       isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,
       eliminarUsuario: eliminarUsuario, resetData: resetData,
       getCart: getCart, addToCart: addToCart, removeFromCart: removeFromCart,
-      updateCartQuantity: updateCartQuantity, clearCart: clearCart, calculateCart: calculateCart,
+      updateCartQuantity: updateCartQuantity, updateCartPrice: updateCartPrice, clearCart: clearCart, calculateCart: calculateCart,
       registrarVenta: registrarVenta
     };
   }

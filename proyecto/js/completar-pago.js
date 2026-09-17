@@ -83,8 +83,9 @@
     btn.addEventListener("click", function () {
       var selected = $(".pay-method.selected");
       var method = selected ? selected.querySelector("span").textContent.trim() : "Efectivo";
+      var clientData = saleData.clientData || null;
 
-      var result = POS_DATA.registrarVenta(method, discount);
+      var result = POS_DATA.registrarVenta(method, discount, clientData);
       if (result.error) {
         alert(result.error);
         return;
