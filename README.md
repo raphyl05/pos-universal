@@ -266,14 +266,14 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
 ### Frontend dinámico EN PROGRESO (desde 17/09/2026)
 Trabajo por partes, en orden:
 1. ✅ Planificación (este documento)
-2. ✅ FUNDAMENTO: `js/data.js` + `js/app.js` → **fd05e85**
-3. ⏳ Login → Dashboard → Resumen → Venta (Pt.1 → Pt.2) → Completar Pago → Inventario → Nuevo Producto → Apertura Caja → Cierre Caja
+2. ✅ FUNDAMENTO: `js/data.js` + `js/app.js` → `fd05e85`
+3. ✅ Login + Registro con roles (admin/cajero) → `e50d8f3`
+4. ⏳ Dashboard → Resumen → Venta (Pt.1 → Pt.2) → Completar Pago → Inventario → Nuevo Producto → Apertura Caja → Cierre Caja
 
 ## Próxima apertura — dónde continuar
 
-> **Retomar con: Parte 1 — Login.**
-> Conectar el formulario de login: submit + validación + redirección a `dashboard.html`.
-> `data.js` y `app.js` ya están listos como base.
+> **Retomar con: Parte 4 — Dashboard.**
+> Renderizar negocios desde `data.js`, "Entrar" → `resumen.html`, sidebar dinámico según rol.
 
 ## Control de versión
 
