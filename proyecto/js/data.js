@@ -2,6 +2,7 @@
   "use strict";
 
   var STORAGE_KEY = "pos_universal_data";
+  var SESSION_KEY = "pos_session";
 
   var seedData = {
     negocios: [
@@ -32,13 +33,10 @@
       { id: 4, numero: "1220303", cliente: "Café Santo Domingo", pago: "Efectivo", total: 250, estado: "Cancelado" }
     ],
 
-    usuarios: {
-      actual: { nombre: "Raphy", rol: "Administrador", avatarColor: "#3D4DB7" },
-      lista: [
-        { nombre: "Raphy", apellido: "Leyri", rol: "Administrador", iniciales: "RL", avatarColor: "#3D4DB7" },
-        { nombre: "Lissette", apellido: "Díaz", rol: "Administrador", iniciales: "LD", avatarColor: "#2F3268" }
-      ]
-    },
+    usuarios: [
+      { id: 1, username: "admin", password: "admin123", nombre: "Raphy", rol: "Administrador", activo: true },
+      { id: 2, username: "cajero1", password: "cajero123", nombre: "Lissette Díaz", rol: "Cajero", activo: true }
+    ],
 
     denominaciones: [
       { denom: "RD$2,000", valor: 2000 },
@@ -55,9 +53,7 @@
   function loadFromStorage() {
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        return JSON.parse(raw);
-      }
+      if (raw) return JSON.parse(raw);
     } catch (e) {
       console.warn("[data.js] localStorage no disponible, usando datos iniciales.");
     }
@@ -93,64 +89,135 @@
   function getNegocios() { return getData().negocios; }
   function getProductos() { return getData().productos; }
   function getVentas() { return getData().ventas; }
-  function getUsuarios() { return getData().usuarios; }
   function getDenominaciones() { return getData().denominaciones; }
 
-  function getProductoById(id) {
-    return getProductos().find(function (p) { return p.id === id; });
+  function getUsuarios() { return getData().usuarios; }
+
+  function getUsuarioByUsername(username) {
+    return getUsuarios().find(function (u) { return u.username === username; });
   }
 
-  function getProductoPorNombre(nombre) {
-    return getProductos().find(function (p) { return p.nombre === nombre; });
-  }
+  function registrarUsuario(username, password, nombre) {
+    if (!username || !password || !nombre) return { error: "Todos los campos son obligatorios." };
+    if (username.length < 3) return { error: "El nombre de usuario debe tener al menos 3 caracteres." };
+    if (password.length < 4) return { error: "La contraseña debe tener al menos 4 caracteres." };
+    if (getUsuarioByUsername(username)) return { error: "Ese nombre de usuario ya existe." };
 
-  function agregarProducto(producto) {
     var data = getData();
-    producto.id = Date.now();
-    data.productos.push(producto);
+    var nuevo = {
+      id: Date.now(),
+      username: username,
+      password: password,
+      nombre: nombre,
+      rol: "Cajero",
+      activo: true
+    };
+    data.usuarios.push(nuevo);
     setData(data);
-    return producto;
+    return { exito: true, usuario: nuevo };
   }
 
-  function actualizarProducto(id, cambios) {
-    var data = getData();
-    var p = data.productos.find(function (x) { return x.id === id; });
-    if (p) {
-      Object.keys(cambios).forEach(function (k) { p[k] = cambios[k]; });
-      setData(data);
+  function loginUsuario(username, password) {
+    var user = getUsuarioByUsername(username);
+    if (!user) return { error: "Usuario no encontrado." };
+    if (user.password !== password) return { error: "Contraseña incorrecta." };
+    if (!user.activo) return { error: "Usuario inactivo." };
+
+    var sessionUser = {
+      id: user.id,
+      username: user.username,
+      nombre: user.nombre,
+      rol: user.rol
+    };
+    setSession(sessionUser);
+    return { exito: true, usuario: sessionUser };
+  }
+
+  function setSession(user) {
+    try {
+      localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    } catch (e) {
+      console.warn("[data.js] No se pudo guardar la sesión.", e);
     }
-    return p;
   }
 
-  function eliminarProducto(id) {
+  function getSession() {
+    try {
+      var raw = localStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function clearSession() {
+    try {
+      localStorage.removeItem(SESSION_KEY);
+    } catch (e) {
+      console.warn("[data.js] No se pudo limpiar la sesión.", e);
+    }
+  }
+
+  function isLoggedIn() {
+    return getSession() !== null;
+  }
+
+  function isAdmin() {
+    var s = getSession();
+    return s && s.rol === "Administrador";
+  }
+
+  function logout() {
+    clearSession();
+  }
+
+  function eliminarUsuario(id) {
     var data = getData();
-    data.productos = data.productos.filter(function (p) { return p.id !== id; });
+    var usuario = data.usuarios.find(function (u) { return u.id === id; });
+
+    if (!usuario) return { error: "Usuario no encontrado." };
+
+    var admins = data.usuarios.filter(function (u) { return u.rol === "Administrador"; });
+    if (usuario.rol === "Administrador" && admins.length <= 1) {
+      return { error: "No se puede eliminar el último administrador." };
+    }
+
+    var session = getSession();
+    if (session && session.id === id) {
+      return { error: "No puedes eliminar tu propia cuenta mientras estás activo." };
+    }
+
+    data.usuarios = data.usuarios.filter(function (u) { return u.id !== id; });
     setData(data);
+    return { exito: true };
   }
 
   function resetData() {
     _cache = null;
     localStorage.removeItem(STORAGE_KEY);
+    clearSession();
     return getData();
   }
 
   if (typeof module !== "undefined" && module.exports) {
-    module.exports = { getData: getData, setData: setData, getNegocios: getNegocios, getProductos: getProductos, getVentas: getVentas, getUsuarios: getUsuarios, getDenominaciones: getDenominaciones, getProductoById: getProductoById, getProductoPorNombre: getProductoPorNombre, agregarProducto: agregarProducto, actualizarProducto: actualizarProducto, eliminarProducto: eliminarProducto, resetData: resetData };
+    module.exports = {
+      getData: getData, setData: setData,
+      getNegocios: getNegocios, getProductos: getProductos, getVentas: getVentas, getDenominaciones: getDenominaciones,
+      getUsuarios: getUsuarios, getUsuarioByUsername: getUsuarioByUsername,
+      registrarUsuario: registrarUsuario, loginUsuario: loginUsuario,
+      setSession: setSession, getSession: getSession, clearSession: clearSession,
+      isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,
+      eliminarUsuario: eliminarUsuario, resetData: resetData
+    };
   } else {
     window.POS_DATA = {
-      getData: getData,
-      setData: setData,
-      getNegocios: getNegocios,
-      getProductos: getProductos,
-      getVentas: getVentas,
-      getUsuarios: getUsuarios,
-      getDenominaciones: getDenominaciones,
-      getProductoById: getProductoById,
-      getProductoPorNombre: getProductoPorNombre,
-      agregarProducto: agregarProducto,
-      actualizarProducto: actualizarProducto,
-      eliminarProducto: eliminarProducto,
-      resetData: resetData
+      getData: getData, setData: setData,
+      getNegocios: getNegocios, getProductos: getProductos, getVentas: getVentas, getDenominaciones: getDenominaciones,
+      getUsuarios: getUsuarios, getUsuarioByUsername: getUsuarioByUsername,
+      registrarUsuario: registrarUsuario, loginUsuario: loginUsuario,
+      setSession: setSession, getSession: getSession, clearSession: clearSession,
+      isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,
+      eliminarUsuario: eliminarUsuario, resetData: resetData
     };
   }
 })();

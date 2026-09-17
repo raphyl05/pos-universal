@@ -4,25 +4,36 @@
   function $(sel) { return document.querySelector(sel); }
   function $$(sel) { return document.querySelectorAll(sel); }
 
+  var PAGES_REQUIRE_LOGIN = [
+    "dashboard.html", "resumen.html", "venta.html", "completar-pago.html",
+    "inventario.html", "nuevo-producto.html", "apertura-caja.html", "cierre-caja.html"
+  ];
+
   function getCurrentPage() {
     var path = window.location.pathname;
-    var file = path.substring(path.lastIndexOf("/") + 1);
-    if (!file) return "dashboard.html";
-    return file;
+    return path.substring(path.lastIndexOf("/") + 1);
+  }
+
+  function requireLogin() {
+    var page = getCurrentPage();
+    if (page === "login.html") return;
+    if (PAGES_REQUIRE_LOGIN.indexOf(page) === -1) return;
+    if (!POS_DATA.isLoggedIn()) {
+      window.location.replace("login.html");
+    }
   }
 
   function highlightActiveNav() {
     var page = getCurrentPage();
     var pageMap = {
-      "login.html": null,
-      "dashboard.html": "dashboard",
-      "resumen.html": "inicio",
-      "venta.html": "ventas",
-      "completar-pago.html": "ventas",
-      "inventario.html": "inventario",
-      "nuevo-producto.html": "productos",
-      "apertura-caja.html": "caja",
-      "cierre-caja.html": "caja"
+      "dashboard.html": "Dashboard",
+      "resumen.html": "Inicio",
+      "venta.html": "Ventas",
+      "completar-pago.html": "Ventas",
+      "inventario.html": "Inventario",
+      "nuevo-producto.html": "Productos",
+      "apertura-caja.html": "Caja",
+      "cierre-caja.html": "Caja"
     };
 
     var target = pageMap[page];
@@ -30,7 +41,7 @@
 
     $$(".nav-item").forEach(function (item) {
       var span = item.querySelector("span");
-      var text = span ? span.textContent.trim().toLowerCase() : "";
+      var text = span ? span.textContent.trim() : "";
       if (text === target) {
         item.classList.add("active");
       } else {
@@ -39,10 +50,22 @@
     });
   }
 
+  function renderUserInHeader() {
+    var session = POS_DATA.getSession();
+    if (!session) return;
+
+    $$(".user-name").forEach(function (el) {
+      if (el.textContent.trim() === "Raphy" || el.textContent.trim() === "Lissette Díaz") {
+        el.textContent = session.nombre;
+      }
+    });
+  }
+
   function handleLogout() {
     $$(".logout, [data-action='logout']").forEach(function (btn) {
       btn.addEventListener("click", function (e) {
         e.preventDefault();
+        POS_DATA.logout();
         window.location.href = "login.html";
       });
     });
@@ -68,44 +91,18 @@
     });
   }
 
-  function formatMoney(value) {
-    return "RD$ " + value.toLocaleString("es-DO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  function parseMoney(str) {
-    if (!str) return 0;
-    var cleaned = String(str).replace(/[RD$,\s]/g, "").replace(/\./g, "");
-    var num = parseFloat(cleaned);
-    return isNaN(num) ? 0 : num;
-  }
-
-  function renderAvatar(initials, color, size) {
-    size = size || 32;
-    return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='" + size + "' height='" + size + "' viewBox='0 0 " + size + " " + size + "'%3E%3Ccircle cx='" + (size / 2) + "' cy='" + (size / 2) + "' r='" + (size / 2) + "' fill='" + encodeURIComponent(color) + "'/%3E%3Ctext x='" + (size / 2) + "' y='" + (size * 0.72) + "' text-anchor='middle' fill='%23fff' font-size='" + (size * 0.42) + "' font-weight='600' font-family='system-ui'%3E" + encodeURIComponent(initials) + "%3C/text%3E%3C/svg%3E";
-  }
-
   function init() {
+    requireLogin();
     highlightActiveNav();
     handleLogout();
     handleNavLinks();
     handleDashboardEnter();
+    renderUserInHeader();
   }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
-  }
-
-  if (typeof module !== "undefined" && module.exports) {
-    module.exports = { init: init, formatMoney: formatMoney, parseMoney: parseMoney, renderAvatar: renderAvatar, getCurrentPage: getCurrentPage };
-  } else {
-    window.POS_APP = {
-      init: init,
-      formatMoney: formatMoney,
-      parseMoney: parseMoney,
-      renderAvatar: renderAvatar,
-      getCurrentPage: getCurrentPage
-    };
   }
 })();
