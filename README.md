@@ -145,6 +145,14 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
 - Vista previa en vivo del nombre y tipo mientras se escribe.
 - Validación de teléfono: solo números y caracteres de formato (+ - ( ) ).
 - Guarda en data.js → redirige a dashboard.html.
+- Menú hamburguesa ☰/✕ funcional en móvil (CSS checkbox hack).
+
+### Refactor Opción B — Consistencia de layout (17/09/2026)
+- **`dashboard.html`**: reescrito con layout base `.app > .sidebar + .main` (antes: `.dashboard-container` con sidebar fijo). Ahora sigue el mismo patrón que resumen/nuevo-negocio.
+- **`css/dashboard-style.css`**: reescrito con estructura consistente (`.app`, `.main`, `.topbar`, `.user-box`, `.content`). Añadido `@import url('tokens.css')`. Menú hamburguesa ☰/✕ funcional (checkbox hack).
+- **`nuevo-negocio.html`**: añadido label de menú hamburguesa con clases `icon-open`/`icon-close`.
+- **`css/nuevo-negocio-style.css`**: añadido CSS completo del menú hamburguesa (checkbox hack, `:checked`, `~` selector). Reemplaza el anterior `.sidebar.open`.
+- Resultado: las 9 pantallas comparten el mismo patrón estructural base.
 
 ### Fixes aplicados (17/09/2026)
 - **Errores visuales top-right en `nuevo-negocio.html`**: se añadió `.topbar-right { display: flex; align-items: center; gap: 16px; }` a `css/nuevo-negocio-style.css` para que search-box, campana y usuario se alineen horizontalmente.
