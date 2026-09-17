@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- Resumen del negocio (dashboard principal del POS): KPI, gráfica de ventas,
-     productos más vendidos, clientes atendidos y últimas ventas.
-     Formato escritorio ≈1456×880. Sin JavaScript todavía (frontend estático). -->
+<!-- Resumen del negocio (dashboard principal del POS): KPI dinámico, gráfica de ventas SVG,
+     productos más vendidos, clientes atendidos y últimas ventas — renderizado desde data.js.
+     Formato escritorio ≈1456×880. -->
 <html lang="es">
 
 <head>
@@ -182,47 +182,26 @@
                     <!-- KPI 1: Ventas de hoy -->
                     <section class="card kpi-card kpi-ventas-hoy">
                         <span class="kpi-label">Ventas de hoy</span>
-                        <span class="kpi-value">RD$ 48,250.00</span>
+                        <span class="kpi-value"></span>
                         <span class="kpi-badge kpi-badge-up">▲ +12.4%</span>
                     </section>
 
                     <!-- KPI 2: Ganancia estimada -->
                     <section class="card kpi-card kpi-ganancia">
                         <span class="kpi-label">Ganancia estimada</span>
-                        <span class="kpi-value">RD$ 15,840.00</span>
+                        <span class="kpi-value"></span>
                     </section>
 
                     <!-- KPI 3: Productos vendidos -->
                     <section class="card kpi-card kpi-productos">
                         <span class="kpi-label">Productos vendidos</span>
-                        <span class="kpi-value">327</span>
+                        <span class="kpi-value"></span>
                     </section>
 
                     <!-- Tarjeta Productos más vendidos (col 4, filas 1-2) -->
                     <section class="card top-products">
                         <h2 class="card-title">Productos más vendidos</h2>
-                        <ul class="product-list">
-                            <li class="product-row">
-                                <span class="product-tile">🥤</span>
-                                <span class="product-name">Coca-Cola 2L</span>
-                            </li>
-                            <li class="product-row">
-                                <span class="product-tile">🍞</span>
-                                <span class="product-name">Pan de agua</span>
-                            </li>
-                            <li class="product-row">
-                                <span class="product-tile">🥛</span>
-                                <span class="product-name">Leche Rica</span>
-                            </li>
-                            <li class="product-row">
-                                <span class="product-tile">💧</span>
-                                <span class="product-name">Agua Cristal</span>
-                            </li>
-                            <li class="product-row">
-                                <span class="product-tile">☕</span>
-                                <span class="product-name">Café Santo Domingo</span>
-                            </li>
-                        </ul>
+                        <ul class="product-list"></ul>
                     </section>
 
                     <!-- Tarjeta Ventas: gráfica de línea (col 1-2, filas 2-3) -->
@@ -251,7 +230,7 @@
                     <!-- Tarjeta Clientes atendidos (col 3, fila 2) -->
                     <section class="card kpi-card kpi-clientes">
                         <span class="kpi-label">Clientes atendidos</span>
-                        <span class="kpi-value">86</span>
+                        <span class="kpi-value"></span>
                     </section>
 
                     <!-- Tarjeta Últimas ventas (cols 3-4, fila 3) -->
@@ -269,36 +248,7 @@
                                     <th>Estado</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1220500</td>
-                                    <td class="ellipsis">Jona de Frnte</td>
-                                    <td>Domicilio</td>
-                                    <td>RD$ 250.00</td>
-                                    <td><span class="pill pill-paid">Pagado</span></td>
-                                </tr>
-                                <tr>
-                                    <td>1220302</td>
-                                    <td class="ellipsis">Calonda Innhez</td>
-                                    <td>Efectivo</td>
-                                    <td>RD$ 250.00</td>
-                                    <td><span class="pill pill-waiting">En espera</span></td>
-                                </tr>
-                                <tr>
-                                    <td>1220302</td>
-                                    <td class="ellipsis">Colmado La Ben…</td>
-                                    <td>Efectivo</td>
-                                    <td>RD$ 250.00</td>
-                                    <td><span class="pill pill-canceled">Cancelado</span></td>
-                                </tr>
-                                <tr>
-                                    <td>1220303</td>
-                                    <td class="ellipsis">Café Santo Dom…</td>
-                                    <td>Efectivo</td>
-                                    <td>RD$ 250.00</td>
-                                    <td><span class="pill pill-canceled">Cancelado</span></td>
-                                </tr>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </section>
 
@@ -320,6 +270,7 @@
 </body>
 
 <script src="js/data.js"></script>
+<script src="js/resumen.js"></script>
 <script src="js/app.js"></script>
 
 </html>
