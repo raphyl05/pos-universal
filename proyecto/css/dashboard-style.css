@@ -1,49 +1,42 @@
 /* ============================================================================
    dashboard-style.css — Estilos del dashboard (dashboard.html)
-   Layout: sidebar fijo a la izquierda + contenido principal a la derecha.
+   Layout consistente con resumen/nuevo-negocio: .app > .sidebar + .main.
    ============================================================================ */
 
-/* Reset básico: elimina márgenes/paddings por defecto y ajusta box-sizing */
+/* Reset básico */
+@import url('tokens.css');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Variables de diseño: colores y sombras centralizados.
-   [opencode] Añadidas las variables --icon-* (NUEVAS). Antes los colores de
-   los íconos de negocio estaban hardcodeados en .store-icon/.barber-icon/.shop-icon. */
+/* Variables de diseño */
 :root {
-    --primary-color: #4a5a9b;       /* Azul principal */
-    --primary-hover: #3d4a85;       /* Azul hover de botones */
-    --bg-color: #f5f7fb;            /* Fondo general del dashboard */
-    --sidebar-bg: #ffffff;          /* Fondo del sidebar */
-    --card-bg: #ffffff;             /* Fondo de tarjetas */
-    --text-primary: #1a1a2e;        /* Texto principal */
-    --text-secondary: #6b7280;      /* Texto secundario (gris) */
-    --border-color: #e5e7eb;        /* Bordes */
-    --success-bg: #d1fae5;          /* Fondo del badge "Activo" (verde claro) */
-    --success-text: #065f46;        /* Texto del badge "Activo" (verde oscuro) */
-    --icon-store-bg: #eef2ff;       /* [opencode] Fondo azulado del ícono de tienda */
-    --icon-store-color: #4a5a9b;    /* [opencode] Color del ícono de tienda */
-    --icon-barber-bg: #fce7f3;      /* [opencode] Fondo rosado del ícono de barbería */
-    --icon-barber-color: #db2777;   /* [opencode] Color del ícono de barbería */
-    --icon-shop-bg: #fef3c7;        /* [opencode] Fondo ámbar del ícono de tienda */
-    --icon-shop-color: #d97706;     /* [opencode] Color del ícono de tienda */
-    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);      /* Sombra sutil de tarjetas */
-    --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.07);  /* Sombra en hover */
+    --primary-color: #4a5a9b;
+    --primary-hover: #3d4a85;
+    --bg-color: #f5f7fb;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --text-primary: #1a1a2e;
+    --text-secondary: #6b7280;
+    --text-muted: #6B7280;
+    --border-color: #e5e7eb;
+    --success-bg: #d1fae5;
+    --success-text: #065f46;
+    --icon-store-bg: #eef2ff;
+    --icon-store-color: #4a5a9b;
+    --icon-barber-bg: #fce7f3;
+    --icon-barber-color: #db2777;
+    --icon-shop-bg: #fef3c7;
+    --icon-shop-color: #d97706;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.07);
 }
 
-/* Estilos base: fondo general y tipografía */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    overflow-x: hidden;   /* Evita scroll horizontal accidental */
-}
-
-/* Contenedor general: flex en fila y altura completa de pantalla */
-.dashboard-container {
+/* App: flex row, full viewport */
+.app {
     display: flex;
     min-height: 100vh;
 }
@@ -51,37 +44,39 @@ body {
 /* ===== Sidebar ===== */
 .sidebar {
     width: 260px;
+    flex-shrink: 0;
     background: var(--sidebar-bg);
     border-right: 1px solid var(--border-color);
     display: flex;
-    flex-direction: column;        /* Header arriba, navegación debajo */
-    position: fixed;               /* Fijo: no se mueve al hacer scroll */
+    flex-direction: column;
     height: 100vh;
-    left: 0;
-    top: 0;
-    z-index: 100;                  /* Por encima del contenido */
-    transition: transform 0.3s ease;  /* Animación para el menú móvil */
+    overflow-y: auto;
+    position: relative;
+    z-index: 100;
+    transition: transform 0.3s ease;
 }
 
-/* Cabecera del sidebar (contiene el logo) */
-.sidebar-header {
+/* Brand: logo */
+.brand {
     padding: 24px 20px;
     border-bottom: 1px solid var(--border-color);
 }
 
-/* Imagen del logo en el sidebar */
-.logo {
+.brand-logo {
     height: 32px;
     width: auto;
 }
 
-/* Navegación: flex:1 hace que ocupe todo el alto restante */
-.sidebar-nav {
+/* Menú de navegación */
+.nav-menu {
     padding: 20px 12px;
     flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Cada ítem del menú: fila con ícono + texto */
+/* Ítem del menú */
 .nav-item {
     display: flex;
     align-items: center;
@@ -90,115 +85,196 @@ body {
     margin-bottom: 4px;
     border-radius: 8px;
     color: var(--text-secondary);
-    text-decoration: none;      /* Sin subrayado */
+    text-decoration: none;
     font-size: 0.95rem;
     font-weight: 500;
+    white-space: nowrap;
     transition: all 0.2s;
 }
 
-/* Hover del ítem: fondo suave y texto oscuro */
 .nav-item:hover {
     background: var(--bg-color);
     color: var(--text-primary);
 }
 
-/* Ítem activo (sección actual): fondo azul claro y texto azul */
 .nav-item.active {
     background: #eef2ff;
     color: var(--primary-color);
 }
 
-/* Íconos de la navegación: tamaño y ancho fijo para alinear columnas */
-.nav-item i, .nav-item svg {
-    font-size: 1.1rem;
+.nav-item svg {
     width: 20px;
+    height: 20px;
     flex-shrink: 0;
 }
 
-/* ===== Contenido principal ===== */
-/* Se desplaza a la derecha dejando espacio para el sidebar fijo */
-.main-content {
-    flex: 1;
-    margin-left: 260px;            /* Mismo ancho que el sidebar */
-    padding: 32px;
-    max-width: calc(100% - 260px);
-}
-
-/* ===== Header superior (título + perfil) ===== */
-.top-header {
+/* Pie del sidebar: cerrar sesión */
+.sidebar-footer {
+    padding: 16px 12px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-primary);
+    cursor: pointer;
     display: flex;
-    justify-content: space-between;  /* Título a la izquierda, perfil a la derecha */
-    align-items: flex-start;
-    margin-bottom: 32px;             /* Separación hacia la grilla */
+    align-items: center;
+    justify-content: center;
 }
 
-/* Título grande "Mis negocios" */
-.header-left h1 {
+.sidebar-footer svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-secondary);
+}
+
+/* ===== Main ===== */
+.main {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+}
+
+/* ===== Topbar ===== */
+.topbar {
+    height: 72px;
+    min-height: 72px;
+    background: #FFFFFF;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 40px;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+/* Search box */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 180px;
+    max-width: 285px;
+}
+
+.search-box svg {
+    position: absolute;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.search-box input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px 0 40px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+    border-color: var(--primary-color);
+}
+
+.search-box input::placeholder {
+    color: var(--text-muted);
+}
+
+/* Icon button (notificaciones) */
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    position: relative;
+}
+
+.icon-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+.icon-btn:hover {
+    background: var(--sidebar-bg);
+}
+
+.notif-dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    background: #E02424;
+    border-radius: 50%;
+    border: 2px solid #FFFFFF;
+}
+
+/* User box */
+.user-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.user-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.user-box > svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+}
+
+/* ===== Content ===== */
+.content {
+    padding: 32px 40px;
+    background: var(--bg-color);
+}
+
+.content h1 {
     font-size: 1.875rem;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 8px;
 }
 
-/* Subtítulo descriptivo */
-.header-left p {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-}
-
-/* Zona derecha del header (perfil) */
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-/* Dropdown de perfil: caja con avatar + nombre + flecha */
-.profile-dropdown {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 16px;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    cursor: pointer;           /* Parece clicable (aún sin JS) */
-    transition: all 0.2s;
-}
-
-/* Hover del perfil: sombra sutil */
-.profile-dropdown:hover {
-    box-shadow: var(--shadow);
-}
-
-/* Avatar circular */
-.profile-img {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-}
-
-/* Nombre del usuario en el dropdown */
-.profile-name {
-    font-weight: 500;
-    font-size: 0.9rem;
-}
-
-/* Flecha hacia abajo del dropdown */
-.profile-dropdown i {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-}
-
 /* ===== Grilla de negocios ===== */
-/* Grilla responsiva: cuántas columnas caben según el ancho (min 340px por tarjeta) */
 .business-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 24px;
 }
 
-/* Tarjeta de negocio individual */
+/* Tarjeta de negocio */
 .business-card {
     background: var(--card-bg);
     border-radius: 12px;
@@ -211,22 +287,19 @@ body {
     min-height: 160px;
 }
 
-/* Hover de la tarjeta: sube 2px y sombra más profunda */
 .business-card:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-2px);
 }
 
-/* Cabecera de la tarjeta: nombre a la izquierda, ícono a la derecha */
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 20px;
-    flex: 1;               /* Empuja el footer hacia abajo */
+    flex: 1;
 }
 
-/* Nombre del negocio */
 .business-info h3 {
     font-size: 1.125rem;
     font-weight: 600;
@@ -234,13 +307,11 @@ body {
     margin-bottom: 4px;
 }
 
-/* Tipo de negocio (Colmado, Barbería, ...) */
 .business-type {
     color: var(--text-secondary);
     font-size: 0.875rem;
 }
 
-/* Contenedor cuadrado del ícono de cada negocio */
 .business-icon {
     width: 44px;
     height: 44px;
@@ -251,28 +322,10 @@ body {
     font-size: 1.25rem;
 }
 
-/* Ícono de "Colmado/Tienda" (ícono de tienda).
-   [opencode] Colores hardcodeados reemplazados por variables --icon-store-* */
-.store-icon {
-    background: var(--icon-store-bg);
-    color: var(--icon-store-color);
-}
+.store-icon { background: var(--icon-store-bg); color: var(--icon-store-color); }
+.barber-icon { background: var(--icon-barber-bg); color: var(--icon-barber-color); }
+.shop-icon { background: var(--icon-shop-bg); color: var(--icon-shop-color); }
 
-/* Ícono de "Barbería" (tijeras).
-   [opencode] Ahora usa --icon-barber-* */
-.barber-icon {
-    background: var(--icon-barber-bg);
-    color: var(--icon-barber-color);
-}
-
-/* Ícono de "Tienda" (carrito).
-   [opencode] Ahora usa --icon-shop-* */
-.shop-icon {
-    background: var(--icon-shop-bg);
-    color: var(--icon-shop-color);
-}
-
-/* Pie de la tarjeta: badge de estado + botón "Entrar" */
 .card-footer {
     display: flex;
     justify-content: space-between;
@@ -280,7 +333,12 @@ body {
     margin-top: auto;
 }
 
-/* Badge pequeño redondeado (p. ej. "Activo") */
+.card-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
 .status-badge {
     padding: 6px 12px;
     border-radius: 20px;
@@ -288,13 +346,11 @@ body {
     font-weight: 500;
 }
 
-/* Badge con estilo "Activo": fondo verde claro y texto verde oscuro */
 .status-badge.active {
     background: var(--success-bg);
     color: var(--success-text);
 }
 
-/* Botón "Entrar": azul sólido */
 .btn-enter {
     background: var(--primary-color);
     color: white;
@@ -307,12 +363,10 @@ body {
     transition: background 0.2s;
 }
 
-/* Hover del botón "Entrar" */
 .btn-enter:hover {
     background: var(--primary-hover);
 }
 
-/* Botón "Eliminar": rojo, pequeño */
 .btn-delete {
     background: #DC2626;
     color: #fff;
@@ -330,26 +384,7 @@ body {
     background: #B91C1C;
 }
 
-/* Contenedor de acciones de la tarjeta */
-.card-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-/* Mensaje de error en el dashboard */
-.error-msg {
-    background: #FEF2F2;
-    border: 1px solid #FECACA;
-    color: #DC2626;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    margin-bottom: 16px;
-}
-
-/* ===== Tarjeta "Crear nuevo negocio" ===== */
-/* Se diferencia con borde punteado y fondo transparente */
+/* Tarjeta "Crear nuevo negocio" */
 .create-new {
     display: flex;
     align-items: center;
@@ -360,13 +395,11 @@ body {
     min-height: 160px;
 }
 
-/* Hover: el borde punteado se vuelve azul */
 .create-new:hover {
     border-color: var(--primary-color);
     background: #f9fafb;
 }
 
-/* Contenido de la tarjeta: ícono "+" encima del texto, en columna */
 .create-new-content {
     display: flex;
     flex-direction: column;
@@ -377,84 +410,25 @@ body {
     font-weight: 500;
 }
 
-/* El ícono "+" grande en azul */
 .create-new-content svg {
     font-size: 2rem;
     color: var(--primary-color);
     flex-shrink: 0;
 }
 
-/* ===== Responsive ===== */
-
-/* Pantallas medianas (hasta 1024px): tarjetas un poco más angostas (min 280px) */
-@media (max-width: 1024px) {
-    .business-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    }
+/* Mensaje de error */
+.error-msg {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #DC2626;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
 }
 
-/* Tablet (hasta 768px): el sidebar se oculta y el contenido ocupa todo el ancho */
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);   /* Sidebar desplazado fuera de pantalla (oculto) */
-    }
+/* ===== Menú móvil (toggle) — CSS-only checkbox hack ===== */
 
-    /* Regla de respaldo por si se activa la clase .active con JavaScript en el futuro */
-    .sidebar.active {
-        transform: translateX(0);
-    }
-
-    .main-content {
-        margin-left: 0;          /* Sin espacio reservado para el sidebar */
-        max-width: 100%;
-        padding: 20px;
-    }
-
-    /* Header en columna en pantallas pequeñas */
-    .top-header {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    /* Una sola columna de tarjetas */
-    .business-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .header-left h1 {
-        font-size: 1.5rem;
-    }
-}
-
-/* Móvil (hasta 480px): reduce paddings y oculta el nombre del perfil */
-@media (max-width: 480px) {
-    .main-content {
-        padding: 16px;
-    }
-
-    .business-card {
-        padding: 20px;
-    }
-
-    .profile-dropdown {
-        padding: 6px 12px;
-    }
-
-    /* En pantallas muy pequeñas solo se ve el avatar, no el nombre */
-    .profile-name {
-        display: none;
-    }
-}
-
-/* ===== Menú móvil (toggle) — [opencode] TODO el bloque reescrito =====
-   Antes existían .menu-toggle y .sidebar.active pero NO había botón en el HTML
-   ni JavaScript, así que el sidebar quedaba inaccesible en móvil.
-   Solución 100% CSS (sin JS): un <input type="checkbox"> oculto (#menu-toggle)
-   que actúa de interruptor. Al hacer clic en el <label> (botón flotante),
-   :checked activa las reglas que muestran el sidebar y cambian el ícono ☰ -> ✕. */
-
-/* Checkbox accesible por teclado: posicionado fuera de pantalla en vez de
-   visibility:hidden/display:none. En mobile se reposiciona via media query. */
 .menu-toggle-input {
     position: absolute;
     left: -10000px;
@@ -473,8 +447,6 @@ body {
     outline-offset: 4px;
 }
 
-/* Botón flotante (label): círculo azul fijo abajo a la derecha.
-   display:none por defecto (solo se muestra en móvil). */
 .menu-toggle {
     display: none;
     position: fixed;
@@ -488,14 +460,52 @@ body {
     border-radius: 50%;
     font-size: 1.5rem;
     cursor: pointer;
-    z-index: 101;              /* Por encima del sidebar (z-index 100) */
+    z-index: 101;
     box-shadow: var(--shadow-lg);
     align-items: center;
     justify-content: center;
 }
 
-/* Solo en pantallas ≤768px se activa el menú móvil */
+.menu-toggle svg {
+    width: 24px;
+    height: 24px;
+}
+
+.menu-toggle .icon-close {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-open {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-close {
+    display: block;
+}
+
+.menu-toggle-input:checked ~ .app .sidebar {
+    transform: translateX(0);
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1024px) {
+    .business-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
 @media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        height: 100vh;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow);
+    }
+
     .menu-toggle-input {
         position: fixed;
         bottom: 48px;
@@ -507,30 +517,55 @@ body {
         white-space: nowrap;
     }
 
-    /* Se muestra el botón flotante */
     .menu-toggle {
         display: flex;
     }
 
-    /* Por defecto el ícono ✕ (fa-times) está oculto */
-    .menu-toggle .fa-times {
+    .main {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .topbar {
+        padding: 16px 24px;
+    }
+
+    .content {
+        padding: 24px;
+    }
+
+    .business-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .user-name {
         display: none;
     }
+}
 
-    /* Cuando el checkbox está marcado: se oculta ☰ (fa-bars)... */
-    .menu-toggle-input:checked ~ .menu-toggle .fa-bars {
-        display: none;
+@media (max-width: 480px) {
+    .main {
+        padding: 0;
     }
 
-    /* ...y se muestra ✕ (fa-times) */
-    .menu-toggle-input:checked ~ .menu-toggle .fa-times {
-        display: inline-block;
+    .business-card {
+        padding: 20px;
     }
 
-    /* Cuando el checkbox está marcado: el sidebar entra a pantalla completa
-       (translateX(0) = posición original, ya no está fuera).
-       El selector "~" busca hermanos posteriores al checkbox en el body. */
-    .menu-toggle-input:checked ~ .dashboard-container .sidebar {
-        transform: translateX(0);
+    .topbar {
+        padding: 16px;
+    }
+
+    .search-box {
+        max-width: none;
+    }
+
+    .content {
+        padding: 16px;
+    }
+
+    .content h1 {
+        font-size: 1.5rem;
     }
 }

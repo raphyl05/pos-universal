@@ -321,8 +321,88 @@ body {
     .columns { grid-template-columns: 1fr; }
 }
 
+/* ===== Menú móvil (toggle) — CSS-only checkbox hack ===== */
+
+.menu-toggle-input {
+    position: absolute;
+    left: -10000px;
+    top: 0;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.menu-toggle-input:focus-visible ~ .menu-toggle {
+    outline: 3px solid var(--text);
+    outline-offset: 4px;
+}
+
+.menu-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: 0 4px 12px rgba(74, 90, 168, 0.35);
+}
+
+.menu-toggle svg {
+    width: 26px;
+    height: 26px;
+}
+
+.menu-toggle .icon-close {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-open {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-close {
+    display: block;
+}
+
 @media (max-width: 860px) {
-    .sidebar { position: fixed; left: -250px; z-index: 100; height: 100vh; transition: left 0.2s; }
-    .sidebar.open { left: 0; }
+    .sidebar {
+        position: fixed;
+        left: -250px;
+        z-index: 100;
+        height: 100vh;
+        transition: left 0.2s;
+    }
+
+    .menu-toggle-input {
+        position: fixed;
+        bottom: 48px;
+        right: 48px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .menu-toggle-input:checked ~ .app .sidebar {
+        left: 0;
+    }
+
     .row-col-2 { grid-template-columns: 1fr; }
 }
