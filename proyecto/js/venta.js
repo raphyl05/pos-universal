@@ -327,24 +327,14 @@
   function addSuggestedProduct() {
     var items = $$("#code-suggestions .code-suggestion");
     if (sugIndex >= 0 && sugIndex < items.length) {
-      /* Find product by index in the original list */
-      var allMatches = POS_DATA.getProductos().filter(function (p) {
-        return true; /* simplified */
-      });
-      /* Actually we need the product id from the suggestion */
-      /* The suggestion element doesn't have data-id, let me use a different approach */
-      var nameEl = items[sugIndex].querySelector(".sug-name");
-      if (nameEl) {
-        var name = nameEl.textContent.trim();
-        var product = POS_DATA.getProductos().find(function (p) { return p.nombre === name; });
-        if (product) {
-          POS_DATA.addToCart(product.id);
-          renderCartTable();
-        }
+      var id = items[sugIndex].getAttribute("data-id");
+      if (id) {
+        POS_DATA.addToCart(id);
+        renderCartTable();
+        codeInput.value = "";
+        $("#code-suggestions").classList.remove("open");
+        focusSearch();
       }
-      codeInput.value = "";
-      $("#code-suggestions").classList.remove("open");
-      focusSearch();
     }
   }
 
