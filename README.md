@@ -80,6 +80,7 @@ POS-UNIVERSAL/
     │   ├── data.js            # Modelo de datos: negocios, productos, ventas (localStorage)
     │   ├── app.js             # Shell: menú activo, logout, navegación global
     │   ├── login.js           # Login + registro (lógica específica del login)
+    │   ├── venta.js         # Pantalla POS: catálogo dinámico, filtros, búsqueda
     │   ├── dashboard.js       # Render dinámico de tarjetas de negocios desde data.js
     │   ├── resumen.js         # KPIs dinámicos, gráfica SVG, últimas ventas desde data.js
     │   └── nuevo-negocio.js   # Formulario "Crear nuevo negocio" (preview, guardado, redirect)
@@ -298,11 +299,13 @@ Trabajo por partes, en orden:
 3. ✅ Login + Registro con roles (admin/cajero) → `de9a0fc`
 4. ✅ Dashboard render dinámico → `09ae92b`
 5. ✅ Resumen dinámico (KPIs, gráfica SVG, últimas ventas) → `0f4ec77`
+6. ✅ Venta Pt.1 — catálogo dinámico, filtros, búsqueda → `eeec53f`
+7. ⏳ Venta Pt.2 (carrito funcional) → Completar Pago → Inventario → Nuevo Producto → Apertura Caja → Cierre Caja
 
 ## Próxima apertura — dónde continuar
 
-> **Retomar con: Parte 6 — Venta Pt.1.**
-> Render dinámico del catálogo de productos desde data.js, filtros por categoría, pestañas activas.
+> **Retomar con: Opción C — Testing y optimización**
+> O **Venta Pt.2** — carrito funcional (add/remove/stepper, cálculo Subtotal+Descuento+Impuestos en vivo).
 
 ## Control de versión
 
