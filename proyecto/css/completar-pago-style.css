@@ -1,0 +1,617 @@
+@import url('tokens.css');
+
+/* ============================================================================
+   completar-pago-style.css — Modal "Completar pago" sobre pantalla de venta
+   oscurecida. Fondo = pantalla simplificada; overlay fijo rgba(15,23,42,.45);
+   modal centrado por flexbox (max-width 750px). Sin JavaScript.
+   ============================================================================ */
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Tokens de diseño centralizados (según la descripción de la guía) */
+:root {
+    --bg-app: #EEF0F3;          /* Fondo del contenido de la pantalla base */
+    --surface: #F8F9FB;         /* Modal y tarjetas */
+    --white: #FFFFFF;           /* Blanco puro */
+    --indigo-logo: #3D4DB7;     /* Índigo del logo de la pantalla base */
+    --indigo-select: #3F4479;   /* Borde índigo del método seleccionado */
+    --indigo-btn: #45499B;      /* Botón "Confirmar pago" del modal */
+    --selected-bg: #E7E9F4;     /* Fondo lavanda del método seleccionado */
+    --overlay-bg: rgba(15, 23, 42, 0.45);  /* Oscurece la pantalla de fondo */
+    --badge-ok: #2FAE62;        /* Badge circular verde del check */
+    --text-item: #6B7280;       /* Precios grises de los ítems */
+    --text-method: #1F2937;     /* Labels de los métodos de pago */
+    --nav-active-bg: #E3E5F2;   /* Botón activo del sidebar colapsado */
+    --radius-modal: 16px;       /* Radio del modal */
+    --radius-method: 10px;      /* Radio de los métodos de pago */
+    --radius-btn: 10px;         /* Radio de botones del modal */
+    --radius-thumb: 8px;        /* Radio de miniaturas */
+    --shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.30); /* Sombra del modal */
+}
+
+/* Tipografía: Inter si está instalada, si no el stack del sistema */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--bg-app);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    font-size: 16px;
+}
+
+/* ===== Capa de fondo: pantalla de venta (simplificada) ===== */
+.bg-screen {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Header superior */
+.bg-header {
+    min-height: 72px;
+    background: var(--white);
+    border-bottom: 1px solid #E5E7EB;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 24px;
+    flex-wrap: wrap;
+}
+
+.bg-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bg-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--indigo-logo);
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-brand {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.bg-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Búsqueda */
+.bg-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 210px;
+    max-width: 100%;
+}
+
+.bg-search svg {
+    position: absolute;
+    left: 13px;
+    width: 17px;
+    height: 17px;
+    color: #9CA3AF;
+    pointer-events: none;
+}
+
+.bg-search input {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px 0 38px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-input);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+}
+
+.bg-search input::placeholder {
+    color: #9CA3AF;
+}
+
+/* Campana con punto rojo */
+.bg-bell {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-bell svg {
+    width: 21px;
+    height: 21px;
+    color: var(--text-2);
+}
+
+.bg-dot {
+    position: absolute;
+    top: 6px;
+    right: 7px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--notif-dot);
+    border: 1.5px solid var(--white);
+}
+
+/* Usuario */
+.bg-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bg-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.bg-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.bg-user > svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-item);
+}
+
+/* Fila: sidebar colapsado + contenido */
+.bg-wrap {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+/* Sidebar solo-iconos (≈80px) */
+.bg-sidebar {
+    width: 80px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid #E5E7EB;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 18px;
+}
+
+/* Botón cuadrado redondeado (ícono casa) sobre fondo lavanda: activo */
+.bg-nav {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.bg-nav.active {
+    background: var(--nav-active-bg);
+}
+
+.bg-nav svg {
+    width: 22px;
+    height: 22px;
+    color: var(--text-2);
+}
+
+.bg-nav.active svg {
+    color: var(--indigo-logo);
+}
+
+/* Contenido del fondo: dos tarjetas */
+.bg-content {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 20px;
+    padding: 28px;
+    align-content: start;
+}
+
+.bg-card {
+    background: var(--surface);
+    border: 1px solid #E3E6EA;
+    border-radius: 12px;
+    box-shadow: var(--shadow-soft);
+    padding: 18px;
+}
+
+.bg-card h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+}
+
+/* Dos inputs blancos que se asoman arriba de la lista */
+.bg-inputs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.bg-inputs input {
+    flex: 1;
+    height: 38px;
+    padding: 0 12px;
+    background: var(--white);
+    border: 1px solid var(--border-input);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+/* Fila de ítem: thumb + texto */
+.bg-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid #ECEEF2;
+}
+
+.bg-thumb {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: var(--radius-thumb);
+    background: #EDF0F3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    line-height: 1;
+}
+
+.bg-row strong {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+}
+
+.bg-row p {
+    font-size: 14px;
+    color: var(--text-item);
+    margin-top: 2px;
+}
+
+/* Fila label/valor del resumen */
+.bg-sum-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    font-size: 15px;
+    color: var(--text-2);
+}
+
+.bg-sum-row strong {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.bg-sum-row.big {
+    margin-top: 6px;
+}
+
+.bg-sum-row.big strong {
+    font-size: 18px;
+    color: var(--text-strong);
+}
+
+.bg-divider {
+    height: 1px;
+    background: #E5E7EB;
+    margin: 8px 0;
+}
+
+/* Botón navy oscurecido por el overlay */
+.bg-confirm {
+    width: 100%;
+    height: 42px;
+    margin-top: 16px;
+    background: var(--indigo-logo);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+/* ===== Overlay oscuro (fijo, pantalla completa) ===== */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 100;
+}
+
+/* ===== Modal centrado (≈750px) ===== */
+.modal {
+    position: relative;
+    width: 100%;
+    max-width: 750px;
+    max-height: calc(100vh - 48px);
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
+    background: var(--surface);
+    border-radius: var(--radius-modal);
+    box-shadow: var(--shadow-modal);
+    padding: 36px;
+}
+
+/* Título */
+.modal h1 {
+    font-size: 27px;
+    font-weight: 800;
+    color: var(--text-strong);
+    letter-spacing: -0.5px;
+}
+
+/* Bloque total */
+.total-block {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.t-label {
+    font-size: 16px;
+    color: var(--text-2);
+}
+
+.t-value {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--text-strong);
+    letter-spacing: -0.5px;
+}
+
+/* ===== Métodos de pago (4 columnas) ===== */
+.pay-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.pay-method {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 115px;
+    padding: 18px 10px;
+    background: var(--white);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-method);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.pay-method svg {
+    width: 36px;
+    height: 36px;
+    color: var(--text-2);
+}
+
+.pay-method span {
+    font-size: 16px;
+    color: var(--text-method);
+    white-space: nowrap;
+}
+
+.pay-method:hover {
+    border-color: var(--indigo-select);
+}
+
+/* Método seleccionado: borde índigo 2px + fondo lavanda */
+.pay-method.selected {
+    background: var(--selected-bg);
+    border: 2px solid var(--indigo-select);
+}
+
+.pay-method.selected svg,
+.pay-method.selected span {
+    color: var(--indigo-select);
+}
+
+/* ===== Recibido / Cambio ===== */
+.money-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 36px;
+}
+
+.money-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.money-col.right {
+    align-items: flex-end;
+    text-align: right;
+}
+
+.m-label {
+    font-size: 16px;
+    color: var(--text-2);
+}
+
+.m-value {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text-strong);
+}
+
+/* ===== Botón primario con badge verde del check ===== */
+.btn-confirm {
+    position: relative;          /* Ancla el badge verde */
+    width: 100%;
+    height: 56px;
+    margin-top: 40px;
+    background: var(--indigo-btn);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 17px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-confirm:hover {
+    background: var(--indigo-logo);
+}
+
+/* Badge circular verde (≈30px) solapado fuera de la esquina superior derecha */
+.check-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(40%, -50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--badge-ok);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(47, 174, 98, 0.4);
+}
+
+.check-badge svg {
+    width: 15px;
+    height: 15px;
+}
+
+/* ===== Botón secundario "Cancelar" ===== */
+.btn-cancel {
+    width: 100%;
+    height: 52px;
+    margin-top: 14px;
+    background: transparent;
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    font-size: 16px;
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--text-strong);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+    background: #ECEEF2;
+}
+
+/* ===== Responsive ===== */
+
+/* Tablets: métodos en 2 columnas */
+@media (max-width: 820px) {
+    .pay-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .bg-content {
+        grid-template-columns: 1fr;
+    }
+
+    .bg-sidebar {
+        width: 60px;
+    }
+}
+
+/* Móviles: modal compacto, todo en una columna */
+@media (max-width: 520px) {
+    .modal {
+        padding: 24px;
+    }
+
+    .modal h1 {
+        font-size: 22px;
+    }
+
+    .t-value {
+        font-size: 28px;
+    }
+
+    .m-value {
+        font-size: 24px;
+    }
+
+    .money-row {
+        grid-template-columns: 1fr;
+        margin-top: 28px;
+    }
+
+    .money-col.right {
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .btn-confirm {
+        margin-top: 32px;
+    }
+
+    .bg-search,
+    .bg-name {
+        display: none;
+    }
+
+    .bg-content {
+        padding: 16px;
+    }
+}

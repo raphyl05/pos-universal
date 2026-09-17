@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!-- Página de inicio de sesión de POSUniversal. Muestra un logo + eslogan a la izquierda
+     y el formulario de login a la derecha. En móviles el layout se apila en columnas. -->
+<html lang="es">
+
+<head>
+    <!-- Metadatos básicos: charset para tildes/ñ y viewport para diseño responsivo -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título que aparece en la pestaña del navegador -->
+    <title>POSUniversal - Iniciar Sesión</title>
+    <!-- [opencode] Ruta de CSS cambiada de absoluta (/css/...) a relativa (css/...)
+         para que la página funcione abriéndola directamente con doble clic (file://) -->
+    <link rel="stylesheet" href="css/login-style.css">
+</head>
+
+<body>
+    <!-- Contenedor principal: usa flexbox para dividir la pantalla en dos paneles -->
+    <div class="container">
+        <!-- Lado Izquierdo: branding (logo + eslogan) -->
+        <div class="left-panel">
+            <div class="logo">
+                <!-- [opencode] Ruta de la imagen cambiada de /logo.jpg a logo.jpg
+                     (mismo motivo: soporte file://) -->
+                <img src="logo.jpg" alt="POSUniversal">
+            </div>
+            <!-- Eslogan de marca, con <br> para salto de línea -->
+            <h1 class="tagline">Controla tu negocio<br>desde un solo lugar.</h1>
+        </div>
+
+        <!-- Lado Derecho: tarjeta con el formulario de acceso -->
+        <div class="right-panel">
+            <div class="login-card">
+                <!-- h2 = título del formulario.
+                     [opencode] Corregido el typo "Authenticación" y cambiado a "Iniciar sesión"
+                     (texto más natural y coherente con el botón principal) -->
+                <h2>Iniciar sesión</h2>
+                <!-- El <form> aún no envía datos a ningún servidor (proyecto frontend-only).
+                     Cuando exista backend, habrá que añadir action/method -->
+                <form>
+                    <div class="form-group">
+                        <!-- label + input para el email; "for" enlaza con el "id" del input -->
+                        <label for="email">Correo electrónico</label>
+                        <!-- type="email" valida formato; required obliga a llenarlo.
+                             [opencode] Añadido autocomplete="email" para que el navegador
+                             autofillene el correo del usuario -->
+                        <input type="email" id="email" name="email" autocomplete="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <!-- type="password" oculta los caracteres.
+                             [opencode] Añadido autocomplete="current-password" para autocarreo de contraseñas -->
+                        <input type="password" id="password" name="password" autocomplete="current-password" required>
+                    </div>
+                    <!-- Fila con "Recordarme" y el enlace "¿Olvidaste tu contraseña?" -->
+                    <div class="form-options">
+                        <!-- Checkbox tipo switch inteligente: clic en el texto también lo marca -->
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="remember">
+                            <span>Recordarme</span>
+                        </label>
+                        <!-- Enlace placeholder; sin funcionalidad hasta conectar backend.
+                             href="#" evita recargar la página -->
+                        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    <!-- Botón principal: type="submit" dispararía el envío del form
+                         (aún requiere JS o action para funcionar) -->
+                    <button type="submit" class="btn-primary">Iniciar sesión</button>
+                    <!-- Botón secundario: type="button" para que NO envíe el formulario
+                         cuando se le agregue lógica (p. ej. abrir registro) -->
+                    <button type="button" class="btn-secondary">Crear una cuenta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

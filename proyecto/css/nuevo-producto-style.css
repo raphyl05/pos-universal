@@ -1,0 +1,722 @@
+@import url('tokens.css');
+
+/* ============================================================================
+   nuevo-producto-style.css — Estilos del formulario "Nuevo producto"
+   Layout: sidebar fijo ≈250px + header ≈90px + grid 2 columnas
+   (formulario ~720px / columna derecha ~390px con acciones abajo).
+   ============================================================================ */
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Tokens de diseño centralizados (según la descripción de la guía) */
+:root {
+    --bg-app: #EEF0F3;          /* Fondo del área de contenido */
+    --sidebar-bg: #ECEEF2;      /* Fondo del sidebar */
+    --head-bg: #FFFFFF;         /* Fondo del header */
+    --surface: #F8F9FB;         /* Tarjetas */
+    --border-head: #D1D5DB;     /* Borde del buscador del header */
+    --indigo-logo: #3D4DB7;     /* Índigo del logo */
+    --indigo-btn: #41477E;      /* Índigo del botón "Guardar producto" */
+    --indigo-focus: #3F4479;    /* Borde del textarea enfocado */
+    --nav-active-bg: #DDE1EA;   /* Ítem activo (gris lavanda) */
+    --nav-item-text: #1F2937;   /* Texto de los ítems del menú */
+    --label-text: #1F2937;      /* Labels del formulario */
+    --text-3: #6B7280;          /* Texto muted (SKU, placeholder) */
+    --thumb-bg: #EDF0F3;        /* Fondo de miniaturas */
+    --pill-ok-bg: #D3F1DE;      /* Pill "Activo" (verde claro) */
+    --pill-ok-text: #1E7E44;    /* Texto de la pill "Activo" */
+    --btn-cancel: #E8EBEF;      /* Botón "Cancelar" (gris) */
+    --radius-card: 12px;        /* Radios: tarjetas */
+    --radius-btn: 8px;          /* Radios: inputs/botones */
+    --shadow-toggle: 0 4px 12px rgba(61, 77, 183, 0.35); /* Sombra del botón flotante */
+}
+
+/* Tipografía: Inter si está instalada, si no el stack del sistema */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--bg-app);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    font-size: 16px;
+}
+
+/* Contenedor general: sidebar + zona principal en fila */
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* ===== Sidebar (≈250px, fondo #ECEEF2) ===== */
+.sidebar {
+    width: min(250px, 26vw);
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 14px 0;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+
+/* Brand: cuadrado índigo con glifo de llave + texto */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 6px 24px;
+}
+
+.brand-glyph {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: var(--radius-logo);
+    background: var(--indigo-logo);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-glyph svg {
+    width: 18px;
+    height: 18px;
+}
+
+.brand-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.nav-menu {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Ítem del menú: icono de línea + texto */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border-radius: var(--radius-btn);
+    color: var(--nav-item-text);
+    text-decoration: none;
+    font-size: 15px;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-item:hover {
+    background: #DDE1EA;
+}
+
+.nav-item.active {
+    background: var(--nav-active-bg);
+    color: var(--nav-item-text);
+}
+
+.nav-item svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-2);
+    flex-shrink: 0;
+}
+
+.nav-item.active svg {
+    color: var(--indigo-logo);
+}
+
+/* Pie del sidebar: salida (icono de puerta con flecha) */
+.sidebar-foot {
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    margin-top: 8px;
+}
+
+.sidebar-foot .nav-item {
+    margin-bottom: 0;
+    font-size: 14px;
+    color: var(--text-3);
+}
+
+.sidebar-foot .nav-item svg {
+    color: var(--text-3);
+}
+
+.sidebar-foot .nav-item:hover {
+    background: #DDE1EA;
+    color: var(--nav-item-text);
+}
+
+.sidebar-foot .nav-item:hover svg {
+    color: var(--indigo-logo);
+}
+
+/* ===== Zona principal ===== */
+.main {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+}
+
+/* ===== Header (≈90px, fondo blanco) ===== */
+.topbar {
+    min-height: 90px;
+    background: var(--head-bg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 16px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Búsqueda ≈225×44px */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 225px;
+    max-width: 100%;
+}
+
+.search-box svg {
+    position: absolute;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    color: var(--placeholder);
+    pointer-events: none;
+}
+
+.search-box input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px 0 40px;
+    background: var(--head-bg);
+    border: 1px solid var(--border-head);
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+    border-color: var(--indigo-logo);
+}
+
+.search-box input::placeholder {
+    color: var(--placeholder);
+}
+
+/* Botón de campana */
+.icon-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn svg {
+    width: 22px;
+    height: 22px;
+    color: var(--text-2);
+}
+
+.icon-btn:hover {
+    background: #ECEEF4;
+}
+
+.notif-dot {
+    position: absolute;
+    top: 7px;
+    right: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--notif-dot);
+    border: 1.5px solid var(--head-bg);
+}
+
+/* Usuario: avatar 32px + nombre + chevron-down */
+.user-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.user-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.chev-btn {
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chev-btn svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-3);
+}
+
+/* ===== Contenido principal ===== */
+.content {
+    padding: 40px;
+    background: var(--bg-app);
+}
+
+.content h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-strong);
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+}
+
+/* Grid de dos columnas: formulario (1fr) / columna derecha (~390px) */
+.columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 390px;
+    gap: 24px;
+    align-items: start;
+}
+
+/* ===== Tarjeta base ===== */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    min-width: 0;
+}
+
+/* ===== Tarjeta de formulario ===== */
+.form-card {
+    padding: 24px;
+}
+
+/* Secciones separadas por margen ≈28px */
+.form-section + .form-section {
+    margin-top: 28px;
+}
+
+.form-section h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+}
+
+/* Filas de campos en grid, column gap 16px */
+.row-col-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.row-col-2 {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+/* Campo individual: label arriba + control */
+.field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.field label {
+    font-size: 15px;
+    color: var(--label-text);
+    margin-bottom: 6px;
+}
+
+.field input,
+.field select,
+.field textarea {
+    width: 100%;
+    background: var(--head-bg);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.field input,
+.field select {
+    height: 44px;
+    padding: 0 12px;
+}
+
+/* Select con chevron-down gris a la derecha */
+.field select {
+    padding-right: 34px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+/* Textarea ≈70px de alto, con resize visible */
+.field textarea {
+    min-height: 70px;
+    padding: 10px 12px;
+    resize: vertical;
+    line-height: 1.45;
+}
+
+/* Refuerzo visual del foco sin cambiar el borde ni el espacio del contenido. */
+.field textarea:focus,
+.field input:focus,
+.field select:focus {
+    border-color: var(--indigo-focus);
+    box-shadow: 0 0 0 0.5px var(--indigo-focus);
+}
+
+/* ===== Columna derecha (flex-column con acciones abajo) ===== */
+.side-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+/* ===== Tarjeta de vista previa ===== */
+.preview-card {
+    overflow: hidden;
+}
+
+/* Bloque superior: thumb + nombre/SKU */
+.preview-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+}
+
+.preview-thumb {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: var(--radius-logo);
+    background: var(--thumb-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    line-height: 1;
+}
+
+.preview-top h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+}
+
+.preview-top p {
+    font-size: 15px;
+    color: var(--text-3);
+}
+
+/* Divisor fino */
+.divider {
+    height: 1px;
+    background: var(--border);
+}
+
+/* Fila de precio: izquierda bold ≈24px, derecha pill */
+.price-row strong {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-strong);
+}
+
+.pill {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.pill-ok {
+    background: var(--pill-ok-bg);
+    color: var(--pill-ok-text);
+}
+
+/* Fila "Estado" con stack alineado a la derecha */
+.status-row .status-label {
+    font-size: 15px;
+    color: var(--text-2);
+}
+
+.stock-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.stock-stack .stock-label {
+    font-size: 15px;
+    color: var(--text-2);
+}
+
+.stock-stack strong {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-strong);
+}
+
+/* Botones de acciones (alto ≈48px, radio 8px) */
+.actions-card {
+    padding: 16px;
+    display: flex;
+    gap: 10px;
+    margin-top: auto;   /* Ancla la tarjeta abajo de la columna */
+}
+
+.btn-cancel {
+    flex: 1;
+    height: 48px;
+    background: var(--btn-cancel);
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--label-text);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+    background: #DCDFE6;
+}
+
+.btn-save {
+    flex: 1.5;
+    height: 48px;
+    background: var(--indigo-btn);
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-save:hover {
+    background: var(--indigo-logo);
+}
+
+/* ===== Botón flotante del menú móvil (hamburguesa) ===== */
+.menu-toggle-input {
+    position: absolute;
+    left: -10000px;
+    top: 0;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.menu-toggle-input:focus-visible ~ .menu-toggle {
+    outline: 3px solid var(--text-strong);
+    outline-offset: 4px;
+}
+
+.menu-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: var(--indigo-logo);
+    color: #FFFFFF;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: var(--shadow-toggle);
+}
+
+.menu-toggle svg {
+    width: 26px;
+    height: 26px;
+}
+
+.menu-toggle .icon-close {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-open {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-close {
+    display: block;
+}
+
+.menu-toggle-input:checked ~ .app .sidebar {
+    transform: translateX(0);
+}
+
+/* ===== Responsive ===== */
+
+/* Laptops: menos espacio lateral */
+@media (max-width: 1160px) {
+    .topbar,
+    .content {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+/* Pantallas medianas: las dos columnas se apilan */
+@media (max-width: 1080px) {
+    .columns {
+        grid-template-columns: 1fr;
+    }
+
+    .side-col {
+        max-width: 600px;
+    }
+}
+
+/* Tablets (≤860px): sidebar fuera de pantalla + botón hamburguesa */
+@media (max-width: 860px) {
+    .menu-toggle-input {
+        position: fixed;
+        bottom: 48px;
+        right: 48px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        height: 100vh;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .topbar {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+/* Móvil (≤600px): header compacto, formulario de 1 columna */
+@media (max-width: 600px) {
+    body {
+        font-size: 15px;
+    }
+
+    .content {
+        padding: 16px;
+    }
+
+    .content h1 {
+        font-size: 24px;
+    }
+
+    .search-box {
+        display: none;
+    }
+
+    .topbar-right {
+        width: 100%;
+        justify-content: flex-end;
+        gap: 16px;
+    }
+
+    .row-col-3,
+    .row-col-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .row-col-2 {
+        margin-top: 16px;
+    }
+
+    .form-card {
+        padding: 16px;
+    }
+
+    .actions-card {
+        flex-direction: column;
+    }
+}

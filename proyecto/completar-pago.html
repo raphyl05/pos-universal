@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!-- Modal "Completar pago" (POSUniversal): capa de fondo = pantalla de venta
+     simplificada oscurecida por un overlay fijo; modal centrado por flexbox.
+     Sin JavaScript; todo es estático. -->
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completar pago - POSUniversal</title>
+    <link rel="stylesheet" href="css/completar-pago-style.css">
+</head>
+
+<body>
+    <!-- ===== Capa de fondo: pantalla de venta (se ve oscurecida por el overlay) ===== -->
+    <div class="bg-screen">
+
+        <!-- Header superior: logo + "POSUniversal" | búsqueda + campana + usuario -->
+        <header class="bg-header">
+            <div class="bg-left">
+                <span class="bg-logo" aria-hidden="true">P</span>
+                <strong class="bg-brand">POSUniversal</strong>
+            </div>
+            <div class="bg-right">
+                <div class="bg-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line
+                        x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                    <input type="text" placeholder="Buscar">
+                </div>
+                <button class="bg-bell" aria-label="Notificaciones">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><path
+                        d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
+                    <span class="bg-dot" aria-hidden="true"></span>
+                </button>
+                <div class="bg-user">
+                    <img class="bg-avatar"
+                        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%233D4DB7'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='%23fff' font-size='13' font-weight='600' font-family='system-ui'%3ER%3C/text%3E%3C/svg%3E"
+                        alt="Raphy">
+                    <span class="bg-name">Raphy</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+                </div>
+            </div>
+        </header>
+
+        <div class="bg-wrap">
+            <!-- Sidebar colapsado solo-iconos (≈80px), Inicio activo -->
+            <aside class="bg-sidebar">
+                <a href="#" class="bg-nav active" aria-label="Inicio">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><path
+                        d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline
+                        points="9 22 9 12 15 12 15 22" /></svg>
+                </a>
+            </aside>
+
+            <!-- Contenido: tarjeta de productos + tarjeta de resumen de pago -->
+            <main class="bg-content">
+
+                <!-- Tarjeta izquierda "Producto" -->
+                <section class="bg-card products-card">
+                    <h2>Producto</h2>
+                    <!-- Dos inputs blancos que se asoman arriba de la lista -->
+                    <div class="bg-inputs">
+                        <input type="text" readonly placeholder=" ">
+                        <input type="text" readonly placeholder=" ">
+                    </div>
+                    <div class="bg-row">
+                        <span class="bg-thumb" aria-hidden="true">🥫</span>
+                        <div>
+                            <strong>Coralito de Cantes</strong>
+                            <p>RD$ 1200</p>
+                        </div>
+                    </div>
+                    <div class="bg-row">
+                        <span class="bg-thumb" aria-hidden="true">🍞</span>
+                        <div>
+                            <strong>Famitas 1</strong>
+                            <p>RD$ 3,250.00</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tarjeta derecha: resumen de pago -->
+                <section class="bg-card summary-card">
+                    <h2>Resumen de pago</h2>
+                    <div class="bg-sum-row">
+                        <span>Efectivo</span>
+                        <strong>RD$ 3,000.00</strong>
+                    </div>
+                    <div class="bg-sum-row">
+                        <span>Tarjeta</span>
+                        <strong>RD$ 1</strong>
+                    </div>
+                    <div class="bg-sum-row">
+                        <span>Transferencia</span>
+                        <strong>RD$ 550.00</strong>
+                    </div>
+                    <div class="bg-divider"></div>
+                    <div class="bg-sum-row">
+                        <span>Total</span>
+                        <strong>RD$ 0.00</strong>
+                    </div>
+                    <div class="bg-sum-row big">
+                        <span>Total a pagar</span>
+                        <strong>RD$ 2,450.00</strong>
+                    </div>
+                    <button class="bg-confirm" type="button">Confirmar pago</button>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ===== Overlay oscuro + modal centrado ===== -->
+    <div class="overlay">
+        <div class="modal" role="dialog" aria-modal="true" aria-label="Completar pago">
+
+            <!-- Título -->
+            <h1>Completar pago</h1>
+
+            <!-- Bloque total -->
+            <div class="total-block">
+                <span class="t-label">Total a pagar</span>
+                <strong class="t-value">RD$ 2,450.00</strong>
+            </div>
+
+            <!-- Métodos de pago -->
+            <div class="pay-grid">
+                <button class="pay-method selected" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12"
+                        rx="2" /><circle cx="12" cy="12" r="2" /><path d="M6 12h.01M18 12h.01" /></svg>
+                    <span>Efectivo</span>
+                </button>
+                <button class="pay-method" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16"
+                        rx="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>
+                    <span>Tarjeta</span>
+                </button>
+                <button class="pay-method" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4" /><path
+                        d="M3 11v-1a4 4 0 0 1 4-4h14" /><path d="m7 22-4-4 4-4" /><path
+                        d="M21 13v1a4 4 0 0 1-4 4H3" /></svg>
+                    <span>Transferencia</span>
+                </button>
+                <button class="pay-method" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><g opacity="0.4"><rect x="4" y="3"
+                        width="18" height="12" rx="2" /><circle cx="13" cy="8" r="1.7" /></g><rect x="2" y="9"
+                        width="18" height="12" rx="2" /><circle cx="11" cy="14" r="2" /></svg>
+                    <span>Pago mixto</span>
+                </button>
+            </div>
+
+            <!-- Recibido / Cambio -->
+            <div class="money-row">
+                <div class="money-col">
+                    <span class="m-label">Recibido</span>
+                    <strong class="m-value">RD$ 3,000.00</strong>
+                </div>
+                <div class="money-col right">
+                    <span class="m-label">Cambio</span>
+                    <strong class="m-value">RD$ 550.00</strong>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <button class="btn-confirm" type="button">
+                Confirmar pago
+                <span class="check-badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                </span>
+            </button>
+            <button class="btn-cancel" type="button">Cancelar</button>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

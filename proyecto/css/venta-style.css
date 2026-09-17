@@ -1,0 +1,663 @@
+@import url('tokens.css');
+
+/* ============================================================================
+   venta-style.css — Estilos de la ventana "Venta #000184" (venta.html)
+   Pantalla POS: catálogo de productos (izquierda) + carrito (derecha).
+   Sin sidebar ni header global; iconos SVG en línea, sin CDN.
+   ============================================================================ */
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Tokens de diseño centralizados (según la descripción de la guía) */
+:root {
+    --bg-page: #ECEFF3;         /* Fondo de la página (gris azulado claro) */
+    --surface: #FDFDFE;         /* Tarjetas / blanco */
+    --tile-bg: #E8EBEF;         /* Tile de imagen de producto */
+    --tile-thumb: #EDF0F3;      /* Fondo de miniaturas del carrito */
+    --text-3: #6B7280;          /* Texto terciario (stock) */
+    --indigo: #3F4479;          /* Índigo acento (subrayado, selección) */
+    --indigo-btn: #41477E;      /* Índigo del botón "Cobrar" */
+    --selected-bg: #E4E6F2;     /* Método de pago seleccionado (lavanda) */
+    --stepper-bg: #E4E7EC;      /* Botones − / + del stepper */
+    --btn-secondary: #E8EBEF;   /* Botón secundario "Guardar venta" */
+    --remove-bg: #F6D6D6;       /* Botón eliminar (rosa) */
+    --remove-text: #B02A37;     /* Icono × del botón eliminar */
+    --thumb: #4A5AA8;           /* Scrollbar (thumb índigo) */
+    --track: #D8DBE2;           /* Scrollbar (track gris) */
+    --radius-card: 10px;        /* Radios: tarjetas de producto */
+    --radius-cart: 12px;        /* Radios: panel del carrito */
+    --radius-btn: 8px;          /* Radios: inputs, botones, métodos */
+    --radius-tile: 10px;        /* Radios: tiles de producto */
+    --radius-thumb: 8px;        /* Radios: miniaturas del carrito */
+    --radius-step: 6px;         /* Radios: botones × / stepper */
+}
+
+/* Tipografía: Inter si está instalada, si no el stack del sistema */
+html,
+body {
+    min-height: 100vh;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--bg-page);
+    color: var(--text);
+    font-size: 16px;
+}
+
+/* ===== Contenedor general ===== */
+.pos {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 32px 32px;
+}
+
+/* ===== Encabezado de página ===== */
+.page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 28px;
+    margin-bottom: 24px;
+}
+
+.page-head h1 {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--text-strong);
+    letter-spacing: -0.5px;
+}
+
+/* Botón de tres puntos (más opciones) */
+.more-btn {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.more-btn svg {
+    width: 24px;
+    height: 24px;
+    color: var(--text-2);
+}
+
+.more-btn:hover {
+    background: #E2E5EA;
+}
+
+/* ===== Layout de dos columnas: catálogo (flexible) + carrito (465px) ===== */
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 465px;
+    gap: 24px;
+    align-items: stretch;
+}
+
+/* ===== Columna izquierda: Catálogo ===== */
+.catalog {
+    position: relative;
+    min-width: 0;
+    padding-left: 38px;          /* Espacio para la scrollbar decorativa */
+    padding-bottom: 24px;
+}
+
+/* Scrollbar vertical decorativa en el borde izquierdo:
+   tramo superior ≈75 % índigo (thumb) + tramo inferior gris (track). */
+.catalog-scrollbar {
+    position: absolute;
+    left: 14px;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 3px;
+    background: linear-gradient(
+        to bottom,
+        var(--thumb) 0%,
+        var(--thumb) 75%,
+        var(--track) 75%,
+        var(--track) 100%
+    );
+}
+
+/* ===== Buscador ===== */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-box svg {
+    position: absolute;
+    left: 16px;
+    width: 18px;
+    height: 18px;
+    color: var(--placeholder);
+    pointer-events: none;
+}
+
+.search-box input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px 0 44px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+    border-color: var(--indigo);
+}
+
+.search-box input::placeholder {
+    color: var(--placeholder);
+}
+
+/* ===== Pestañas de categoría ===== */
+.tabs {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    border-bottom: 1px solid var(--border-input);
+    margin-top: 20px;
+    margin-bottom: 24px;
+}
+
+.tab {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 16px;
+    color: var(--text-2);
+    padding: 10px 2px 12px;
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+.tab:hover {
+    color: var(--text);
+}
+
+/* Subrayado índigo ≈3px debajo de la pestaña activa */
+.tab.active {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.tab.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--indigo);
+}
+
+/* ===== Grid de productos: 5 columnas × 3 filas ===== */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+}
+
+/* Tarjeta de producto */
+.product-card {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.product-card:hover {
+    border-color: var(--indigo);
+    box-shadow: 0 2px 8px rgba(63, 68, 121, 0.12);
+    transform: translateY(-1px);
+}
+
+/* Tile de imagen ≈68px, fondo gris, emoji centrado ≈36px */
+.product-card .thumb {
+    width: 68px;
+    height: 68px;
+    border-radius: var(--radius-tile);
+    background: var(--tile-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.product-card .thumb span {
+    font-size: 36px;
+    line-height: 1;
+}
+
+/* Nombre bold ≈15px, hasta 2 líneas */
+.product-card .p-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    min-height: 2.6em;          /* Reserva 2 líneas para alinear filas */
+    margin-bottom: 6px;
+}
+
+/* Precio bold ≈15px */
+.product-card .p-price {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-strong);
+    margin-bottom: 2px;
+}
+
+/* Stock ≈12px gris */
+.product-card .p-stock {
+    font-size: 12px;
+    color: var(--text-3);
+}
+
+/* ===== Columna derecha: Carrito ===== */
+.cart {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-cart);
+    box-shadow: var(--shadow-soft);
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* Header del carrito */
+.cart-head {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.cart-head h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* ===== Lista de ítems ===== */
+.cart-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Miniatura ≈52px con emoji ≈28px */
+.item-thumb {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: var(--radius-thumb);
+    background: var(--tile-thumb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-thumb span {
+    font-size: 28px;
+    line-height: 1;
+}
+
+/* Nombre bold ≈14px, hasta 2 líneas */
+.item-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Botón eliminar × (≈28×28, rosa) */
+.remove-btn {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: var(--radius-step);
+    background: var(--remove-bg);
+    color: var(--remove-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.remove-btn:hover {
+    background: #EFC3C3;
+}
+
+/* Stepper segmentado: − | valor | + */
+.stepper {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.step-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: var(--stepper-bg);
+    color: var(--text-2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.step-btn:hover {
+    background: #D5D9E0;
+}
+
+/* Botón − (radio izq.) */
+.step-btn:first-child {
+    border-radius: var(--radius-step) 0 0 var(--radius-step);
+}
+
+/* Botón + (radio der.) */
+.step-btn:last-child {
+    border-radius: 0 var(--radius-step) var(--radius-step) 0;
+}
+
+/* Caja central blanca con borde y valor */
+.step-value {
+    width: 32px;
+    height: 28px;
+    border-top: 1px solid var(--border-input);
+    border-bottom: 1px solid var(--border-input);
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Total de línea */
+.item-total {
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-strong);
+    white-space: nowrap;
+}
+
+/* ===== Totales ===== */
+.totals {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.total-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.total-label {
+    font-size: 15px;
+    color: var(--text-2);
+}
+
+.total-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-strong);
+    white-space: nowrap;
+}
+
+/* Descuento con peso medium */
+.totals .total-row:nth-child(2) .total-value {
+    font-weight: 500;
+    color: var(--text);
+}
+
+/* ===== Métodos de pago ===== */
+.pay-methods {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 20px 24px 16px;
+}
+
+.pay-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 64px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.pay-btn svg {
+    width: 22px;
+    height: 22px;
+    color: var(--text-2);
+}
+
+.pay-btn span {
+    font-size: 13px;
+    color: var(--text-2);
+}
+
+.pay-btn:hover {
+    border-color: var(--indigo);
+}
+
+/* Método seleccionado: fondo lavanda + borde índigo ≈1.5px */
+.pay-btn.selected {
+    background: var(--selected-bg);
+    border: 1.5px solid var(--indigo);
+}
+
+.pay-btn.selected svg,
+.pay-btn.selected span {
+    color: var(--indigo);
+}
+
+/* ===== Botones de acción ===== */
+.btn-cobrar {
+    margin: 0 24px;
+    height: 44px;
+    background: var(--indigo-btn);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 16px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-cobrar:hover {
+    background: var(--indigo);
+}
+
+.btn-guardar {
+    margin: 10px 24px 24px;
+    height: 44px;
+    background: var(--btn-secondary);
+    color: var(--text-strong);
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-guardar:hover {
+    background: #DCDFE6;
+}
+
+/* ===== Responsive ===== */
+
+/* Pantallas medianas: el catálogo pasa a 4 columnas */
+@media (max-width: 1320px) {
+    .product-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* Laptops/tablets: catálogo y carrito se apilan */
+@media (max-width: 1080px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .cart {
+        max-width: 600px;
+    }
+
+    .tabs {
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* Tablets pequeñas: el catálogo pasa a 3 columnas */
+@media (max-width: 860px) {
+    .product-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .pos {
+        padding: 0 20px 24px;
+    }
+}
+
+/* Móvil: 2 columnas de productos y paleta de pago más compacta */
+@media (max-width: 600px) {
+    .page-head h1 {
+        font-size: 24px;
+    }
+
+    .tabs {
+        gap: 24px;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .product-card {
+        padding: 12px;
+    }
+
+    .cart-item {
+        flex-wrap: wrap;
+        padding: 14px 16px;
+        gap: 10px;
+    }
+
+    .item-name {
+        flex-basis: calc(100% - 64px);
+    }
+
+    .item-total {
+        margin-left: auto;
+    }
+
+    .pay-methods {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 16px;
+    }
+
+    .btn-cobrar,
+    .btn-guardar {
+        margin-left: 16px;
+        margin-right: 16px;
+    }
+
+    .btn-guardar {
+        margin-bottom: 16px;
+    }
+
+    .totals {
+        padding: 16px;
+    }
+
+    .cart-head {
+        padding: 16px;
+    }
+
+    .catalog {
+        padding-left: 30px;
+    }
+
+    .catalog-scrollbar {
+        left: 10px;
+    }
+}

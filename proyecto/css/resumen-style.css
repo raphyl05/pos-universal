@@ -1,0 +1,723 @@
+@import url('tokens.css');
+
+/* ============================================================================
+   resumen-style.css — Estilos de la ventana "Resumen del negocio" (resumen.html)
+   Estilo limpio/moderno con tarjetas. [opencode] Versión 100% responsive:
+   sidebar que se colapsa en menú hamburguesa (CSS, sin JS) en pantallas pequeñas.
+   ============================================================================ */
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Variables de diseño centralizadas (colores, radios, sombras) */
+:root {
+    --bg-app: #F3F4F6;         /* Fondo del área de contenido */
+    --sidebar-bg: #ECEEF2;     /* Fondo del sidebar */
+    --card-bg: #F8F9FB;        /* Fondo de tarjetas (blanco humo) */
+    --border-strong: #D1D5DB;  /* Bordes de botones/inputs */
+    --text-3: #6B7280;          /* Texto terciario (gris) — mismo valor que en todas las demás pantallas */
+    --indigo-logo: #3D4DB7;    /* Índigo oscuro del logo */
+    --indigo-chart: #4A5AA8;   /* Índigo apagado de la gráfica */
+    --nav-active-bg: #DDE1EA;  /* Fondo del ítem activo del menú (pill lavanda) */
+    --tile-bg: #EDF0F4;        /* Fondo de los tiles de productos */
+    --green-bg: #D7F2E3;       /* Badge KPI verde (fondo) */
+    --green-text: #17803D;     /* Badge KPI verde (texto) */
+    --paid-bg: #D3F1DE;        /* Pill "Pagado" (fondo) */
+    --paid-text: #1E7E44;      /* Pill "Pagado" (texto) */
+    --amber-bg: #FBEFC9;       /* Pill "En espera" (fondo) */
+    --amber-text: #9A6B15;     /* Pill "En espera" (texto) */
+    --red-bg: #F8D7DA;         /* Pill "Cancelado" (fondo) */
+    --red-text: #B02A37;       /* Pill "Cancelado" (texto) */
+    --table-head-bg: #EDEFF3;  /* Fondo del encabezado de tabla */
+    --radius-card: 12px;       /* Radios: tarjetas */
+    --radius-btn: 8px;         /* Radios: botones/inputs */
+    --radius-tile: 8px;        /* Radios: tiles de emoji */
+    --shadow-toggle: 0 4px 12px rgba(61, 77, 183, 0.35); /* Sombra del botón flotante */
+}
+
+/* Tipografía: Inter si está instalada, si no el stack del sistema */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--bg-app);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;   /* El scroll ocurre dentro de .main, no en el body */
+    font-size: 16px;
+}
+
+/* Contenedor general: sidebar + zona principal en fila */
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* ===== Sidebar (≈250px, gris claro, sin borde derecho) ===== */
+.sidebar {
+    width: min(250px, 30vw);   /* Responsivo: se reduce en pantallas angostas */
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px 0;
+    z-index: 100;
+    transition: transform 0.3s ease;   /* Para el deslizamiento en móvil */
+}
+
+/* Brand: el logo real a lo ancho del panel */
+.brand {
+    display: flex;
+    align-items: center;
+    padding: 0 8px 24px;
+}
+
+/* [opencode] Logo de marca: imagen completa (logo.jpg), ya NO un cuadrado con texto */
+.brand-logo {
+    height: 36px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+/* Menú vertical: flex:1 lo empuja junto con el pie hacia los extremos */
+.nav-menu {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Ítem del menú: icono de línea + texto, pill redondeada en hover/activo */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    color: var(--text-3);
+    text-decoration: none;
+    font-size: 15px;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+/* Hover: fondo lavanda suave */
+.nav-item:hover {
+    background: #E3E6EE;
+}
+
+/* Ítem activo: pill lavanda más oscuro */
+.nav-item.active {
+    background: var(--nav-active-bg);
+}
+
+/* Iconos del menú: tamaño y color gris oscuro */
+.nav-item svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-2);
+    flex-shrink: 0;
+}
+
+/* Pie del sidebar: botón de cerrar sesión, empujado abajo.
+   [opencode] Quitado el texto "POSUniversal" (ahora solo el ícono) */
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px 8px;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.sidebar-footer svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-2);
+}
+
+/* ===== Zona principal ===== */
+.main {
+    flex: 1;
+    min-width: 0;      /* Permite que las columnas se compriman en grid */
+    overflow-y: auto;  /* Solo el contenido hace scroll */
+}
+
+/* ===== Barra superior (≈88px) ===== */
+.topbar {
+    min-height: 88px;
+    background: #FFFFFF;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;      /* Responsivo: permite que los grupos bajen de línea */
+    padding: 16px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Selector de tienda: blanco, borde, con chevron */
+.store-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    max-width: 100%;
+}
+
+.store-selector span {
+    overflow: hidden;
+    text-overflow: ellipsis;   /* Si no cabe, se trunca con "…" */
+    white-space: nowrap;
+}
+
+.store-selector svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-2);
+    flex-shrink: 0;
+}
+
+/* Grupo derecho de la barra */
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+/* Campo de búsqueda con lupa a la izquierda (ancho fluido) */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 180px;
+    max-width: 285px;
+}
+
+.search-box svg {
+    position: absolute;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    color: var(--placeholder);
+    pointer-events: none;
+}
+
+.search-box input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px 0 40px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+    border-color: var(--indigo-logo);
+}
+
+/* Placeholder: gris claro */
+.search-box input::placeholder {
+    color: var(--placeholder);
+}
+
+/* Botón de campana (notificaciones) */
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn svg {
+    width: 22px;
+    height: 22px;
+    color: var(--text-2);
+}
+
+.icon-btn:hover {
+    background: var(--sidebar-bg);
+}
+
+/* Usuario: avatar + nombre + chevron */
+.user-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.user-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.user-box > svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-2);
+}
+
+/* ===== Contenido principal ===== */
+.content {
+    padding: 32px 40px;
+    background: var(--bg-app);
+}
+
+/* Fila de título + filtro de fecha */
+.page-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+/* Título grande, extrabold */
+.page-title h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-strong);
+}
+
+/* Botón de rango de fecha */
+.date-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.date-filter svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-2);
+}
+
+/* ===== Grid de tarjetas =====
+   Escritorio (predeterminado): 4 columnas (1fr ×3 + 1.25fr)
+   Áreas: KPI (fila1), Productos más vendidos (col4, filas1-2),
+          Ventas (cols1-2, filas2-3), Clientes (col3 fila2),
+          Últimas ventas (cols3-4, fila3) */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 1.25fr;
+    grid-template-areas:
+        "kpi1 kpi2 kpi3 top"
+        "sales sales clients top"
+        "sales sales recent recent";
+    gap: 24px;
+}
+
+/* Asignación de áreas */
+.kpi-ventas-hoy  { grid-area: kpi1; }
+.kpi-ganancia    { grid-area: kpi2; }
+.kpi-productos   { grid-area: kpi3; }
+.top-products    { grid-area: top; }
+.sales-chart     { grid-area: sales; }
+.kpi-clientes    { grid-area: clients; }
+.recent-sales    { grid-area: recent; }
+
+/* Base de tarjeta */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    padding: 24px;
+    min-width: 0;          /* Evita desbordes del contenido en grid */
+}
+
+/* Título de tarjeta (secciones con título propio) */
+.card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 20px;
+}
+
+/* Tarjetas KPI: label encima, valor, badge */
+.kpi-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.kpi-label {
+    font-size: 15px;
+    color: var(--text-2);
+}
+
+.kpi-value {
+    font-size: clamp(22px, 2.2vw, 28px);   /* Responsivo en pantallas pequeñas */
+    font-weight: 700;
+    color: var(--text-strong);
+    overflow-wrap: anywhere;   /* No permite desbordes con montos largos */
+}
+
+/* Badge pill verde (▲ +12.4% de "Ventas de hoy") */
+.kpi-badge-up {
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--green-bg);
+    color: var(--green-text);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+/* ===== Tarjeta Productos más vendidos ===== */
+.product-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Fila de producto: tile emoji + nombre */
+.product-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+/* Tile cuadrado ≈34px con emoji centrado */
+.product-tile {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-tile);
+    background: var(--tile-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.product-name {
+    font-size: 15px;
+    color: var(--text-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===== Tarjeta Ventas (gráfica) ===== */
+.sales-chart {
+    display: flex;
+    flex-direction: column;
+}
+
+.sales-chart .card-title {
+    margin-bottom: 12px;
+}
+
+/* SVG: ancho 100% y crece para llenar la tarjeta */
+.chart {
+    width: 100%;
+    height: 100%;
+    min-height: 240px;
+    flex: 1;
+}
+
+/* ===== Tarjeta Clientes atendidos ===== */
+.kpi-clientes {
+    justify-content: center;
+}
+
+/* ===== Tarjeta Últimas ventas (tabla) ===== */
+.sales-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 0;
+}
+
+/* Encabezado: fondo gris, texto semibold pequeño */
+.sales-table thead th {
+    background: var(--table-head-bg);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-3);
+    text-align: left;
+    padding: 10px 12px;
+}
+
+/* Primera y última columna con esquinas redondeadas del encabezado */
+.sales-table thead th:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.sales-table thead th:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+/* Celdas de datos: texto 14px, altura de fila ≈44px, borde inferior fino */
+.sales-table tbody td {
+    font-size: 14px;
+    color: var(--text-3);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+/* Celda con nombre largo: se trunca con ellipsis */
+.sales-table .ellipsis {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Pills de estado: borde totalmente redondeado (999px) */
+.pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.pill-paid {
+    background: var(--paid-bg);
+    color: var(--paid-text);
+}
+
+.pill-waiting {
+    background: var(--amber-bg);
+    color: var(--amber-text);
+}
+
+.pill-canceled {
+    background: var(--red-bg);
+    color: var(--red-text);
+}
+
+/* ===== Botón flotante del menú móvil (hamburguesa) =====
+   [opencode] Truco del checkbox: el <label for="menu-toggle"> alterna el checkbox
+   oculto; con ":checked" el sidebar entra desde la izquierda. 0 JavaScript. */
+/* Checkbox accesible por teclado: posicionado fuera de pantalla en vez de
+   visibility:hidden/display:none. En mobile se reposiciona via media query. */
+.menu-toggle-input {
+    position: absolute;
+    left: -10000px;
+    top: 0;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.menu-toggle-input:focus-visible ~ .menu-toggle {
+    outline: 3px solid var(--text-strong);
+    outline-offset: 4px;
+}
+
+.menu-toggle {
+    display: none;   /* Solo se muestra en pantallas pequeñas */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: var(--indigo-logo);
+    color: #FFFFFF;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: var(--shadow-toggle);
+}
+
+.menu-toggle svg {
+    width: 26px;
+    height: 26px;
+}
+
+/* Por defecto se ve el ícono ☰ y el ✕ está oculto */
+.menu-toggle .icon-close {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-open {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-close {
+    display: block;
+}
+
+/* Cuando el menú está abierto, el sidebar entra a la vista */
+.menu-toggle-input:checked ~ .app .sidebar {
+    transform: translateX(0);
+}
+
+/* ===== Responsive ===== */
+
+/* Laptops / tablets medianas: sidebar más angosto, grid de 2 columnas */
+@media (max-width: 1150px) {
+    .sidebar {
+        width: 220px;
+    }
+
+    .topbar {
+        padding: 16px 24px;
+    }
+
+    .content {
+        padding: 24px;
+    }
+
+    /* Reorganización del grid a 2 columnas (áreas válidas en rectángulo) */
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+            "kpi1 kpi2"
+            "kpi3 clients"
+            "top top"
+            "sales sales"
+            "recent recent";
+    }
+}
+
+/* Tablets (≤860px): sidebar fuera de pantalla + botón hamburguesa */
+@media (max-width: 860px) {
+    .menu-toggle-input {
+        position: fixed;
+        bottom: 48px;
+        right: 48px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 250px;
+        height: 100vh;
+        transform: translateX(-100%);   /* Oculto inicialmente */
+        box-shadow: var(--shadow-soft);
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .topbar-right {
+        flex: 1;
+        justify-content: flex-end;
+    }
+
+    .search-box {
+        max-width: none;
+    }
+}
+
+/* Móvil (≤600px): header en columna, grid de 1 columna */
+@media (max-width: 600px) {
+    body {
+        font-size: 15px;
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .topbar-right {
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .search-box {
+        flex-basis: 100%;   /* El buscador ocupa su propia línea */
+    }
+
+    .content {
+        padding: 16px;
+    }
+
+    .page-title {
+        margin-bottom: 24px;
+    }
+
+    .page-title h1 {
+        font-size: 24px;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "kpi1" "kpi2" "kpi3" "top" "sales" "clients" "recent";
+    }
+
+    .date-filter {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* En pantallas muy pequeñas se oculta el nombre del usuario */
+    .user-name {
+        display: none;
+    }
+
+    /* La tabla se desplaza horizontalmente dentro de su tarjeta */
+    .recent-sales {
+        overflow-x: auto;
+    }
+
+    .sales-table {
+        min-width: 520px;   /* Para conservar la legibilidad de la tabla */
+    }
+}

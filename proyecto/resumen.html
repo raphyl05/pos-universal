@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<!-- Resumen del negocio (dashboard principal del POS): KPI, gráfica de ventas,
+     productos más vendidos, clientes atendidos y últimas ventas.
+     Formato escritorio ≈1456×880. Sin JavaScript todavía (frontend estático). -->
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumen del negocio - POSUniversal</title>
+    <link rel="stylesheet" href="css/resumen-style.css">
+</head>
+
+<body>
+    <!-- [opencode] Checkbox oculto que funciona como switch del menú móvil (0 JavaScript) -->
+    <input type="checkbox" id="menu-toggle" class="menu-toggle-input">
+
+    <div class="app">
+        <!-- ===== Sidebar izquierdo (≈250px, gris claro) ===== -->
+        <aside class="sidebar">
+            <!-- Brand: logo real (logo.jpg) ocupando el lugar del texto -->
+            <div class="brand">
+                <!-- [opencode] La marca ahora es SOLO el logo.jpg (antes texto "POSUniversal") -->
+                <img class="brand-logo" src="logo.jpg" alt="POSUniversal">
+            </div>
+
+            <!-- Menú de navegación (12 ítems, iconos de línea Lucide/Feather) -->
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><path
+                        d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline
+                        points="9 22 9 12 15 12 15 22" /></svg>
+                    <span>Inicio</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1" /><circle
+                        cx="20" cy="21" r="1" /><path
+                        d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" /></svg>
+                    <span>Ventas</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><path
+                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline
+                        points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12"
+                        y2="12" /></svg>
+                    <span>Productos</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8" /><rect
+                        x="1" y="3" width="22" height="5" /><line x1="10" y1="12" x2="14"
+                        y2="12" /></svg>
+                    <span>Inventario</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><path
+                        d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path
+                        d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                    <span>Clientes</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20"
+                        rx="1" /><path d="M9 22v-4h6v4" /><path d="M8 6h.01" /><path
+                        d="M16 6h.01" /><path d="M12 6h.01" /><path d="M12 10h.01" /><path
+                        d="M12 14h.01" /><path d="M16 10h.01" /><path d="M16 14h.01" /><path
+                        d="M8 10h.01" /><path d="M8 14h.01" /></svg>
+                    <span>Proveedores</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line
+                        x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
+                    <span>Compras</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12"
+                        y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+                    <span>Gastos</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12"
+                        rx="2" /><circle cx="12" cy="12" r="2" /><path d="M6 12h.01M18 12h.01" /></svg>
+                    <span>Caja</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline
+                        points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><line
+                        x1="8" y1="18" x2="8" y2="15" /><line x1="16" y1="18" x2="16"
+                        y2="10" /></svg>
+                    <span>Reportes</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><path
+                        d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path
+                        d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                    <span>Empleados</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><path
+                        d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle
+                        cx="12" cy="12" r="3" /></svg>
+                    <span>Configuración</span>
+                </a>
+            </nav>
+
+            <!-- Pie del sidebar: solo el botón de cerrar sesión
+                 [opencode] Quitado el texto "POSUniversal" de aquí también -->
+            <div class="sidebar-footer" aria-label="Cerrar sesión">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"><path
+                    d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line
+                    x1="21" y1="12" x2="9" y2="12" /></svg>
+            </div>
+        </aside>
+
+        <!-- ===== Zona principal (header + contenido) ===== -->
+        <div class="main">
+            <!-- Barra superior (≈88px, fondo blanco) -->
+            <header class="topbar">
+                <!-- Selector de tienda -->
+                <button class="store-selector">
+                    <span>Colmado La Bendición</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+                </button>
+
+                <!-- Grupo derecho: búsqueda + campana + usuario -->
+                <div class="topbar-right">
+                    <div class="search-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><line
+                            x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                        <input type="text" placeholder="Buscar">
+                    </div>
+                    <button class="icon-btn" aria-label="Notificaciones">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round"><path
+                            d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path
+                            d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
+                    </button>
+                    <!-- Usuario: avatar + nombre -->
+                    <div class="user-box">
+                        <img class="avatar"
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='18' fill='%233D4DB7'/%3E%3Ctext x='18' y='23' text-anchor='middle' fill='%23fff' font-size='14' font-weight='600' font-family='system-ui'%3ER%3C/text%3E%3C/svg%3E"
+                            alt="Raphy">
+                        <span class="user-name">Raphy</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Contenido principal -->
+            <main class="content">
+                <!-- Fila de título + filtro de fecha -->
+                <div class="page-title">
+                    <h1>Resumen del negocio</h1>
+                    <button class="date-filter">
+                        <span>Hoy · 12 de septiembre de 2026</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+                    </button>
+                </div>
+
+                <!-- Grid de tarjetas:
+                     fila 1: [KPI1] [KPI2] [KPI3] [Productos más vendidos (filas 1-2)]
+                     fila 2: [Ventas (filas 2-3)] [Ventas] [Clientes atendidos] [Productos…]
+                     fila 3: [Ventas…] [Ventas…] [Últimas ventas] [Últimas ventas] -->
+                <div class="kpi-grid">
+
+                    <!-- KPI 1: Ventas de hoy -->
+                    <section class="card kpi-card kpi-ventas-hoy">
+                        <span class="kpi-label">Ventas de hoy</span>
+                        <span class="kpi-value">RD$ 48,250.00</span>
+                        <span class="kpi-badge kpi-badge-up">▲ +12.4%</span>
+                    </section>
+
+                    <!-- KPI 2: Ganancia estimada -->
+                    <section class="card kpi-card kpi-ganancia">
+                        <span class="kpi-label">Ganancia estimada</span>
+                        <span class="kpi-value">RD$ 15,840.00</span>
+                    </section>
+
+                    <!-- KPI 3: Productos vendidos -->
+                    <section class="card kpi-card kpi-productos">
+                        <span class="kpi-label">Productos vendidos</span>
+                        <span class="kpi-value">327</span>
+                    </section>
+
+                    <!-- Tarjeta Productos más vendidos (col 4, filas 1-2) -->
+                    <section class="card top-products">
+                        <h2 class="card-title">Productos más vendidos</h2>
+                        <ul class="product-list">
+                            <li class="product-row">
+                                <span class="product-tile">🥤</span>
+                                <span class="product-name">Coca-Cola 2L</span>
+                            </li>
+                            <li class="product-row">
+                                <span class="product-tile">🍞</span>
+                                <span class="product-name">Pan de agua</span>
+                            </li>
+                            <li class="product-row">
+                                <span class="product-tile">🥛</span>
+                                <span class="product-name">Leche Rica</span>
+                            </li>
+                            <li class="product-row">
+                                <span class="product-tile">💧</span>
+                                <span class="product-name">Agua Cristal</span>
+                            </li>
+                            <li class="product-row">
+                                <span class="product-tile">☕</span>
+                                <span class="product-name">Café Santo Domingo</span>
+                            </li>
+                        </ul>
+                    </section>
+
+                    <!-- Tarjeta Ventas: gráfica de línea (col 1-2, filas 2-3) -->
+                    <section class="card sales-chart">
+                        <h2 class="card-title">Ventas</h2>
+                        <!-- Gráfica SVG sin ejes ni gridlines: curva bézier índice con relleno degradado -->
+                        <svg class="chart" viewBox="0 0 600 260" preserveAspectRatio="none" role="img"
+                            aria-label="Gráfica de ventas">
+                            <defs>
+                                <!-- Degradado vertical: índigo 25% de opacidad → transparente -->
+                                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0" stop-color="#4A5AA8" stop-opacity="0.25" />
+                                    <stop offset="1" stop-color="#4A5AA8" stop-opacity="0" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Relleno bajo la curva (mismo trazado cerrado hacia abajo) -->
+                            <path d="M0,238 C40,232 60,196 100,188 C140,180 120,228 170,222 C210,216 220,150 260,142 C300,134 290,210 330,204 C370,198 375,120 420,104 C455,92 445,60 480,50 C505,43 480,150 530,150 C560,150 585,30 600,12 L600,260 L0,260 Z"
+                                fill="url(#chartGrad)" />
+                            <!-- Línea de la curva (tendencia ascendente con ondulaciones) -->
+                            <path d="M0,238 C40,232 60,196 100,188 C140,180 120,228 170,222 C210,216 220,150 260,142 C300,134 290,210 330,204 C370,198 375,120 420,104 C455,92 445,60 480,50 C505,43 480,150 530,150 C560,150 585,30 600,12"
+                                fill="none" stroke="#4A5AA8" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </section>
+
+                    <!-- Tarjeta Clientes atendidos (col 3, fila 2) -->
+                    <section class="card kpi-card kpi-clientes">
+                        <span class="kpi-label">Clientes atendidos</span>
+                        <span class="kpi-value">86</span>
+                    </section>
+
+                    <!-- Tarjeta Últimas ventas (cols 3-4, fila 3) -->
+                    <section class="card recent-sales">
+                        <h2 class="card-title">Últimas ventas</h2>
+                        <table class="sales-table">
+                            <!-- Nota [opencode]: el encabezado en la guía decía "Intora n°"/"Status"
+                                 (probable ocr); aquí se usa "Factura n°" y "Estado" -->
+                            <thead>
+                                <tr>
+                                    <th>Factura n°</th>
+                                    <th>Cliente</th>
+                                    <th>Pago</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1220500</td>
+                                    <td class="ellipsis">Jona de Frnte</td>
+                                    <td>Domicilio</td>
+                                    <td>RD$ 250.00</td>
+                                    <td><span class="pill pill-paid">Pagado</span></td>
+                                </tr>
+                                <tr>
+                                    <td>1220302</td>
+                                    <td class="ellipsis">Calonda Innhez</td>
+                                    <td>Efectivo</td>
+                                    <td>RD$ 250.00</td>
+                                    <td><span class="pill pill-waiting">En espera</span></td>
+                                </tr>
+                                <tr>
+                                    <td>1220302</td>
+                                    <td class="ellipsis">Colmado La Ben…</td>
+                                    <td>Efectivo</td>
+                                    <td>RD$ 250.00</td>
+                                    <td><span class="pill pill-canceled">Cancelado</span></td>
+                                </tr>
+                                <tr>
+                                    <td>1220303</td>
+                                    <td class="ellipsis">Café Santo Dom…</td>
+                                    <td>Efectivo</td>
+                                    <td>RD$ 250.00</td>
+                                    <td><span class="pill pill-canceled">Cancelado</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- [opencode] Botón flotante del menú móvil (hamburguesa): cambia a ✕ al abrir -->
+    <label for="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
+        <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6" /><line
+            x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
+        <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line
+            x1="6" y1="6" x2="18" y2="18" /></svg>
+    </label>
+
+</body>
+
+</html>

@@ -1,0 +1,315 @@
+/* ============================================================================
+   login-style.css — Estilos de la página de inicio de sesión (login.html)
+   Layout: dos paneles en fila (izquierdo = publicidad, derecho = formulario).
+   ============================================================================ */
+
+/* Reset básico: elimina márgenes/paddings por defecto de todos los elementos
+   y hace que el padding/borde se incluya dentro del ancho/alto (box-sizing) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Variables de CSS (token de diseño): un solo lugar para colores.
+   [opencode] Este bloque es NUEVO; antes los colores estaban hardcodeados
+   (#4a5a9b, #3d4a85, #1a1a2e, #ddd, #f0f2f5) repetidos en todo el archivo.
+   Ahora se usan via var(--nombre) y se pueden cambiar globalmente aquí. */
+:root {
+    --primary-color: #4a5a9b;      /* Color principal (azul) */
+    --primary-hover: #3d4a85;      /* Azul más oscuro para hover de botones */
+    --text-primary: #1a1a2e;       /* Texto principal (casi negro azulado) */
+    --text-muted: #333333;         /* Texto secundario (gris oscuro) */
+    --border-color: #dddddd;       /* Bordes de inputs y botones */
+    --bg-soft: #f0f2f5;            /* Fondo suave del panel derecho */
+}
+
+/* Estilos base del body: tipografía moderna y seguridad de no tener scroll lateral */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Contenedor raíz: flexbox en fila, ocupa toda la altura de la pantalla */
+.container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* ===== Lado Izquierdo (logo + eslogan) ===== */
+.left-panel {
+    flex: 1;                 /* Ocupa la mitad del ancho disponible */
+    background: #ffffff;
+    display: flex;           /* Coloca logo y tagline en columna */
+    flex-direction: column;
+    padding: clamp(20px, 5vw, 60px);   /* Padding fluido según tamaño de pantalla */
+    position: relative;
+    min-width: 0;            /* Evita desbordes en pantallas estrechas */
+}
+
+/* Contenedor del logo: margin-bottom:auto empuja el logo arriba y el
+   eslogan abajo (separación automática de los dos elementos) */
+.logo {
+    margin-bottom: auto;
+}
+
+/* La imagen del logo: altura fluida y ancho que mantiene proporción */
+.logo img {
+    height: clamp(24px, 3vw, 32px);
+    width: auto;
+    max-width: 100%;
+}
+
+/* Eslogan principal: tamaño fluido, negrita y color principal */
+.tagline {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--text-primary);   /* [opencode] antes #1a1a2e */
+    line-height: 1.3;
+    margin-bottom: auto;           /* Empuja el eslogan hacia abajo del panel */
+    align-self: flex-start;
+    word-wrap: break-word;         /* Evita overflow con palabras largas */
+    max-width: 100%;
+}
+
+/* ===== Lado Derecho (formulario) ===== */
+.right-panel {
+    flex: 1;                 /* Ocupa la otra mitad del ancho */
+    background: var(--bg-soft);    /* [opencode] antes #f0f2f5 */
+    display: flex;
+    align-items: center;     /* Centra la tarjeta verticalmente */
+    justify-content: center; /* Centra la tarjeta horizontalmente */
+    padding: clamp(20px, 4vw, 40px);
+    min-width: 0;
+}
+
+/* Tarjeta blanca que contiene el formulario */
+.login-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: clamp(24px, 5vw, 40px);
+    width: 100%;
+    max-width: 420px;        /* Ancho máximo para no estirarse en pantallas grandes */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);   /* Sombra suave */
+}
+
+/* Título del formulario ("Iniciar sesión") */
+.login-card h2 {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 700;
+    color: var(--text-primary);   /* [opencode] antes #1a1a2e */
+    margin-bottom: clamp(20px, 3vw, 30px);   /* Separación hacia los inputs */
+}
+
+/* Cada campo del formulario (label + input) con separación inferior */
+.form-group {
+    margin-bottom: clamp(16px, 2vw, 20px);
+}
+
+/* Etiqueta sobre cada input */
+.form-group label {
+    display: block;
+    font-size: clamp(0.85rem, 1.5vw, 0.9rem);
+    color: var(--text-muted);     /* [opencode] antes #333 */
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* Los inputs en sí: ancho completo, borde redondeado y focus suave */
+.form-group input {
+    width: 100%;
+    padding: clamp(10px, 2vw, 12px) clamp(12px, 2vw, 16px);
+    border: 1px solid var(--border-color);   /* [opencode] antes #ddd */
+    border-radius: 8px;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    transition: border-color 0.2s;   /* Animación suave del borde al enfocar */
+    min-height: 44px;                /* Altura mínima táctil (accesibilidad) */
+}
+
+/* Al enfocar un input: borde azul con outline desactivado */
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);   /* [opencode] antes #4a5a9b */
+}
+
+/* Fila de opciones: "Recordarme" a la izquierda y enlace "¿Olvidaste..." a la
+   derecha; con flex-wrap cae a columna en pantallas muy pequeñas */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: clamp(20px, 3vw, 24px);
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Label del checkbox "Recordarme": clic en todo el texto marca el checkbox */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: clamp(0.85rem, 1.5vw, 0.9rem);
+    color: var(--text-muted);     /* [opencode] antes #333 */
+    cursor: pointer;
+    white-space: nowrap;           /* Evita que el texto se parta en dos líneas */
+}
+
+/* Tamaño del cuadrito del checkbox */
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    min-width: 16px;
+}
+
+/* Enlace "¿Olvidaste tu contraseña?" */
+.forgot-link {
+    font-size: clamp(0.85rem, 1.5vw, 0.9rem);
+    color: var(--primary-color);      /* [opencode] antes #4a5a9b */
+    text-decoration: none;            /* Sin subrayado por defecto */
+    white-space: nowrap;
+}
+
+/* Al pasar el mouse se subraya el enlace */
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+/* Botón principal (Iniciar sesión): azul de ancho completo */
+.btn-primary {
+    width: 100%;
+    padding: clamp(12px, 2vw, 14px);
+    background: var(--primary-color);     /* [opencode] antes #4a5a9b */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: clamp(0.95rem, 2vw, 1rem);
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 12px;                  /* Espacio entre el botón y el secundario */
+    transition: background 0.2s;
+    min-height: 44px;                     /* Altura mínima táctil */
+}
+
+/* Hover del botón principal */
+.btn-primary:hover {
+    background: var(--primary-hover);     /* [opencode] antes #3d4a85 */
+}
+
+/* Botón secundario (Crear una cuenta): blanco con borde */
+.btn-secondary {
+    width: 100%;
+    padding: clamp(12px, 2vw, 14px);
+    background: #ffffff;
+    color: var(--text-primary);           /* [opencode] antes #1a1a2e */
+    border: 1px solid var(--border-color);/* [opencode] antes #ddd */
+    border-radius: 8px;
+    font-size: clamp(0.95rem, 2vw, 1rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    min-height: 44px;
+}
+
+/* Hover del botón secundario: gris muy claro */
+.btn-secondary:hover {
+    background: #f8f9fa;
+}
+
+/* ===== Responsive ===== */
+
+/* Tablet (hasta 768px): el layout pasa de fila a columna */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;   /* Panel izquierdo arriba, formulario abajo */
+    }
+
+    .left-panel {
+        min-height: auto;
+        padding: clamp(24px, 5vw, 40px);
+    }
+
+    .right-panel {
+        padding: clamp(24px, 5vw, 40px);
+    }
+
+    /* La tarjeta ocupa todo el ancho disponible */
+    .login-card {
+        max-width: 100%;
+    }
+
+    /* En tablet/móvil se oculta el eslogan para no ocupar espacio vertical.
+       [opencode] Antes había DOS reglas .tagline en este mismo media query
+       (una con margin-top y otra con display:none); se unificaron en una sola. */
+    .tagline {
+        display: none;
+    }
+}
+
+/* Móvil (hasta 480px): las opciones del form ("Recordarme" + enlace) se apilan */
+@media (max-width: 480px) {
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .forgot-link {
+        margin-left: 24px;   /* Alineado con el texto del checkbox, no con la casilla */
+    }
+}
+
+/* Pantallas muy pequeñas (hasta 360px): ajustes finos */
+@media (max-width: 360px) {
+    .tagline {
+        font-size: 1.4rem;
+    }
+
+    .login-card {
+        padding: 20px 16px;
+    }
+
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .forgot-link {
+        margin-left: 24px;
+    }
+}
+
+/* Móvil en horizontal (landscape, altura baja): vuelve a fila para aprovechar ancho */
+@media (max-height: 500px) and (orientation: landscape) {
+    .container {
+        flex-direction: row;
+    }
+
+    .left-panel {
+        min-height: 100vh;
+        justify-content: center;   /* Contenido centrado verticalmente */
+    }
+
+    .tagline {
+        margin-top: 0;             /* Reset del ajuste anterior */
+        font-size: 1.5rem;
+    }
+
+    .login-card {
+        padding: 24px;
+    }
+}
+
+/* Pantallas grandes (desde 1400px): tarjeta más amplia y eslogan más grande */
+@media (min-width: 1400px) {
+    .login-card {
+        max-width: 480px;
+        padding: 48px;
+    }
+
+    .tagline {
+        font-size: 2.75rem;
+    }
+}

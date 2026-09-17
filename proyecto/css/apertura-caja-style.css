@@ -1,0 +1,580 @@
+@import url('tokens.css');
+
+/* ============================================================================
+   apertura-caja-style.css — Estilos de la ventana "Apertura de caja"
+   Layout: sidebar fijo ≈270px + header ≈80px + contenido de ancho completo
+   (tarjeta de denominaciones + tarjeta de total con botón "Abrir caja").
+   ============================================================================ */
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Tokens de diseño centralizados (según la descripción de la guía) */
+:root {
+    --bg-app: #EEF0F3;          /* Fondo del área de contenido */
+    --surface: #F8F9FB;         /* Sidebar, header y tarjetas */
+    --border-strong: #C9CDD6;   /* Borde de inputs numéricos */
+    --meta-sep: #D1D5DB;        /* Separador vertical de metadatos */
+    --table-head-bg: #ECEEF2;   /* Fondo del encabezado de tabla */
+    --navy: #2F3268;            /* Índigo navy (logo) */
+    --navy-btn: #31346B;        /* Índigo del botón "Abrir caja" */
+    --brand-text: #1E2244;      /* Texto "POSUniversal" en el sidebar */
+    --nav-active-bg: #E3E5F2;   /* Pill del ítem activo (lavanda) */
+    --nav-active-text: #3A3F77; /* Texto/ícono del ítem activo */
+    --nav-dash-text: #1F2937;   /* Texto del Dashboard activo */
+    --text-3: #6B7280;          /* Texto terciario (rol) */
+    --text-row: #1F2937;        /* Texto de filas/metadatos */
+    --radius-card: 12px;        /* Radios: tarjetas */
+    --radius-btn: 8px;          /* Radios: inputs/botones */
+    --shadow-toggle: 0 4px 12px rgba(49, 52, 107, 0.35); /* Sombra del botón flotante */
+}
+
+/* Tipografía: Inter si está instalada, si no el stack del sistema */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--bg-app);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;   /* El scroll ocurre dentro de .main, no en el body */
+    font-size: 16px;
+}
+
+/* Contenedor general: sidebar + zona principal en fila */
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* ===== Sidebar (≈270px) ===== */
+.sidebar {
+    width: min(270px, 28vw);
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px 0;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+
+/* Brand: cuadrado índigo con glifo + texto */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 8px 28px;
+}
+
+.brand-glyph {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: var(--radius-logo);
+    background: var(--navy);
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--brand-text);
+    white-space: nowrap;
+}
+
+.nav-menu {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Ítem del menú: icono de línea + texto */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    border-radius: var(--radius-btn);
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 15px;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-item:hover {
+    background: #ECEEF4;
+}
+
+/* Ítem activo (página actual): lavanda + texto/ícono índigo */
+.nav-item.active {
+    background: var(--nav-active-bg);
+    color: var(--nav-active-text);
+}
+
+.nav-item.active svg {
+    color: var(--nav-active-text);
+}
+
+/* Dashboard activo: lavanda + texto oscuro (no índigo) */
+.nav-item.active-soft {
+    background: var(--nav-active-bg);
+    color: var(--nav-dash-text);
+}
+
+.nav-item.active-soft svg {
+    color: var(--nav-dash-text);
+}
+
+.nav-item svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-2);
+    flex-shrink: 0;
+}
+
+/* Chevron de ítems colapsados (Inventario): a la derecha, apuntando abajo */
+.nav-item .chevron {
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+}
+
+.nav-item .chevron.down {
+    color: var(--text-2);
+}
+
+/* ===== Zona principal ===== */
+.main {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+}
+
+/* ===== Header (≈80px): sin búsqueda, usuario a la derecha ===== */
+.topbar {
+    min-height: 80px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 16px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.user-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.user-role {
+    font-size: 13px;
+    color: var(--text-3);
+}
+
+/* Botón de campana con punto rojo */
+.icon-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn svg {
+    width: 22px;
+    height: 22px;
+    color: var(--text-2);
+}
+
+.icon-btn:hover {
+    background: #ECEEF4;
+}
+
+.notif-dot {
+    position: absolute;
+    top: 7px;
+    right: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--notif-dot);
+    border: 1.5px solid var(--surface);
+}
+
+/* ===== Contenido principal ===== */
+.content {
+    padding: 40px 44px;
+    background: var(--bg-app);
+}
+
+/* Fila de título + metadatos */
+.title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.title-row h1 {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--text-strong);
+}
+
+.meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    color: var(--text-row);
+    flex-wrap: wrap;
+}
+
+/* Separador vertical fino entre fecha y cajero */
+.meta-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--meta-sep);
+}
+
+/* ===== Tarjeta base ===== */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    min-width: 0;
+}
+
+/* ===== Tarjeta "Fondo inicial" ===== */
+.fondo-card {
+    overflow: hidden;
+}
+
+/* Encabezado de la tarjeta */
+.card-head {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.card-head h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* Encabezado de tabla: 3 columnas (Denominación | Cantidad | Subtotal) */
+.table-head {
+    display: grid;
+    grid-template-columns: 1fr 330px 1fr;
+    column-gap: 16px;
+    align-items: center;
+    padding: 12px 24px;
+    background: var(--table-head-bg);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-2);
+}
+
+/* Cantidad alineado sobre la columna de inputs; subtotal a la derecha */
+.col-qty { text-align: center; }
+.col-sub { text-align: right; }
+
+/* Fila de denominación (≈44px de alto, borde fino inferior) */
+.table-row {
+    display: grid;
+    grid-template-columns: 1fr 330px 1fr;
+    column-gap: 16px;
+    align-items: center;
+    min-height: 44px;
+    padding: 4px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+/* Denominación (izquierda, 16px) */
+.denom {
+    font-size: 16px;
+    color: var(--text-row);
+    white-space: nowrap;
+}
+
+/* Input numérico al centro (≈325×36px, sin flechas) */
+.table-row input {
+    width: 325px;
+    max-width: 100%;
+    height: 36px;
+    justify-self: center;
+    padding: 0 8px;
+    background: #FFFFFF;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    text-align: center;
+    outline: none;
+    -moz-appearance: textfield;   /* Quita las flechas de <input type=number> en Firefox */
+    appearance: textfield;
+}
+
+.table-row input::-webkit-outer-spin-button,
+.table-row input::-webkit-inner-spin-button {
+    -webkit-appearance: none;     /* y en Chrome/Safari */
+    margin: 0;
+}
+
+.table-row input:focus {
+    border-color: var(--navy-btn);
+}
+
+/* Subtotal (derecha, bold, 16px) */
+.subtotal {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-strong);
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* ===== Tarjeta inferior: total + botón ===== */
+.total-card {
+    margin-top: 24px;
+    padding: 20px 24px;
+}
+
+.total-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.total-label {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.total-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-strong);
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Botón "Abrir caja": navy, full-width, ≈44px */
+.btn-open {
+    width: 100%;
+    height: 44px;
+    margin-top: 16px;
+    background: var(--navy-btn);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 16px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-open:hover {
+    background: var(--navy);
+}
+
+/* ===== Botón flotante del menú móvil (hamburguesa) ===== */
+.menu-toggle-input {
+    position: absolute;
+    left: -10000px;
+    top: 0;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.menu-toggle-input:focus-visible ~ .menu-toggle {
+    outline: 3px solid var(--text-strong);
+    outline-offset: 4px;
+}
+
+.menu-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: var(--navy-btn);
+    color: #FFFFFF;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: var(--shadow-toggle);
+}
+
+.menu-toggle svg {
+    width: 26px;
+    height: 26px;
+}
+
+.menu-toggle .icon-close {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-open {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-close {
+    display: block;
+}
+
+.menu-toggle-input:checked ~ .app .sidebar {
+    transform: translateX(0);
+}
+
+/* ===== Responsive ===== */
+
+/* Laptops pequeñas: menos espacio lateral */
+@media (max-width: 1160px) {
+    .topbar,
+    .content {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+/* Tablets (≤860px): sidebar fuera de pantalla + botón hamburguesa */
+@media (max-width: 860px) {
+    .menu-toggle-input {
+        position: fixed;
+        bottom: 48px;
+        right: 48px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 270px;
+        height: 100vh;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .topbar {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+/* Móvil (≤600px): título compacto, inputs que no desbordan */
+@media (max-width: 600px) {
+    body {
+        font-size: 15px;
+    }
+
+    .content {
+        padding: 16px;
+    }
+
+    .title-row {
+        margin-bottom: 24px;
+    }
+
+    .title-row h1 {
+        font-size: 24px;
+    }
+
+    .meta {
+        font-size: 14px;
+        row-gap: 6px;
+    }
+
+    /* El input de cantidad se encoge para no desbordar */
+    .table-head,
+    .table-row {
+        grid-template-columns: 1fr 96px 68px;
+        column-gap: 8px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .table-row input {
+        width: 96px;
+    }
+
+    .subtotal {
+        font-size: 14px;
+    }
+
+    .total-value {
+        font-size: 20px;
+    }
+}

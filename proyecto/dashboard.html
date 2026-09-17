@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<!-- Dashboard de POSUniversal: lista los negocios del usuario. Incluye un sidebar
+     de navegación, un header con perfil y una grilla de tarjetas de negocios. -->
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Negocios - POSUniversal</title>
+    <!-- [opencode] Ruta relativa (antes /css/dashboard-style.css) para soporte file:// -->
+    <link rel="stylesheet" href="css/dashboard-style.css">
+    <!-- [opencode] Se elimino CDN de FontAwesome (requeria internet).
+         Los iconos ahora son SVG inline. -->
+</head>
+
+<body>
+    <!-- [opencode] Checkbox oculto para el menú móvil (truco CSS "hack del checkbox"):
+         el label .menu-toggle lo alterna y las reglas ":checked" muestran/ocultan el sidebar
+         SIN necesidad de JavaScript. Vive fuera de .dashboard-container para poder
+         seleccionarlo con el selector de hermanos "~" en el CSS. -->
+    <input type="checkbox" id="menu-toggle" class="menu-toggle-input">
+
+    <!-- Contenedor principal: flexbox en fila (sidebar fijo + contenido a la derecha) -->
+    <div class="dashboard-container">
+        <!-- Sidebar: barra lateral fija con el logo y la navegación -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <!-- [opencode] Imagen corregida: antes referenciaba logo.png (no existía),
+                     ahora usa logo.jpg que es el archivo real. -->
+                <img src="logo.jpg" alt="POSUniversal" class="logo">
+            </div>
+            <!-- Navegación principal del sidebar -->
+            <nav class="sidebar-nav">
+                <!-- .active marca la sección actual; fa-store es el ícono de tienda -->
+                <a href="#" class="nav-item active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7l-8-4-8 4m16 0v10l-8 4m8-14L4 7m16 0L12 3m8 4l-8 4M4 7v10l8 4m8-14v10"/></svg>
+                    <span>Negocios</span>
+                </a>
+                <!-- [opencode] Traducción: antes "Events" -> ahora "Eventos" -->
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <span>Eventos</span>
+                </a>
+                <!-- [opencode] Traducción: antes "Forms" -> ahora "Formularios" -->
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="16" y2="15"/></svg>
+                    <span>Formularios</span>
+                </a>
+                <!-- [opencode] Traducción: antes "Settings" -> ahora "Configuración" -->
+                <a href="#" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                    <span>Configuración</span>
+                </a>
+                <!-- [opencode] Eliminado el ítem "Negocios" duplicado que existía antes -->
+            </nav>
+        </aside>
+
+        <!-- Main Content: zona de contenido a la derecha del sidebar -->
+        <main class="main-content">
+            <!-- Top Header: título + avatar de usuario -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>Mis negocios</h1>
+                    <p>Selecciona el negocio que deseas administrar.</p>
+                </div>
+                <div class="header-right">
+                    <!-- [opencode] Perfil: nombre corregido (era "Profile") y avatar con el nombre del usuario
+                     para coherencia con resumen.html -->
+                    <div class="profile-dropdown">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%234a5a9b'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='%23fff' font-size='13' font-weight='600' font-family='system-ui'%3ER%3C/text%3E%3C/svg%3E" alt="Perfil" class="profile-img">
+                        <span class="profile-name">Raphy</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Business Cards Grid: grilla adaptativa (auto-fill) de tarjetas de negocio.
+                 Actualmente los datos están hardcodeados; en un futuro se generarían
+                 dinámicamente desde una API/base de datos. -->
+            <div class="business-grid">
+                <!-- Business Card 1: ejemplo de negocio tipo "Colmado" -->
+                <div class="business-card">
+                    <div class="card-header">
+                        <!-- Nombre y tipo del negocio -->
+                        <div class="business-info">
+                            <h3>Colmado La Bendición</h3>
+                            <span class="business-type">Colmado</span>
+                        </div>
+                        <!-- Ícono visual del tipo de negocio con su color (store-icon) -->
+                        <div class="business-icon store-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M20 7l-8-4-8 4m16 0v10l-8 4m8-14L4 7m16 0L12 3m8 4l-8 4M4 7v10l8 4m8-14v10"/></svg>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <!-- Badge de estado (verde "Activo") -->
+                        <span class="status-badge active">Activo</span>
+                        <!-- Botón "Entrar" (sin funcionalidad todavía; requiere JS/backend) -->
+                        <button class="btn-enter">Entrar</button>
+                    </div>
+                </div>
+
+                <!-- Business Card 2: ejemplo tipo "Barbería" -->
+                <div class="business-card">
+                    <div class="card-header">
+                        <div class="business-info">
+                            <h3>Raphy Barber Studio</h3>
+                            <span class="business-type">Barbería</span>
+                        </div>
+                        <!-- Ícono de tijeras (fa-cut) con color rosado (barber-icon) -->
+                        <div class="business-icon barber-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="status-badge active">Activo</span>
+                        <button class="btn-enter">Entrar</button>
+                    </div>
+                </div>
+
+                <!-- Business Card 3: ejemplo tipo "Tienda" -->
+                <div class="business-card">
+                    <div class="card-header">
+                        <div class="business-info">
+                            <h3>Mi Tienda</h3>
+                            <span class="business-type">Tienda</span>
+                        </div>
+                        <!-- Ícono de carrito (fa-shopping-cart) con color ámbar (shop-icon) -->
+                        <div class="business-icon shop-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="status-badge active">Activo</span>
+                        <button class="btn-enter">Entrar</button>
+                    </div>
+                </div>
+
+                <!-- Create New Business Card: tarjeta con borde punteado para crear negocio.
+                     Actualmente es solo visual; cuando exista lógica abrirá un modal/formulario -->
+                <div class="business-card create-new">
+                    <div class="create-new-content">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            <span>Crear nuevo negocio</span>
+                        </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- [opencode] Label que actúa como botón flotante del menú móvil (apparece en ≤768px).
+         El atributo "for" enlaza con el checkbox #menu-toggle: al hacer clic lo alterna.
+         Muestra fa-bars (☰) cerrado y fa-times (✕) cuando el menú está abierto. -->
+    <label for="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </label>
+
+</body>
+
+</html>

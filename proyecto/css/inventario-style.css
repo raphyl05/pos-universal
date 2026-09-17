@@ -1,0 +1,831 @@
+@import url('tokens.css');
+
+/* ============================================================================
+   inventario-style.css — Estilos de la ventana "Inventario - Productos"
+   Layout: sidebar fijo ≈270px + header ≈80px + tabla de productos con
+   filtros y paginación. Misma base de estilo que cierre-caja.html.
+   ============================================================================ */
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Tokens de diseño centralizados (según la descripción de la guía) */
+:root {
+    --bg-app: #EEF0F3;          /* Fondo del área de contenido */
+    --surface: #F8F9FB;         /* Sidebar, header y tarjetas */
+    --surface-w: #FFFFFF;       /* Blanco puro (inputs, botones) */
+    --navy: #2F3268;            /* Índigo navy (logo) */
+    --navy-btn: #31346B;        /* Índigo del botón principal / página activa */
+    --brand-text: #1E2244;      /* Texto "POSUniversal" en el sidebar */
+    --table-head-bg: #ECEEF2;   /* Fondo del encabezado de tabla */
+    --nav-active-bg: #E3E5F2;   /* Pill del ítem activo (lavanda) */
+    --nav-active-text: #3A3F77; /* Texto/ícono del ítem activo */
+    --sub-text: #3F4479;        /* Texto del sub-ítem activo */
+    --connector: #C9CDD6;       /* Línea conectora del sub-menú */
+    --text-3: #6B7280;          /* Texto terciario (rol) */
+    --text-row: #1F2937;        /* Texto de las filas de la tabla */
+    --thumb-bg: #EDF0F3;        /* Fondo de miniaturas de producto */
+    --pill-ok-bg: #D3F1DE;      /* Pill "Activo" (verde claro) */
+    --pill-ok-text: #1E7E44;    /* Texto de la pill "Activo" */
+    --pill-warn-bg: #FBEFC9;    /* Pill "Bajo Stock" (ámbar claro) */
+    --pill-warn-text: #9A6B15;  /* Texto de la pill "Bajo Stock" */
+    --danger-bg: #F8D7DA;       /* Botón de eliminar (rosa) */
+    --danger-text: #B02A37;     /* Icono del botón eliminar */
+    --disabled-bg: #E8EBEF;     /* Botón de paginación deshabilitado */
+    --radius-card: 12px;        /* Radios: tarjetas */
+    --radius-btn: 8px;          /* Radios: inputs/botones */
+    --radius-pill: 999px;       /* Radios: píldoras de estado */
+    --shadow-toggle: 0 4px 12px rgba(49, 52, 107, 0.35); /* Sombra del botón flotante */
+}
+
+/* Tipografía: Inter si está instalada, si no el stack del sistema */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--bg-app);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    font-size: 16px;
+}
+
+/* Contenedor general: sidebar + zona principal en fila */
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* ===== Sidebar (≈270px, fondo #F8F9FB, borde derecho fino) ===== */
+.sidebar {
+    width: min(270px, 28vw);
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px 0;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+
+/* Brand: cuadrado índigo con glifo + texto */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 8px 28px;
+}
+
+.brand-glyph {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: var(--radius-logo);
+    background: var(--navy);
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--brand-text);
+    white-space: nowrap;
+}
+
+.nav-menu {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Ítem del menú: icono de línea + texto */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    border-radius: var(--radius-btn);
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 15px;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-item:hover {
+    background: #ECEEF4;
+}
+
+.nav-item.active {
+    background: var(--nav-active-bg);
+    color: var(--nav-active-text);
+}
+
+.nav-item svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-2);
+    flex-shrink: 0;
+}
+
+.nav-item.active svg {
+    color: var(--nav-active-text);
+}
+
+.nav-item .chevron {
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+}
+
+/* ===== Sub-menú "Productos" (conector tipo árbol) ===== */
+.nav-group {
+    position: relative;
+    margin-bottom: 6px;
+}
+
+.nav-group > .nav-item {
+    margin-bottom: 0;
+}
+
+/* Conector en codo (L): baja desde el ítem "Inventario" y entra al sub-ítem */
+.connector {
+    position: absolute;
+    left: 24px;
+    top: 40px;
+    width: 13px;
+    height: 26px;
+    border-left: 1px solid var(--connector);
+    border-bottom: 1px solid var(--connector);
+    border-radius: 0 0 0 5px;
+    pointer-events: none;
+}
+
+/* Sub-ítem: indentado, sin ícono, pill lavanda activa con texto índigo */
+.nav-item.sub-item {
+    margin-left: 20px;
+    padding-left: 14px;
+    margin-bottom: 0;
+    color: var(--sub-text);
+}
+
+.nav-item.sub-item.active {
+    background: var(--nav-active-bg);
+}
+
+/* ===== Zona principal ===== */
+.main {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+}
+
+/* ===== Header (≈80px): sin búsqueda, usuario a la derecha ===== */
+.topbar {
+    min-height: 80px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 16px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.user-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.user-role {
+    font-size: 13px;
+    color: var(--text-3);
+}
+
+/* Botón de campana con punto rojo de notificación */
+.icon-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn svg {
+    width: 22px;
+    height: 22px;
+    color: var(--text-2);
+}
+
+.icon-btn:hover {
+    background: #ECEEF4;
+}
+
+.notif-dot {
+    position: absolute;
+    top: 7px;
+    right: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--notif-dot);
+    border: 1.5px solid var(--surface);
+}
+
+/* ===== Contenido principal ===== */
+.content {
+    padding: 40px 44px;
+    background: var(--bg-app);
+}
+
+/* ===== Fila de título + botones ===== */
+.title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+
+.title-row h1 {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--text-strong);
+}
+
+.title-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Botón primario "+ Nuevo producto" (navy) */
+.btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 20px;
+    background: var(--navy-btn);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.btn-primary svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-primary:hover {
+    background: var(--navy);
+}
+
+/* Botón secundario "Importar" */
+.btn-secondary {
+    height: 44px;
+    padding: 0 24px;
+    background: var(--surface-w);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--text);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #EDEFF2;
+}
+
+/* ===== Fila de filtros ===== */
+.filters {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+/* Búsqueda ≈310×40px */
+.filter-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 310px;
+    max-width: 100%;
+}
+
+.filter-search svg {
+    position: absolute;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    color: var(--placeholder);
+    pointer-events: none;
+}
+
+.filter-search input {
+    width: 100%;
+    height: 40px;
+    padding: 0 14px 0 40px;
+    background: var(--surface-w);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.filter-search input:focus {
+    border-color: var(--navy-btn);
+}
+
+.filter-search input::placeholder {
+    color: var(--placeholder);
+}
+
+/* Campo select con etiqueta encima */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 150px;
+}
+
+.field-wide {
+    min-width: 265px;
+}
+
+.field label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+}
+
+.field select {
+    height: 40px;
+    padding: 0 34px 0 12px;
+    background: var(--surface-w);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    transition: border-color 0.2s;
+}
+
+.field select:focus {
+    border-color: var(--navy-btn);
+}
+
+/* ===== Tarjeta de tabla ===== */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Contenedor con scroll horizontal para pantallas angostas */
+.table-scroll {
+    overflow-x: auto;
+}
+
+/* Encabezado: 8 columnas, fondo lavanda-gris */
+.table-head,
+.table-row {
+    display: grid;
+    grid-template-columns:
+        minmax(220px, 2.2fr)
+        1.1fr 1fr 1fr 1fr 0.9fr 0.9fr
+        minmax(120px, 1fr);
+    column-gap: 12px;
+    align-items: center;
+    min-width: 940px;
+}
+
+.table-head {
+    padding: 14px 16px;
+    background: var(--table-head-bg);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-2);
+}
+
+/* Filas: ≈72px de alto, borde inferior fino */
+.table-row {
+    min-height: 72px;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    color: var(--text-row);
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+.cell-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cell-text.strong {
+    font-weight: 600;
+    color: var(--text-strong);
+}
+
+/* Celda de producto: thumb + nombre (flex, gap 12px) */
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.p-thumb {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: var(--radius-btn);
+    background: var(--thumb-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    line-height: 1;
+}
+
+/* Nombre del producto medium, hasta 2 líneas */
+.p-name {
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Píldora de estado */
+.pill {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.pill-ok {
+    background: var(--pill-ok-bg);
+    color: var(--pill-ok-text);
+}
+
+.pill-warn {
+    background: var(--pill-warn-bg);
+    color: var(--pill-warn-text);
+}
+
+/* Columna de acciones: 3 botones 32×32, al final */
+.actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    background: var(--surface-w);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.action-btn svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-2);
+}
+
+.action-btn:hover {
+    background: #EDEFF2;
+}
+
+/* Botón de eliminar: fondo rosa, icono rojo */
+.action-btn.danger {
+    background: var(--danger-bg);
+    border: none;
+}
+
+.action-btn.danger svg {
+    color: var(--danger-text);
+}
+
+.action-btn.danger:hover {
+    background: #F3C6C9;
+}
+
+/* ===== Pie de tarjeta: paginación + contador ===== */
+.table-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.page-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    background: var(--surface-w);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 500;
+    color: var(--text-row);
+    transition: background 0.2s;
+}
+
+.page-btn svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-2);
+}
+
+/* Página deshabilitada: fondo gris, icono muted */
+.page-btn.disabled {
+    background: var(--disabled-bg);
+    border: none;
+    cursor: default;
+}
+
+.page-btn.disabled svg {
+    color: var(--placeholder);
+}
+
+/* Página activa: fondo navy, texto blanco */
+.page-btn.page-num.active {
+    background: var(--navy-btn);
+    border-color: var(--navy-btn);
+    color: #FFFFFF;
+}
+
+/* Páginas simples (2, 3): sin fondo ni borde */
+.page-btn.page-num {
+    background: transparent;
+    border: none;
+}
+
+.page-ellipsis {
+    font-size: 15px;
+    color: var(--text-row);
+    padding: 0 2px;
+}
+
+.page-info {
+    font-size: 15px;
+    color: var(--text-2);
+}
+
+/* ===== Botón flotante del menú móvil (hamburguesa) ===== */
+.menu-toggle-input {
+    position: absolute;
+    left: -10000px;
+    top: 0;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.menu-toggle-input:focus-visible ~ .menu-toggle {
+    outline: 3px solid var(--text-strong);
+    outline-offset: 4px;
+}
+
+.menu-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: var(--navy-btn);
+    color: #FFFFFF;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: var(--shadow-toggle);
+}
+
+.menu-toggle svg {
+    width: 26px;
+    height: 26px;
+}
+
+.menu-toggle .icon-close {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-open {
+    display: none;
+}
+
+.menu-toggle-input:checked ~ .menu-toggle .icon-close {
+    display: block;
+}
+
+.menu-toggle-input:checked ~ .app .sidebar {
+    transform: translateX(0);
+}
+
+/* ===== Responsive ===== */
+
+/* Laptops pequeñas: menos espacio lateral */
+@media (max-width: 1160px) {
+    .topbar,
+    .content {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+/* Tablets (≤860px): sidebar fuera de pantalla + botón hamburguesa */
+@media (max-width: 860px) {
+    .menu-toggle-input {
+        position: fixed;
+        bottom: 48px;
+        right: 48px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 270px;
+        height: 100vh;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .topbar {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+/* Móvil (≤600px): header en columna, títulos más pequeños */
+@media (max-width: 600px) {
+    body {
+        font-size: 15px;
+    }
+
+    .content {
+        padding: 16px;
+    }
+
+    .title-row {
+        margin-bottom: 20px;
+    }
+
+    .title-row h1 {
+        font-size: 24px;
+    }
+
+    .title-actions {
+        width: 100%;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .filters {
+        align-items: stretch;
+    }
+
+    .filter-search {
+        width: 100%;
+    }
+
+    .field {
+        min-width: calc(50% - 8px);
+        flex: 1;
+    }
+
+    .field-wide {
+        min-width: 100%;
+    }
+
+    .table-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+    }
+}
