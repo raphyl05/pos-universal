@@ -74,76 +74,8 @@
                 </div>
             </header>
 
-            <!-- Business Cards Grid: grilla adaptativa (auto-fill) de tarjetas de negocio.
-                 Actualmente los datos están hardcodeados; en un futuro se generarían
-                 dinámicamente desde una API/base de datos. -->
-            <div class="business-grid">
-                <!-- Business Card 1: ejemplo de negocio tipo "Colmado" -->
-                <div class="business-card">
-                    <div class="card-header">
-                        <!-- Nombre y tipo del negocio -->
-                        <div class="business-info">
-                            <h3>Colmado La Bendición</h3>
-                            <span class="business-type">Colmado</span>
-                        </div>
-                        <!-- Ícono visual del tipo de negocio con su color (store-icon) -->
-                        <div class="business-icon store-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M20 7l-8-4-8 4m16 0v10l-8 4m8-14L4 7m16 0L12 3m8 4l-8 4M4 7v10l8 4m8-14v10"/></svg>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <!-- Badge de estado (verde "Activo") -->
-                        <span class="status-badge active">Activo</span>
-                        <!-- Botón "Entrar" (sin funcionalidad todavía; requiere JS/backend) -->
-                        <button class="btn-enter">Entrar</button>
-                    </div>
-                </div>
-
-                <!-- Business Card 2: ejemplo tipo "Barbería" -->
-                <div class="business-card">
-                    <div class="card-header">
-                        <div class="business-info">
-                            <h3>Raphy Barber Studio</h3>
-                            <span class="business-type">Barbería</span>
-                        </div>
-                        <!-- Ícono de tijeras (fa-cut) con color rosado (barber-icon) -->
-                        <div class="business-icon barber-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <span class="status-badge active">Activo</span>
-                        <button class="btn-enter">Entrar</button>
-                    </div>
-                </div>
-
-                <!-- Business Card 3: ejemplo tipo "Tienda" -->
-                <div class="business-card">
-                    <div class="card-header">
-                        <div class="business-info">
-                            <h3>Mi Tienda</h3>
-                            <span class="business-type">Tienda</span>
-                        </div>
-                        <!-- Ícono de carrito (fa-shopping-cart) con color ámbar (shop-icon) -->
-                        <div class="business-icon shop-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <span class="status-badge active">Activo</span>
-                        <button class="btn-enter">Entrar</button>
-                    </div>
-                </div>
-
-                <!-- Create New Business Card: tarjeta con borde punteado para crear negocio.
-                     Actualmente es solo visual; cuando exista lógica abrirá un modal/formulario -->
-                <div class="business-card create-new">
-                    <div class="create-new-content">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                            <span>Crear nuevo negocio</span>
-                        </div>
-                </div>
-            </div>
+            <!-- Business Cards Grid: generado dinámicamente desde js/dashboard.js -->
+            <div class="business-grid"></div>
         </main>
     </div>
 
@@ -158,6 +90,7 @@
 </body>
 
 <script src="js/data.js"></script>
-<script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/app.js"></script>
 
 </html>

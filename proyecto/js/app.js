@@ -35,7 +35,7 @@
   function highlightActiveNav() {
     var page = getCurrentPage();
     var pageMap = {
-      "dashboard.html": "Dashboard",
+      "dashboard.html": "Negocios",
       "resumen.html": "Inicio",
       "venta.html": "Ventas",
       "completar-pago.html": "Ventas",
