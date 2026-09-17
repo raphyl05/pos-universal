@@ -135,16 +135,31 @@
 
   /* ===== Inventario ===== */
   var invCategory = "Todos";
+  var invSearchTerm = "";
 
   function renderInventory() {
     var grid = $(".inv-grid");
     if (!grid) return;
 
     var productos = POS_DATA.getProductos();
+    var term = invSearchTerm.trim().toLowerCase();
+
     var filtered = productos.filter(function (p) {
-      var cat = invCategory;
-      if (cat === "Todos" || cat === "") return true;
-      return p.categoria === cat;
+      /* Filtro por categoría */
+      if (invCategory !== "Todos" && invCategory !== "") {
+        if (p.categoria !== invCategory) return false;
+      }
+
+      /* Filtro por texto (nombre, SKU, categoría) */
+      if (term) {
+        var matchName = p.nombre && p.nombre.toLowerCase().indexOf(term) !== -1;
+        var matchSku = p.sku && p.sku.toLowerCase().indexOf(term) !== -1;
+        var matchCat = p.categoria && p.categoria.toLowerCase().indexOf(term) !== -1;
+        var matchBar = p.codigoBarras && p.codigoBarras.indexOf(term) !== -1;
+        if (!matchName && !matchSku && !matchCat && !matchBar) return false;
+      }
+
+      return true;
     });
 
     grid.innerHTML = "";
@@ -283,7 +298,10 @@
     /* Buscador inventario */
     var invSearch = $("#inv-search-input");
     if (invSearch) {
-      invSearch.addEventListener("input", function () { renderInventory(); });
+      invSearch.addEventListener("input", function () {
+        invSearchTerm = invSearch.value;
+        renderInventory();
+      });
     }
 
     /* Descuento */
