@@ -186,7 +186,26 @@
     return { exito: true };
   }
 
-  /* Reinicia todo a datos iniciales (incluye sesión) */
+  /* --- CRUD Negocios --- */
+
+  /* Registra un nuevo negocio. Retorna { error } o { exito, negocio }. */
+  function registrarNegocio(nombre, tipo) {
+    if (!nombre || !tipo) return { error: "Nombre y tipo son obligatorios." };
+    if (getNegocios().some(function (n) { return n.nombre === nombre; })) {
+      return { error: "Ese nombre de negocio ya existe." };
+    }
+    var data = getData();
+    var nuevo = { id: Date.now(), nombre: nombre, tipo: tipo, estado: "Activo" };
+    data.negocios.push(nuevo);
+    setData(data);
+    return { exito: true, negocio: nuevo };
+  }
+
+  function getNegocioById(id) {
+    return getNegocios().find(function (n) { return n.id === id; });
+  }
+
+  /* Reinicia todo a datos iniciales */
   function resetData() {
     _cache = null;
     localStorage.removeItem(STORAGE_KEY);
@@ -200,6 +219,7 @@
       getData: getData, setData: setData,
       getNegocios: getNegocios, getProductos: getProductos, getVentas: getVentas, getDenominaciones: getDenominaciones,
       getUsuarios: getUsuarios, getUsuarioByUsername: getUsuarioByUsername,
+      registrarNegocio: registrarNegocio, getNegocioById: getNegocioById,
       registrarUsuario: registrarUsuario, loginUsuario: loginUsuario,
       setSession: setSession, getSession: getSession, clearSession: clearSession,
       isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,
@@ -210,6 +230,7 @@
       getData: getData, setData: setData,
       getNegocios: getNegocios, getProductos: getProductos, getVentas: getVentas, getDenominaciones: getDenominaciones,
       getUsuarios: getUsuarios, getUsuarioByUsername: getUsuarioByUsername,
+      registrarNegocio: registrarNegocio, getNegocioById: getNegocioById,
       registrarUsuario: registrarUsuario, loginUsuario: loginUsuario,
       setSession: setSession, getSession: getSession, clearSession: clearSession,
       isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,

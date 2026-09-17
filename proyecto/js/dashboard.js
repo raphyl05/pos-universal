@@ -73,13 +73,24 @@
   }
 
   /* Ejecutar al cargar */
+  function init() {
+    renderNegocios();
+
+    /* Card "Crear nuevo negocio" → redirige a nuevo-negocio.html */
+    var grid = $(".business-grid");
+    if (grid) {
+      grid.addEventListener("click", function (e) {
+        var card = e.target.closest(".create-new");
+        if (card) {
+          window.location.href = "nuevo-negocio.html";
+        }
+      });
+    }
+  }
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
-  }
-
-  function init() {
-    renderNegocios();
   }
 })();
