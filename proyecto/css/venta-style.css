@@ -100,10 +100,10 @@ body {
     background: #E2E5EA;
 }
 
-/* ===== Layout de dos columnas: catálogo (flexible) + carrito (465px) ===== */
+/* ===== Layout de dos columnas: catálogo (flexible) + carrito (500px) ===== */
 .layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 465px;
+    grid-template-columns: minmax(0, 1fr) 500px;
     gap: 24px;
     align-items: stretch;
     flex: 1;
@@ -326,20 +326,26 @@ body {
     flex-direction: column;
     flex: 1;
     overflow-y: auto;
+    max-height: 300px;
+}
+
+.product-card.selected {
+    border-color: var(--indigo);
+    box-shadow: 0 0 0 2px var(--indigo), 0 4px 12px rgba(63, 68, 121, 0.2);
 }
 
 .cart-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 24px;
+    gap: 8px;
+    padding: 10px 16px;
     border-bottom: 1px solid var(--border);
 }
 
-/* Miniatura ≈52px con emoji ≈28px */
+/* Miniatura ≈44px con emoji ≈22px */
 .item-thumb {
-    width: 52px;
-    height: 52px;
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
     border-radius: var(--radius-thumb);
     background: var(--tile-thumb);
@@ -349,7 +355,7 @@ body {
 }
 
 .item-thumb span {
-    font-size: 28px;
+    font-size: 22px;
     line-height: 1;
 }
 
@@ -596,14 +602,15 @@ body {
 }
 
 /* ===== Botones de acción ===== */
-.btn-guardar {
-    margin: 10px 24px 24px;
-    height: 44px;
-    background: var(--btn-secondary);
-    color: var(--text-strong);
+.btn-cobrar {
+    margin: 0 24px;
+    width: calc(100% - 48px);
+    height: 50px;
+    background: var(--indigo-btn);
+    color: #FFFFFF;
     border: none;
     border-radius: var(--radius-btn);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
@@ -617,6 +624,7 @@ body {
 
 .btn-guardar {
     margin: 10px 24px 24px;
+    width: calc(100% - 48px);
     height: 44px;
     background: var(--btn-secondary);
     color: var(--text-strong);
@@ -627,6 +635,7 @@ body {
     font-family: inherit;
     cursor: pointer;
     transition: background 0.2s;
+    flex-shrink: 0;
 }
 
 .btn-guardar:hover {
@@ -635,28 +644,6 @@ body {
 
 /* ===== Responsive ===== */
 
-/* Scrollbar personalizado para catálogo y carrito */
-.product-grid::-webkit-scrollbar {
-    width: 6px;
-}
-.product-grid::-webkit-scrollbar-track {
-    background: var(--track);
-    border-radius: 3px;
-}
-.product-grid::-webkit-scrollbar-thumb {
-    background: var(--thumb);
-    border-radius: 3px;
-}
-.cart-list::-webkit-scrollbar {
-    width: 6px;
-}
-.cart-list::-webkit-scrollbar-track {
-    background: transparent;
-}
-.cart-list::-webkit-scrollbar-thumb {
-    background: var(--thumb);
-    border-radius: 3px;
-}
 .empty-state {
     grid-column: 1 / -1;
     text-align: center;
@@ -665,12 +652,23 @@ body {
     font-size: 15px;
 }
 
-/* ===== Responsive ===== */
+/* Desktop: carrito 500px, catálogo 3 col */
+@media (min-width: 1000px) {
+    .layout {
+        grid-template-columns: minmax(0, 1fr) 500px;
+    }
+    .product-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
 
 /* ≤900px: catálogo a 2 columnas, carrito más estrecho */
 @media (max-width: 900px) {
     .layout {
         grid-template-columns: minmax(0, 1fr) 400px;
+    }
+    .cart-list {
+        max-height: none;
     }
     .product-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -702,19 +700,41 @@ body {
         height: 42px;
     }
     .cart-item {
-        padding: 12px 16px;
-        gap: 8px;
+        padding: 10px 12px;
+        gap: 6px;
+    }
+    .item-thumb {
+        width: 38px;
+        height: 38px;
+    }
+    .item-thumb span {
+        font-size: 18px;
     }
     .item-name {
         font-size: 13px;
     }
+    .stepper {
+        gap: 2px;
+    }
+    .step-btn {
+        width: 24px;
+        height: 24px;
+    }
+    .step-value {
+        width: 26px;
+        height: 24px;
+        font-size: 12px;
+    }
+    .item-total {
+        font-size: 13px;
+    }
     .pay-methods {
         grid-template-columns: repeat(4, 1fr);
-        gap: 8px;
-        padding: 12px 16px;
+        gap: 6px;
+        padding: 10px 12px 8px;
     }
     .pay-btn {
-        height: 52px;
+        height: 48px;
     }
     .btn-cobrar,
     .btn-guardar {
@@ -722,13 +742,17 @@ body {
         margin-right: 16px;
     }
     .totals {
-        padding: 12px 16px;
+        padding: 10px 12px;
+        gap: 6px;
     }
     .discount-row {
-        padding: 8px 16px;
+        padding: 6px 12px;
     }
     .cart-head {
-        padding: 14px 16px;
+        padding: 12px 14px;
+    }
+    .cart-list {
+        max-height: none;
     }
 }
 
@@ -746,5 +770,8 @@ body {
     }
     .pay-methods {
         grid-template-columns: repeat(2, 1fr);
+    }
+    .pay-btn {
+        height: 56px;
     }
 }

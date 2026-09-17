@@ -12,12 +12,14 @@
 
   var activeCategory = "Todos";
   var searchTerm = "";
+  var selectedCardIndex = -1;
 
   /* Categorías disponibles en las pestañas */
   var TAB_CATEGORIES = ["Todos", "Bebidas", "Alimentos", "Limpieza", "Cuidado personal"];
 
   /* Renderizar grid de productos según categoría y búsqueda */
   function renderProducts() {
+    selectedCardIndex = -1;
     var grid = $(".product-grid");
     if (!grid) return;
 
@@ -58,6 +60,7 @@
     filtered.forEach(function (p) {
       var card = document.createElement("article");
       card.className = "product-card";
+      card.setAttribute("data-id", p.id);
       card.innerHTML =
         '<div class="thumb"><span>' + escapeHtml(p.icono || "📦") + '</span></div>' +
         '<h3 class="p-name">' + escapeHtml(p.nombre) + '</h3>' +
@@ -66,9 +69,11 @@
       card.addEventListener("click", function () {
         POS_DATA.addToCart(p.id);
         renderCart();
+        focusSearch();
       });
       grid.appendChild(card);
     });
+    highlightSelectedCard();
   }
 
   /* Escapar HTML para evitar inyección */
@@ -121,7 +126,9 @@
       return;
     }
 
-    cart.forEach(function (item) {
+    var reversedCart = cart.slice().reverse();
+
+    reversedCart.forEach(function (item) {
       var product = products.find(function (p) { return p.id === item.id; });
       if (!product) return;
 
@@ -237,6 +244,36 @@
     }
   }
 
+  function focusSearch() {
+    var input = $(".search-box input");
+    if (input) {
+      input.focus();
+      input.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  }
+
+  function highlightSelectedCard() {
+    var cards = $$(".product-card");
+    cards.forEach(function (c) { c.classList.remove("selected"); });
+    if (selectedCardIndex >= 0 && selectedCardIndex < cards.length) {
+      cards[selectedCardIndex].classList.add("selected");
+      cards[selectedCardIndex].scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  }
+
+  function navigateCards(direction) {
+    var grid = $(".product-grid");
+    if (!grid) return;
+    var cards = grid.querySelectorAll(".product-card");
+    if (cards.length === 0) return;
+    if (direction === "next") {
+      selectedCardIndex = selectedCardIndex < cards.length - 1 ? selectedCardIndex + 1 : 0;
+    } else {
+      selectedCardIndex = selectedCardIndex > 0 ? selectedCardIndex - 1 : cards.length - 1;
+    }
+    highlightSelectedCard();
+  }
+
   function init() {
     renderProducts();
     initTabs();
@@ -244,6 +281,46 @@
     renderCart();
     initCart();
     initPaymentMethods();
+
+    /* Foco siempre en buscador: recuperar al interactuar (teclado) */
+    document.addEventListener("click", function (e) {
+      var tag = (e.target.tagName || "").toLowerCase();
+      if (tag !== "input" && tag !== "button" && tag !== "textarea" && tag !== "select") {
+        focusSearch();
+      }
+    });
+
+    /* Teclado: flechas navegan productos, Enter agrega al carrito */
+    document.addEventListener("keydown", function (e) {
+      var tag = (e.target.tagName || "").toLowerCase();
+      var inInput = tag === "input" || tag === "textarea" || tag === "select";
+
+      if (inInput) return;
+
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigateCards("next");
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigateCards("prev");
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        var grid = $(".product-grid");
+        if (!grid) return;
+        var cards = grid.querySelectorAll(".product-card");
+        if (selectedCardIndex >= 0 && selectedCardIndex < cards.length) {
+          var id = cards[selectedCardIndex].getAttribute("data-id");
+          if (id) {
+            POS_DATA.addToCart(id);
+            renderCart();
+            focusSearch();
+          }
+        }
+      } else if (e.key === "/") {
+        e.preventDefault();
+        focusSearch();
+      }
+    });
   }
 
   if (document.readyState === "loading") {
