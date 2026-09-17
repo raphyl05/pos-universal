@@ -80,7 +80,7 @@ POS-UNIVERSAL/
     │       ├── data.js            # Modelo de datos: negocios, productos, ventas, carrito (localStorage)
     │   ├── app.js             # Shell: menú activo, logout, navegación global
     │   ├── login.js           # Login + registro (lógica específica del login)
-    │   ├── venta.js         # Pantalla POS: catálogo, filtros, carrito, pago
+    │   ├── venta.js         # Pantalla POS: catálogo, filtros, carrito, pago, navegación
     │   ├── dashboard.js       # Render dinámico de tarjetas de negocios desde data.js
     │   ├── resumen.js         # KPIs dinámicos, gráfica SVG, últimas ventas desde data.js
     │   └── nuevo-negocio.js   # Formulario "Crear nuevo negocio" (preview, guardado, redirect)
@@ -302,18 +302,19 @@ Trabajo por partes, en orden:
 6. ✅ Venta Pt.1 — catálogo dinámico, filtros, búsqueda → `eeec53f`
 7. ✅ Venta Pt.2 — carrito funcional, totales en vivo → `07c01dd`
 8. ✅ Pago — validación, cobrar con cambio, registrar venta → `8a30163`
-9. ⏳ Completar Pago → Inventario → Nuevo Producto → Apertura/Cierre Caja
+9. ✅ Completar Pago — modal, recibido, cambio en vivo → `6e46c30`
+10. ⏳ Inventario → Nuevo Producto → Apertura/Cierre Caja
 
 ## Próxima apertura — dónde continuar
 
-> **Retomar con: Opción A — Completar Pago**
-> Flujo de pago completo (recibir monto, cambiar, factura).
+> **Retomar con: Opción A — Inventario**
+> Gestión de inventario: productos, stock, categorías.
 
 ## Control de versión
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `c8ecc25` — `docs: README actualizado - Pago completado`
+- **Último commit:** `6e46c30` — `feat: completar pago - modal con recibido, cambio en vivo, validacion`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
