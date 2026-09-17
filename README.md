@@ -75,9 +75,9 @@ POS-UNIVERSAL/
     ├── apertura-caja.html     # Apertura de caja (fondo inicial + denominaciones)
     ├── completar-pago.html   # Modal "Completar pago" sobre venta oscurecida
     ├── logo.jpg               # Logo real (única imagen usada por el código)
-    ├── js/                    # ← en construcción
-    │   ├── data.js            # Modelo de datos: negocios, productos, ventas (localStorage)
-    │   └── app.js             # Shell: menú activo, logout, navegación global
+├── js/                    # ← Parte 0 completada
+│   ├── data.js            # Modelo de datos: negocios, productos, ventas (localStorage)
+│   └── app.js             # Shell: menú activo, logout, navegación global
     └── css/
         ├── login-style.css          # Estilos del login
         ├── dashboard-style.css      # Estilos del dashboard
@@ -266,14 +266,14 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
 ### Frontend dinámico EN PROGRESO (desde 17/09/2026)
 Trabajo por partes, en orden:
 1. ✅ Planificación (este documento)
-2. ⏳ FUNDAMENTO: `js/data.js` + `js/app.js`
+2. ✅ FUNDAMENTO: `js/data.js` + `js/app.js` → **fd05e85**
 3. ⏳ Login → Dashboard → Resumen → Venta (Pt.1 → Pt.2) → Completar Pago → Inventario → Nuevo Producto → Apertura Caja → Cierre Caja
 
 ## Próxima apertura — dónde continuar
 
-> **Retomar con: Parte 0 — FUNDAMENTO (`js/data.js` + `js/app.js`).**
-> Crear el modelo de datos compartido y el shell de navegación.
-> Luego conectar Login y Dashboard.
+> **Retomar con: Parte 1 — Login.**
+> Conectar el formulario de login: submit + validación + redirección a `dashboard.html`.
+> `data.js` y `app.js` ya están listos como base.
 
 ## Control de versión
 
