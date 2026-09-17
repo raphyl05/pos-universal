@@ -306,6 +306,45 @@
     return { subtotal: subtotal, descuento: descuento, impuestos: impuestos, total: total, items: cart.length };
   }
 
+  /* Genera número de venta secuencial */
+  function getNumeroVenta() {
+    var sales = getVentas();
+    var max = 0;
+    sales.forEach(function (s) {
+      var num = parseInt(String(s.numero));
+      if (!isNaN(num) && num > max) max = num;
+    });
+    return (max + 1).toString();
+  }
+
+  /* Registra una venta. Retorna { error } o { exito, venta }. */
+  function registrarVenta(paymentMethod, discountPercent, clientName, estado) {
+    var cart = getCart();
+    if (cart.length === 0) return { error: "El carrito está vacío." };
+    if (!paymentMethod) return { error: "Selecciona un método de pago." };
+
+    var calc = calculateCart(discountPercent);
+    var sale = {
+      id: Date.now(),
+      numero: getNumeroVenta(),
+      cliente: clientName || "Contado",
+      pago: paymentMethod,
+      subtotal: calc.subtotal,
+      descuento: calc.descuento,
+      impuestos: calc.impuestos,
+      total: calc.total,
+      fecha: new Date().toISOString(),
+      estado: estado || "Pagado",
+      productos: cart.map(function (item) { return { id: item.id, quantity: item.quantity }; })
+    };
+
+    var data = getData();
+    data.ventas.push(sale);
+    setData(data);
+    clearCart();
+    return { exito: true, venta: sale };
+  }
+
   /* --- Exportación --- */
   if (typeof module !== "undefined" && module.exports) {
     module.exports = {
@@ -319,7 +358,8 @@
       isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,
       eliminarUsuario: eliminarUsuario, resetData: resetData,
       getCart: getCart, addToCart: addToCart, removeFromCart: removeFromCart,
-      updateCartQuantity: updateCartQuantity, clearCart: clearCart, calculateCart: calculateCart
+      updateCartQuantity: updateCartQuantity, clearCart: clearCart, calculateCart: calculateCart,
+      registrarVenta: registrarVenta
     };
   } else {
     window.POS_DATA = {
@@ -333,7 +373,8 @@
       isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,
       eliminarUsuario: eliminarUsuario, resetData: resetData,
       getCart: getCart, addToCart: addToCart, removeFromCart: removeFromCart,
-      updateCartQuantity: updateCartQuantity, clearCart: clearCart, calculateCart: calculateCart
+      updateCartQuantity: updateCartQuantity, clearCart: clearCart, calculateCart: calculateCart,
+      registrarVenta: registrarVenta
     };
   }
 })();

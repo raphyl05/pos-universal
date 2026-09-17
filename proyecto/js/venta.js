@@ -198,13 +198,49 @@
       discountInput.addEventListener("input", updateTotals);
     }
 
+    var payBtns = $$(".pay-btn");
+    var changeRow = $("#change-row");
+    payBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        payBtns.forEach(function (b) { b.classList.remove("selected"); });
+        btn.classList.add("selected");
+        var isCash = btn.querySelector("span").textContent.trim() === "Efectivo";
+        if (changeRow) changeRow.style.display = isCash ? "" : "none";
+      });
+    });
+
     var cobrarBtn = $(".btn-cobrar");
     if (cobrarBtn) {
       cobrarBtn.addEventListener("click", function () {
         var cart = POS_DATA.getCart();
-        if (cart.length === 0) return;
-        var calc = POS_DATA.calculateCart(parseFloat($("#discount-input").value) || 0);
-        alert("Cobrar: RD$ " + Number(calc.total).toFixed(2) + " (" + calc.items + " ítems)");
+        if (cart.length === 0) { alert("El carrito está vacío."); return; }
+        var selectedBtn = document.querySelector(".pay-btn.selected");
+        if (!selectedBtn) { alert("Selecciona un método de pago."); return; }
+        var paymentMethod = selectedBtn.querySelector("span").textContent.trim();
+        var discount = parseFloat($("#discount-input").value) || 0;
+        var calc = POS_DATA.calculateCart(discount);
+
+        if (paymentMethod === "Efectivo") {
+          var changeRow = $("#change-row");
+          if (changeRow) changeRow.style.display = "";
+          var received = parseFloat(prompt("Monto recibido:\nRD$ " + calc.total.toFixed(2)));
+          if (isNaN(received)) { alert("Cancelado."); return; }
+          if (received < calc.total) {
+            alert("Monto insuficiente. Faltan RD$ " + (calc.total - received).toFixed(2));
+            return;
+          }
+          var change = received - calc.total;
+          var changeEl = $("#cart-change");
+          if (changeEl) changeEl.textContent = "RD$ " + Number(change).toFixed(2);
+          var result = POS_DATA.registrarVenta(paymentMethod, discount);
+          if (result.error) { alert(result.error); return; }
+          alert("Venta " + result.venta.numero + " registrada.\nCambio: RD$ " + Number(change).toFixed(2));
+        } else {
+          var result = POS_DATA.registrarVenta(paymentMethod, discount);
+          if (result.error) { alert(result.error); return; }
+          alert("Venta " + result.venta.numero + " registrada.\nTotal: RD$ " + calc.total.toFixed(2));
+        }
+        renderCart();
       });
     }
 
@@ -212,9 +248,13 @@
     if (guardarBtn) {
       guardarBtn.addEventListener("click", function () {
         var cart = POS_DATA.getCart();
-        if (cart.length === 0) return;
-        alert("Venta guardada con éxito.");
-        POS_DATA.clearCart();
+        if (cart.length === 0) { alert("El carrito está vacío."); return; }
+        var selectedBtn = document.querySelector(".pay-btn.selected");
+        var paymentMethod = selectedBtn ? selectedBtn.querySelector("span").textContent.trim() : "Pendiente";
+        var discount = parseFloat($("#discount-input").value) || 0;
+        var result = POS_DATA.registrarVenta(paymentMethod, discount, null, "Pendiente");
+        if (result.error) { alert(result.error); return; }
+        alert("Venta " + result.venta.numero + " guardada como pendiente.\nTotal: RD$ " + result.venta.total.toFixed(2));
         renderCart();
       });
     }

@@ -545,6 +545,11 @@ body {
     border-top: 1px dashed var(--border-input);
 }
 
+/* Cambio (solo visible para Efectivo) */
+#change-row .total-value {
+    color: var(--indigo);
+}
+
 /* ===== Métodos de pago ===== */
 .pay-methods {
     display: grid;
