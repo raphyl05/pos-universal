@@ -14,25 +14,25 @@
   /* --- Datos iniciales (seed) --- */
   var seedData = {
     negocios: [
-      { id: 1, nombre: "Colmado La Bendición", tipo: "Colmado", estado: "Activo" },
-      { id: 2, nombre: "Raphy Barber Studio", tipo: "Barbería", estado: "Activo" },
-      { id: 3, nombre: "Mi Tienda", tipo: "Tienda", estado: "Activo" }
+      { id: 1, nombre: "Colmado La Bendición", tipo: "Colmado", estado: "Activo", exento: false },
+      { id: 2, nombre: "Raphy Barber Studio", tipo: "Barbería", estado: "Activo", exento: true },
+      { id: 3, nombre: "Mi Tienda", tipo: "Tienda", estado: "Activo", exento: false }
     ],
 
     /* 12 productos: 5 del inventario + 7 del catálogo de venta */
     productos: [
-      { id: 1, nombre: "Agua Cristal 1L", sku: "SKU12345", codigoBarras: "123445666789", categoria: "Bebidas", precioVenta: 75, precioCosto: 65, precioMayorista: 85, stock: 120, stockMinimo: 50, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "AGU-CR-1L", estado: "Activo", icono: "💧" },
-      { id: 2, nombre: "Arroz Selecto Campos 5lbs", sku: "SKU67890", codigoBarras: "678901234567", categoria: "Alimentos", precioVenta: 75, precioCosto: 50, precioMayorista: 65, stock: 120, stockMinimo: 30, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "ARR-SC-5L", estado: "Activo", icono: "🍚" },
-      { id: 3, nombre: "Sopa de Alimentos", sku: "SKU11111", codigoBarras: "111111111111", categoria: "Alimentos", precioVenta: 75, precioCosto: 45, precioMayorista: 60, stock: 120, stockMinimo: 20, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "SOP-AL-1U", estado: "Activo", icono: "🍜" },
-      { id: 4, nombre: "Limpiador Multiusos", sku: "SKU22222", codigoBarras: "222222222222", categoria: "Limpieza", precioVenta: 75, precioCosto: 40, precioMayorista: 55, stock: 120, stockMinimo: 20, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "LIM-MU-1U", estado: "Activo", icono: "🧴" },
-      { id: 5, nombre: "Coca-Cola 2L", sku: "SKU12345", codigoBarras: "123445666789", categoria: "Bebidas", precioVenta: 95, precioCosto: 65, precioMayorista: 85, stock: 250, stockMinimo: 50, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "COKE-DR-2L", estado: "Activo", icono: "🥤" },
-      { id: 6, nombre: "Pan de agua", sku: "SKU67890", codigoBarras: "678901234567", categoria: "Alimentos", precioVenta: 15, precioCosto: 8, precioMayorista: 12, stock: 150, stockMinimo: 40, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "PAN-AG-1U", estado: "Activo", icono: "🍞" },
-      { id: 7, nombre: "Leche Rica 1L", sku: "SKU54321", codigoBarras: "543210987654", categoria: "Lácteos", precioVenta: 70, precioCosto: 48, precioMayorista: 60, stock: 110, stockMinimo: 30, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "LEC-RC-1L", estado: "Activo", icono: "🥛" },
-      { id: 8, nombre: "Café Santo Domingo 1lb", sku: "SKU09876", codigoBarras: "098765432109", categoria: "Abarrotes", precioVenta: 350, precioCosto: 240, precioMayorista: 300, stock: 85, stockMinimo: 20, unidad: "und", proveedor: "Distribuidora Nacional", referencia: "CAF-SD-1L", estado: "Activo", icono: "☕" },
-      { id: 9, nombre: "Detergente Ariel 500g", sku: "SKU24680", codigoBarras: "246801357924", categoria: "Limpieza", precioVenta: 120, precioCosto: 85, precioMayorista: 100, stock: 40, stockMinimo: 15, unidad: "und", proveedor: "Distribuidora Nacional", referencia: "DET-AE-500", estado: "Bajo Stock", icono: "🧴" },
-      { id: 10, nombre: "Gel Personal 200ml", sku: "SKU33333", codigoBarras: "333333333333", categoria: "Cuidado personal", precioVenta: 75, precioCosto: 50, precioMayorista: 65, stock: 120, stockMinimo: 25, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "GEL-PD-200", estado: "Activo", icono: "🧴" },
-      { id: 11, nombre: "Arroz Selecto 200ml", sku: "SKU44444", codigoBarras: "444444444444", categoria: "Alimentos", precioVenta: 75, precioCosto: 50, precioMayorista: 65, stock: 120, stockMinimo: 25, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "ARR-SE-200", estado: "Activo", icono: "🧀" },
-      { id: 12, nombre: "Cuidado Personal Set", sku: "SKU55555", codigoBarras: "555555555555", categoria: "Cuidado personal", precioVenta: 75, precioCosto: 50, precioMayorista: 65, stock: 120, stockMinimo: 25, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "CPS-1S", estado: "Activo", icono: "🧴" }
+      { id: 1, nombre: "Agua Cristal 1L", sku: "SKU12345", codigoBarras: "123445666789", categoria: "Bebidas", precioVenta: 75, precioCosto: 65, precioMayorista: 85, stock: 120, stockMinimo: 50, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "AGU-CR-1L", estado: "Activo", exento: false, icono: "💧" },
+      { id: 2, nombre: "Arroz Selecto Campos 5lbs", sku: "SKU67890", codigoBarras: "678901234567", categoria: "Alimentos", precioVenta: 75, precioCosto: 50, precioMayorista: 65, stock: 120, stockMinimo: 30, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "ARR-SC-5L", estado: "Activo", exento: true, icono: "🍚" },
+      { id: 3, nombre: "Sopa de Alimentos", sku: "SKU11111", codigoBarras: "111111111111", categoria: "Alimentos", precioVenta: 75, precioCosto: 45, precioMayorista: 60, stock: 120, stockMinimo: 20, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "SOP-AL-1U", estado: "Activo", exento: false, icono: "🍜" },
+      { id: 4, nombre: "Limpiador Multiusos", sku: "SKU22222", codigoBarras: "222222222222", categoria: "Limpieza", precioVenta: 75, precioCosto: 40, precioMayorista: 55, stock: 120, stockMinimo: 20, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "LIM-MU-1U", estado: "Activo", exento: false, icono: "🧴" },
+      { id: 5, nombre: "Coca-Cola 2L", sku: "SKU12345", codigoBarras: "123445666789", categoria: "Bebidas", precioVenta: 95, precioCosto: 65, precioMayorista: 85, stock: 250, stockMinimo: 50, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "COKE-DR-2L", estado: "Activo", exento: false, icono: "🥤" },
+      { id: 6, nombre: "Pan de agua", sku: "SKU67890", codigoBarras: "678901234567", categoria: "Alimentos", precioVenta: 15, precioCosto: 8, precioMayorista: 12, stock: 150, stockMinimo: 40, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "PAN-AG-1U", estado: "Activo", exento: true, icono: "🍞" },
+      { id: 7, nombre: "Leche Rica 1L", sku: "SKU54321", codigoBarras: "543210987654", categoria: "Lácteos", precioVenta: 70, precioCosto: 48, precioMayorista: 60, stock: 110, stockMinimo: 30, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "LEC-RC-1L", estado: "Activo", exento: false, icono: "🥛" },
+      { id: 8, nombre: "Café Santo Domingo 1lb", sku: "SKU09876", codigoBarras: "098765432109", categoria: "Abarrotes", precioVenta: 350, precioCosto: 240, precioMayorista: 300, stock: 85, stockMinimo: 20, unidad: "und", proveedor: "Distribuidora Nacional", referencia: "CAF-SD-1L", estado: "Activo", exento: false, icono: "☕" },
+      { id: 9, nombre: "Detergente Ariel 500g", sku: "SKU24680", codigoBarras: "246801357924", categoria: "Limpieza", precioVenta: 120, precioCosto: 85, precioMayorista: 100, stock: 40, stockMinimo: 15, unidad: "und", proveedor: "Distribuidora Nacional", referencia: "DET-AE-500", estado: "Bajo Stock", exento: false, icono: "🧴" },
+      { id: 10, nombre: "Gel Personal 200ml", sku: "SKU33333", codigoBarras: "333333333333", categoria: "Cuidado personal", precioVenta: 75, precioCosto: 50, precioMayorista: 65, stock: 120, stockMinimo: 25, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "GEL-PD-200", estado: "Activo", exento: false, icono: "🧴" },
+      { id: 11, nombre: "Arroz Selecto 200ml", sku: "SKU44444", codigoBarras: "444444444444", categoria: "Alimentos", precioVenta: 75, precioCosto: 50, precioMayorista: 65, stock: 120, stockMinimo: 25, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "ARR-SE-200", estado: "Activo", exento: true, icono: "🧀" },
+      { id: 12, nombre: "Cuidado Personal Set", sku: "SKU55555", codigoBarras: "555555555555", categoria: "Cuidado personal", precioVenta: 75, precioCosto: 50, precioMayorista: 65, stock: 120, stockMinimo: 25, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "CPS-1S", estado: "Activo", exento: false, icono: "🧴" }
     ],
 
     ventas: [
@@ -310,18 +310,26 @@
     var cart = getCart();
     var products = getProductos();
     var subtotal = 0;
+    var exempt = 0;
+    var taxed = 0;
     cart.forEach(function (item) {
       var product = products.find(function (p) { return p.id === item.id; });
       if (product) {
         var price = item.priceOverride != null ? Number(item.priceOverride) : Number(product.precioVenta);
-        subtotal += price * Number(item.quantity);
+        var lineTotal = price * Number(item.quantity);
+        subtotal += lineTotal;
+        if (product.exento) {
+          exempt += lineTotal;
+        } else {
+          taxed += lineTotal;
+        }
       }
     });
     var discount = Number(discountPercent) || 0;
-    var impuestos = subtotal * 0.18;
+    var itbis = taxed * 0.18;
     var descuento = subtotal * discount / 100;
-    var total = subtotal + impuestos - descuento;
-    return { subtotal: subtotal, descuento: descuento, impuestos: impuestos, total: total, items: cart.length };
+    var total = subtotal + itbis - descuento;
+    return { subtotal: subtotal, descuento: descuento, exempt: exempt, taxed: taxed, itbis: itbis, total: total, items: cart.length };
   }
 
   /* Genera número de venta secuencial */
@@ -361,7 +369,9 @@
       pago: paymentMethod,
       subtotal: calc.subtotal,
       descuento: calc.descuento,
-      impuestos: calc.impuestos,
+      itbis: calc.itbis,
+      exempt: calc.exempt,
+      taxed: calc.taxed,
       total: calc.total,
       fecha: new Date().toISOString(),
       estado: estado || "Pagado",

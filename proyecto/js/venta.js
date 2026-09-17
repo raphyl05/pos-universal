@@ -125,7 +125,9 @@
     var el;
     el = $("#cart-subtotal"); if (el) el.textContent = formatPrice(calc.subtotal);
     el = $("#cart-discount"); if (el) el.textContent = formatPrice(calc.descuento);
-    el = $("#cart-tax"); if (el) el.textContent = formatPrice(calc.impuestos);
+    el = $("#cart-exempt"); if (el) el.textContent = formatPrice(calc.exempt);
+    el = $("#cart-taxed"); if (el) el.textContent = formatPrice(calc.taxed);
+    el = $("#cart-itbis"); if (el) el.textContent = formatPrice(calc.itbis);
     el = $("#cart-total"); if (el) el.textContent = formatPrice(calc.total);
   }
 
@@ -433,7 +435,7 @@
 
     /* Descuento */
     var discountInput = $("#discount-input");
-    if (discountInput) { discountInput.addEventListener("input", updateCartTotals); }
+    if (discountInput) { discountInput.addEventListener("input", updateCartTotals); discountInput.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); var cb = $(".btn-cobrar"); if (cb) cb.click(); } }); }
 
     /* Método de pago */
     var paymentSelect = $("#payment-method");
@@ -501,14 +503,6 @@
         if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); navigateInvCards("next"); return; }
         if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); navigateInvCards("prev"); return; }
         if (e.key === "Enter") { e.preventDefault(); addInvSelected(); return; }
-        return;
-      }
-
-      /* Sugerencias con teclado */
-      if ($("#code-suggestions").classList.contains("open")) {
-        if (e.key === "ArrowDown") { e.preventDefault(); navigateSuggestions("next"); return; }
-        if (e.key === "ArrowUp") { e.preventDefault(); navigateSuggestions("prev"); return; }
-        if (e.key === "Enter") { e.preventDefault(); addSuggestedProduct(); return; }
         return;
       }
 

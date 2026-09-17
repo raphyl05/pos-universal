@@ -43,8 +43,8 @@
       if (!val) return;
       if (text === "Subtotal") val.textContent = "RD$ " + Number(calc.subtotal).toFixed(2);
       else if (text === "Descuento") val.textContent = "-RD$ " + Number(calc.descuento).toFixed(2);
-      else if (text === "Impuestos") val.textContent = "RD$ " + Number(calc.impuestos).toFixed(2);
-      else if (text === "Total") val.textContent = "RD$ " + Number(calc.subtotal + calc.impuestos - calc.descuento).toFixed(2);
+      else if (text === "Impuestos") val.textContent = "RD$ " + Number(calc.itbis).toFixed(2);
+      else if (text === "Total") val.textContent = "RD$ " + Number(calc.subtotal + calc.itbis - calc.descuento).toFixed(2);
       else if (text === "Total a pagar") val.textContent = "RD$ " + Number(calc.total).toFixed(2);
     });
   }
