@@ -1,8 +1,13 @@
+/*
+ * login.js — Lógica de login y registro
+ * Alterna entre formulario de login y registro.
+ * Valida campos, crea cuentas (rol Cajero) y inicia sesión.
+ * Se ejecuta al cargar login.html.
+ */
 (function () {
   "use strict";
 
-  function $(sel) { return document.querySelector(sel); }
-
+  /* Referencias DOM */
   var loginForm = document.getElementById("login-form");
   var registerForm = document.getElementById("register-form");
   var loginToggle = document.getElementById("toggle-login");
@@ -10,15 +15,15 @@
   var formTitle = document.getElementById("form-title");
   var errorMsg = document.getElementById("error-msg");
 
+  /* Muestra u oculta el mensaje de error */
   function showError(msg) {
     errorMsg.textContent = msg;
     errorMsg.style.display = "block";
   }
 
-  function hideError() {
-    errorMsg.style.display = "none";
-  }
+  function hideError() { errorMsg.style.display = "none"; }
 
+  /* Alterna al formulario de login */
   function showLogin() {
     loginForm.style.display = "block";
     registerForm.style.display = "none";
@@ -26,6 +31,7 @@
     hideError();
   }
 
+  /* Alterna al formulario de registro */
   function showRegister() {
     loginForm.style.display = "none";
     registerForm.style.display = "block";
@@ -33,16 +39,19 @@
     hideError();
   }
 
+  /* Toggle: enlace "Iniciar sesión" */
   loginToggle.addEventListener("click", function (e) {
     e.preventDefault();
     showLogin();
   });
 
+  /* Toggle: enlace "Crear cuenta" */
   registerToggle.addEventListener("click", function (e) {
     e.preventDefault();
     showRegister();
   });
 
+  /* Login: valida y autentica */
   loginForm.addEventListener("submit", function (e) {
     e.preventDefault();
     hideError();
@@ -64,6 +73,7 @@
     }
   });
 
+  /* Registro: valida y crea cuenta (siempre rol Cajero) */
   registerForm.addEventListener("submit", function (e) {
     e.preventDefault();
     hideError();
@@ -95,6 +105,7 @@
     }
   });
 
+  /* Si ya hay sesión activa, redirige directamente al dashboard */
   if (POS_DATA.isLoggedIn()) {
     window.location.href = "dashboard.html";
   }

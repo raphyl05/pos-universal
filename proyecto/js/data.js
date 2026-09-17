@@ -1,9 +1,17 @@
+/*
+ * data.js — Modelo de datos POSUniversal
+ * Fuente única de verdad: negocios, productos, ventas, usuarios, denominaciones.
+ * Persiste en localStorage. Funciones CRUD para productos y usuarios.
+ * Expone window.POS_DATA si no es CommonJS.
+ */
 (function () {
   "use strict";
 
+  /* --- Claves de almacenamiento --- */
   var STORAGE_KEY = "pos_universal_data";
   var SESSION_KEY = "pos_session";
 
+  /* --- Datos iniciales (seed) --- */
   var seedData = {
     negocios: [
       { id: 1, nombre: "Colmado La Bendición", tipo: "Colmado", estado: "Activo" },
@@ -11,6 +19,7 @@
       { id: 3, nombre: "Mi Tienda", tipo: "Tienda", estado: "Activo" }
     ],
 
+    /* 12 productos: 5 del inventario + 7 del catálogo de venta */
     productos: [
       { id: 1, nombre: "Agua Cristal 1L", sku: "SKU12345", codigoBarras: "123445666789", categoria: "Bebidas", precioVenta: 75, precioCosto: 65, precioMayorista: 85, stock: 120, stockMinimo: 50, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "AGU-CR-1L", estado: "Activo", icono: "💧" },
       { id: 2, nombre: "Arroz Selecto Campos 5lbs", sku: "SKU67890", codigoBarras: "678901234567", categoria: "Alimentos", precioVenta: 75, precioCosto: 50, precioMayorista: 65, stock: 120, stockMinimo: 30, unidad: "und", proveedor: "Distribuidora del Caribe", referencia: "ARR-SC-5L", estado: "Activo", icono: "🍚" },
@@ -33,6 +42,7 @@
       { id: 4, numero: "1220303", cliente: "Café Santo Domingo", pago: "Efectivo", total: 250, estado: "Cancelado" }
     ],
 
+    /* 2 usuarios seed: admin (Administrador) y cajero1 (Cajero) */
     usuarios: [
       { id: 1, username: "admin", password: "admin123", nombre: "Raphy", rol: "Administrador", activo: true },
       { id: 2, username: "cajero1", password: "cajero123", nombre: "Lissette Díaz", rol: "Cajero", activo: true }
@@ -50,6 +60,9 @@
     ]
   };
 
+  /* --- Persistencia --- */
+
+  /* Lee datos desde localStorage; retorna null si no existe o hay error */
   function loadFromStorage() {
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
@@ -60,6 +73,7 @@
     return null;
   }
 
+  /* Escribe datos en localStorage */
   function saveToStorage(data) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -70,6 +84,7 @@
 
   var _cache = null;
 
+  /* Obtiene datos (cache en memoria, carga de localStorage si es primera vez) */
   function getData() {
     if (_cache) return _cache;
     var data = loadFromStorage();
@@ -81,22 +96,25 @@
     return data;
   }
 
+  /* Sobrescribe datos y persiste */
   function setData(data) {
     _cache = data;
     saveToStorage(data);
   }
 
+  /* --- Getters de datos --- */
   function getNegocios() { return getData().negocios; }
   function getProductos() { return getData().productos; }
   function getVentas() { return getData().ventas; }
   function getDenominaciones() { return getData().denominaciones; }
-
   function getUsuarios() { return getData().usuarios; }
 
   function getUsuarioByUsername(username) {
     return getUsuarios().find(function (u) { return u.username === username; });
   }
 
+  /* --- Auth: Registro ---
+     Siempre asigna rol "Cajero". Retorna { error } o { exito, usuario }. */
   function registrarUsuario(username, password, nombre) {
     if (!username || !password || !nombre) return { error: "Todos los campos son obligatorios." };
     if (username.length < 3) return { error: "El nombre de usuario debe tener al menos 3 caracteres." };
@@ -104,77 +122,53 @@
     if (getUsuarioByUsername(username)) return { error: "Ese nombre de usuario ya existe." };
 
     var data = getData();
-    var nuevo = {
-      id: Date.now(),
-      username: username,
-      password: password,
-      nombre: nombre,
-      rol: "Cajero",
-      activo: true
-    };
+    var nuevo = { id: Date.now(), username: username, password: password, nombre: nombre, rol: "Cajero", activo: true };
     data.usuarios.push(nuevo);
     setData(data);
     return { exito: true, usuario: nuevo };
   }
 
+  /* --- Auth: Login ---
+     Valida credenciales, crea sesión. Retorna { error } o { exito, usuario }. */
   function loginUsuario(username, password) {
     var user = getUsuarioByUsername(username);
     if (!user) return { error: "Usuario no encontrado." };
     if (user.password !== password) return { error: "Contraseña incorrecta." };
     if (!user.activo) return { error: "Usuario inactivo." };
 
-    var sessionUser = {
-      id: user.id,
-      username: user.username,
-      nombre: user.nombre,
-      rol: user.rol
-    };
+    var sessionUser = { id: user.id, username: user.username, nombre: user.nombre, rol: user.rol };
     setSession(sessionUser);
     return { exito: true, usuario: sessionUser };
   }
 
+  /* --- Sesión --- */
   function setSession(user) {
-    try {
-      localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-    } catch (e) {
-      console.warn("[data.js] No se pudo guardar la sesión.", e);
-    }
+    try { localStorage.setItem(SESSION_KEY, JSON.stringify(user)); }
+    catch (e) { console.warn("[data.js] No se pudo guardar la sesión.", e); }
   }
 
   function getSession() {
     try {
       var raw = localStorage.getItem(SESSION_KEY);
       return raw ? JSON.parse(raw) : null;
-    } catch (e) {
-      return null;
-    }
+    } catch (e) { return null; }
   }
 
   function clearSession() {
-    try {
-      localStorage.removeItem(SESSION_KEY);
-    } catch (e) {
-      console.warn("[data.js] No se pudo limpiar la sesión.", e);
-    }
+    try { localStorage.removeItem(SESSION_KEY); }
+    catch (e) { console.warn("[data.js] No se pudo limpiar la sesión.", e); }
   }
 
-  function isLoggedIn() {
-    return getSession() !== null;
-  }
+  function isLoggedIn() { return getSession() !== null; }
+  function isAdmin() { var s = getSession(); return s && s.rol === "Administrador"; }
+  function logout() { clearSession(); }
 
-  function isAdmin() {
-    var s = getSession();
-    return s && s.rol === "Administrador";
-  }
+  /* --- CRUD Usuarios --- */
 
-  function logout() {
-    clearSession();
-  }
-
+  /* Elimina usuario. Bloquea si es el último admin o es el usuario activo. */
   function eliminarUsuario(id) {
     var data = getData();
     var usuario = data.usuarios.find(function (u) { return u.id === id; });
-
     if (!usuario) return { error: "Usuario no encontrado." };
 
     var admins = data.usuarios.filter(function (u) { return u.rol === "Administrador"; });
@@ -192,6 +186,7 @@
     return { exito: true };
   }
 
+  /* Reinicia todo a datos iniciales (incluye sesión) */
   function resetData() {
     _cache = null;
     localStorage.removeItem(STORAGE_KEY);
@@ -199,6 +194,7 @@
     return getData();
   }
 
+  /* --- Exportación --- */
   if (typeof module !== "undefined" && module.exports) {
     module.exports = {
       getData: getData, setData: setData,
