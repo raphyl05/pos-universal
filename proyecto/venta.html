@@ -12,12 +12,18 @@
     <div class="pos">
         <!-- Encabezado -->
         <header class="page-head">
-            <h1>Venta #000184</h1>
-            <button class="more-btn" aria-label="Ms opciones">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1" /><circle
-                    cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /></svg>
-            </button>
+            <h1>Facturación</h1>
+            <div class="header-center">
+                <input type="date" id="sale-date">
+            </div>
+            <div class="header-right">
+                <span class="invoice-code">Venta #<span id="invoice-number">000000</span></span>
+                <button class="more-btn" id="more-btn" aria-label="Ms opciones">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1" /><circle
+                        cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /></svg>
+                </button>
+            </div>
         </header>
 
         <!-- ===== STOCK MODAL FLOTANTE ===== -->
@@ -49,6 +55,27 @@
             </div>
         </div>
 
+        <!-- ===== FACTURAS MODAL ===== -->
+        <div class="fact-overlay" id="fact-overlay" aria-hidden="true">
+            <div class="fact-modal" role="dialog" aria-label="Buscar facturas">
+                <div class="fact-head">
+                    <h2>Buscar Facturas</h2>
+                    <button class="fact-close" id="fact-close" aria-label="Cerrar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line
+                            x1="6" y1="6" x2="18" y2="18" /></svg>
+                    </button>
+                </div>
+                <div class="fact-filters">
+                    <input type="date" id="fact-date-from" class="fact-date">
+                    <span class="fact-sep">—</span>
+                    <input type="date" id="fact-date-to" class="fact-date">
+                    <button id="fact-search-btn" type="button" class="fact-search-btn">Buscar</button>
+                </div>
+                <div class="fact-list" id="fact-list"></div>
+            </div>
+        </div>
+
         <!-- ===== CARRITO PRINCIPAL ===== -->
         <div class="cart">
 
@@ -67,6 +94,13 @@
                         x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect
                         x="14" y="14" width="7" height="7" rx="1" /></svg>
                     Stock
+                </button>
+                <button class="btn-facturas" id="btn-facturas" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Facturas
                 </button>
             </div>
 
@@ -101,17 +135,9 @@
                         <span class="total-value" id="cart-subtotal">RD$ 0.00</span>
                     </div>
                     <div class="total-row">
-                        <span class="total-label">Descuento</span>
+                        <span class="total-label">Descuento %</span>
                         <input type="number" id="discount-input" class="discount-input" min="0" max="100" value="0" step="0.1">
                         <span class="total-value" id="cart-discount">RD$ 0.00</span>
-                    </div>
-                    <div class="total-row">
-                        <span class="total-label">Total Exento</span>
-                        <span class="total-value" id="cart-exempt">RD$ 0.00</span>
-                    </div>
-                    <div class="total-row">
-                        <span class="total-label">Total Gravado</span>
-                        <span class="total-value" id="cart-taxed">RD$ 0.00</span>
                     </div>
                     <div class="total-row">
                         <span class="total-label">Total ITBIS</span>
@@ -122,7 +148,6 @@
 
             <!-- Checkout -->
             <div class="checkout-bar">
-                <button class="btn-guardar" type="button">Guardar</button>
                 <div class="checkout-total">
                     <span class="checkout-label">Total a pagar</span>
                     <strong class="checkout-value" id="cart-total">RD$ 0.00</strong>
@@ -133,7 +158,8 @@
                     <option value="Transferencia">Transferencia</option>
                     <option value="Mixto">Mixto</option>
                 </select>
-                <button class="btn-cobrar" type="button">COBRAR — F12</button>
+                <button class="btn-cobrar" type="button">COBRAR</button>
+                <button class="btn-guardar" type="button">Guardar venta</button>
             </div>
         </div>
     </div>

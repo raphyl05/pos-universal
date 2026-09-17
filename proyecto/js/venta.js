@@ -125,8 +125,6 @@
     var el;
     el = $("#cart-subtotal"); if (el) el.textContent = formatPrice(calc.subtotal);
     el = $("#cart-discount"); if (el) el.textContent = formatPrice(calc.descuento);
-    el = $("#cart-exempt"); if (el) el.textContent = formatPrice(calc.exempt);
-    el = $("#cart-taxed"); if (el) el.textContent = formatPrice(calc.taxed);
     el = $("#cart-itbis"); if (el) el.textContent = formatPrice(calc.itbis);
     el = $("#cart-total"); if (el) el.textContent = formatPrice(calc.total);
   }
@@ -396,7 +394,160 @@
               POS_DATA.addToCart(product.id);
               renderCartTable();
               codeInput.value = "";
-              focusSearch();
+    /* Numero de factura */
+    var invNum = $("#invoice-number");
+    if (invNum) { invNum.textContent = POS_DATA.getNumeroVenta(); }
+
+    /* Fecha actual */
+    var saleDate = $("#sale-date");
+    if (saleDate) {
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, "0");
+        var dd = String(today.getDate()).padStart(2, "0");
+        saleDate.value = yyyy + "-" + mm + dd;
+    }
+
+    /* Boton Facturas */
+    var btnFacturas = $("#btn-facturas");
+    var factOverlay = $("#fact-overlay");
+    var factClose = $("#fact-close");
+    var factDateFrom = $("#fact-date-from");
+    var factDateTo = $("#fact-date-to");
+    var factSearchBtn = $("#fact-search-btn");
+    var factList = $("#fact-list");
+
+    function openFactModal() {
+        if (factOverlay) {
+            factOverlay.classList.add("open");
+            factOverlay.setAttribute("aria-hidden", "false");
+            var d = new Date();
+            var df = factDateFrom ? factDateFrom.value : "";
+            var dt = factDateTo ? factDateTo.value : "";
+            if (!df) { factDateFrom.value = d.toISOString().slice(0, 10); }
+            if (!dt) { factDateTo.value = d.toISOString().slice(0, 10); }
+            searchFacts();
+        }
+    }
+
+    function closeFactModal() {
+        if (factOverlay) {
+            factOverlay.classList.remove("open");
+            factOverlay.setAttribute("aria-hidden", "true");
+        }
+    }
+
+    function renderFactList(ventas) {
+        if (!factList) return;
+        factList.innerHTML = "";
+        if (!ventas || ventas.length === 0) {
+            var empty = document.createElement("div");
+            empty.className = "fact-empty";
+            empty.textContent = "No se encontraron facturas.";
+            factList.appendChild(empty);
+            return;
+        }
+        ventas.forEach(function (v) {
+            var item = document.createElement("div");
+            item.className = "fact-item";
+            var estado = v.estado || "Pendiente";
+            var detail = "Fecha: " + (v.fecha ? new Date(v.fecha).toLocaleDateString() : "N/A");
+            if (v.cliente && v.cliente !== "Contado") {
+                detail += " | Cliente: " + v.cliente;
+            }
+            item.innerHTML = '<div class="fact-info"><span class="fact-numero">Venta #' + escapeHtml(String(v.numero)) + '</span><span class="fact-detail">' + escapeHtml(detail) + '</span></div><span class="fact-estado ' + estado + '">' + escapeHtml(estado) + '</span><span class="fact-total">RD$ ' + Number(v.total).toFixed(2) + '</span>';
+            item.addEventListener("click", function () {
+                loadFactAsCurrent(v);
+                closeFactModal();
+            });
+            factList.appendChild(item);
+        });
+    }
+
+    function searchFacts() {
+        var fromDate = factDateFrom ? factDateFrom.value : "";
+        var toDate = factDateTo ? factDateTo.value : "";
+        var ventas = POS_DATA.getVentas() || [];
+        var filtered = ventas;
+        if (fromDate || toDate) {
+            filtered = ventas.filter(function (v) {
+                var dateStr = v.fecha ? v.fecha.slice(0, 10) : "";
+                if (fromDate && dateStr < fromDate) return false;
+                if (toDate && dateStr > toDate) return false;
+                return true;
+            });
+        }
+        renderFactList(filtered);
+    }
+
+    function loadFactAsCurrent(fact) {
+        var cart = [];
+        if (fact.productos && fact.productos.length > 0) {
+            fact.productos.forEach(function (p) {
+                cart.push({ id: p.id, quantity: p.quantity, priceOverride: p.price });
+            });
+        }
+        POS_DATA.setCart(cart);
+        var invNum = $("#invoice-number");
+        if (invNum) { invNum.textContent = POS_DATA.getNumeroVenta(); }
+        var cn = $("#client-nombre"), ct = $("#client-telefono"), cc = $("#client-cedula"), cd = $("#client-direccion");
+        if (fact.clienteData && typeof fact.clienteData === "object") {
+            if (cn) cn.value = fact.clienteData.nombre || "";
+            if (ct) ct.value = fact.clienteData.telefono || "";
+            if (cc) cc.value = fact.clienteData.cedula || "";
+            if (cd) cd.value = fact.clienteData.direccion || "";
+        } else if (fact.cliente && fact.cliente !== "Contado") {
+            if (cn) cn.value = fact.cliente;
+        }
+        var discInput = $("#discount-input");
+        if (discInput && fact.descuento && fact.subtotal) {
+            discInput.value = ((fact.descuento / fact.subtotal) * 100).toFixed(1);
+        }
+        if (saleDate && fact.fecha) {
+            saleDate.value = fact.fecha.slice(0, 10);
+        }
+        updateCartTotals();
+        renderCartTable();
+    }
+
+    if (btnFacturas) { btnFacturas.addEventListener("click", openFactModal); }
+    if (factClose) { factClose.addEventListener("click", closeFactModal); }
+    if (factSearchBtn) { factSearchBtn.addEventListener("click", searchFacts); }
+    if (factDateFrom) { factDateFrom.addEventListener("change", searchFacts); }
+    if (factDateTo) { factDateTo.addEventListener("change", searchFacts); }
+
+    /* Menu tres puntos */
+    var moreBtn = $("#more-btn");
+    if (moreBtn) {
+        var moreMenu = null;
+        document.addEventListener("click", function () {
+            if (moreMenu) { moreMenu.remove(); moreMenu = null; }
+        });
+        moreBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            if (moreMenu) { moreMenu.remove(); moreMenu = null; return; }
+            moreMenu = document.createElement("div");
+            moreMenu.className = "more-menu";
+            moreMenu.innerHTML = '<button id="btn-salir" type="button">Salir</button>';
+            var headerRight = $(".header-right");
+            if (headerRight) {
+                headerRight.appendChild(moreMenu);
+            } else {
+                var pageHead = $(".page-head");
+                if (pageHead) { pageHead.appendChild(moreMenu); }
+                else { document.body.appendChild(moreMenu); }
+            }
+            var salirBtn = $("#btn-salir");
+            if (salirBtn) {
+                salirBtn.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    window.location.href = "dashboard.html";
+                });
+            }
+        });
+    }
+
+    focusSearch();
             }
           }
         }
