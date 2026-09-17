@@ -70,17 +70,17 @@ POS-UNIVERSAL/
     ├── resumen.html           # Resumen del negocio (KPI, gráfica, últimas ventas)
     ├── nuevo-negocio.html     # Formulario "Crear nuevo negocio"
     ├── cierre-caja.html       # Cierre de caja (resumen + conteo de denominaciones)
-    ├── venta.html             # Pantalla de venta POS (catálogo + carrito)
+    ├── venta.html             # Pantalla POS: carrito principal, facturación, clientes (Block 1 + Block 2)
     ├── inventario.html        # Inventario: listado de productos (tabla + filtros)
     ├── nuevo-producto.html    # Formulario "Nuevo producto" (alta de producto)
     ├── apertura-caja.html     # Apertura de caja (fondo inicial + denominaciones)
     ├── completar-pago.html   # Modal "Completar pago" sobre venta oscurecida
     ├── logo.jpg               # Logo real (única imagen usada por el código)
-    ├── js/                    # ← Parte 0 + 1 completadas
+    ├── js/                    # ← Parte 0 + 1 + Venta completadas
     │       ├── data.js            # Modelo de datos: negocios, productos, ventas, carrito (localStorage)
     │   ├── app.js             # Shell: menú activo, logout, navegación global
     │   ├── login.js           # Login + registro (lógica específica del login)
-    │   ├── venta.js         # Pantalla POS: catálogo, filtros, carrito, pago, navegación
+    │   ├── venta.js         # Pantalla POS: catálogo, carrito, totales, facturas, menú salir
     │   ├── dashboard.js       # Render dinámico de tarjetas de negocios desde data.js
     │   ├── resumen.js         # KPIs dinámicos, gráfica SVG, últimas ventas desde data.js
     │   └── nuevo-negocio.js   # Formulario "Crear nuevo negocio" (preview, guardado, redirect)
@@ -196,7 +196,27 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
 - Iconos SVG en línea (Lucide/Feather): search, more-horizontal, x, minus, plus, banknote,
   credit-card, landmark/bank, percent → sin CDN. Emojis nativos para productos/miniaturas.
 - 100% responsive: 4 columnas ≥1320px→ menor, catálogo/carrito apilados ≤1080px, 3 columnas ≤860px,
-  2 columnas ≤600px; pestañas con scroll horizontal en pantallas angostas.
+     2 columnas ≤600px; pestañas con scroll horizontal en pantallas angostas.
+
+### Bloque 1 — Venta: Layout cliente/totales (17/09/2026) → `0d3ab89`
+- **Clientes (3 cajas en fila + dirección abajo)**: Nombre, Teléfono, Cédula en fila, Dirección ancho completo abajo.
+- **Checkout bar**: Total a pagar (gradiente verde), Cobrar (índigo), Guardar venta (secundario) + Select método de pago.
+- **Totales**: Subtotal | Descuento % (input inline) | Total ITBIS. Sin Exento/Gravado (solo ITBIS por simplicidad).
+- **`data.js` calculateCart**: retorna `{subtotal, descuento, exempt, taxed, itbis, total, items}` con desglose exento/taxed/gravado.
+- **12 productos** con campo `exento` (3 marcados `true` para testing ITBIS).
+- **`registrarVenta`**: almacena nuevos campos (descuento, datos cliente, ITBIS).
+- **`completar-pago.js`**: usa `calc.itbis` en vez de `calc.impuestos`.
+- **`updateCartTotals`**: actualiza 6 campos (subtotal, descuento, itbis, total, etc.).
+- **Fix teclado**: eliminado `keydown` duplicado en `document` que causaba salto de 2 en 2 en codeInput.
+
+### Bloque 2 — Venta: Facturación header, modal facturas, menú salir (17/09/2026) → `19dff5b`, `a85a027`
+- **Header**: "Facturación" (izq), fecha editable (centro, valor actual por defecto), código de venta (der).
+- **Botón Facturas**: estilo Stock (btn-facturas), abre modal búsqueda.
+- **Modal facturas**: overlay oscurecido, Fecha Desde/Hasta + botón Buscar, lista de facturas encontradas (número, fecha, cliente, estado, total). Click carga factura como venta actual.
+- **Menú 3 puntos**: botón en header con menú flotante → opción "Salir" → redirige a dashboard.html.
+- **`venta.js`**: `openFactModal`, `closeFactModal`, `renderFactList`, `searchFacts`, `loadFactAsCurrent`, listeners btn-facturas/fact-close/fechas, menú tres puntos con Salir.
+- **`loadFactAsCurrent`**: carga productos, datos cliente, descuento y fecha de la factura seleccionada.
+- **`renderFactList`**: renderiza facturas filtradas por rango de fecha, con `escapeHtml`.
 
 ### Ventana nueva: `inventario.html` + `css/inventario-style.css` (16/09/2026)
 - Pantalla "Inventario → Productos" según la guía. Misma base que `cierre-caja.html`
@@ -305,7 +325,10 @@ Trabajo por partes, en orden:
 9. ✅ Completar Pago — modal, recibido, cambio en vivo → `6e46c30`
 10. ✅ Venta mejoras — foco buscador, teclado, orden carrito → `905d7f3`
 11. ✅ Venta rediseñada — carrito principal, inventario overlay, precio editable → `5dbe74c`
-12. ⏳ Inventario → Nuevo Producto → Apertura/Cierre Caja
+12. ✅ Bloque 1 — layout cliente/totales, descuento inline, itbis/exento/gravado, fix teclado → `0d3ab89`
+13. ✅ Bloque 2 HTML/CSS — facturación header, fecha, modal búsqueda facturas, menú salir → `19dff5b`
+14. ✅ Bloque 2 JS — facturas modal, fecha, menú salir → `a85a027`
+15. ⏳ Inventario → Nuevo Producto → Apertura/Cierre Caja
 
 ### Ventana `venta.html` — Rediseño (17/09/2026)
 
@@ -333,7 +356,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `5dbe74c` — `feat: venta rediseñada - carrito principal, inventario overlay, precio editable, cliente opcional`
+- **Último commit:** `a85a027` — `feat: bloque 2 JS - facturas modal, fecha, menu salir en venta.js`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
@@ -343,6 +366,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 | `proyecto/js/data.js` | Sección por sección (Persistencia, Getters, Auth, Sesión, CRUD) | Modelo: negocios, productos, ventas, usuarios, denominaciones + funciones auth |
 | `proyecto/js/app.js` | Cada función documentada | Shell: verificación de sesión, navegación, menú activo, logout, render usuario |
 | `proyecto/js/login.js` | Sección por sección (Referencias, Toggle, Login, Registro, Auto-redirect) | Lógica de login/registro: validación, creación de cuentas, sesión |
+| `proyecto/js/venta.js` | Init (Referencias, Foco, Renderizar, Categorías, Totales, Pago, Facturas, Menú), keydown, actualizarTotales, carrito, calcularTotal, completarPago, registrarVenta, facturas (open/close/render/search/loadAsCurrent), menú salir | Pantalla POS: catálogo, carrito, totales, pago, facturación, menú salir |
 | `proyecto/js/dashboard.js` | Sección por sección (Iconos, Render, Escape, Init) | Render dinámico de tarjetas de negocios desde data.js |
 | `proyecto/js/resumen.js` | Init (KPIs, Gráfica, Productos, Ventas) | KPIs dinámicos, gráfica SVG, productos más vendidos y últimas ventas desde data.js |
 | `proyecto/js/nuevo-negocio.js` | Init (Preview, Guardar, Error) | Formulario "Crear nuevo negocio": preview en vivo, validación, guardado en data.js, redirect a dashboard |
