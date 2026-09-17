@@ -275,6 +275,13 @@ Trabajo por partes, en orden:
 > Crear el modelo de datos compartido y el shell de navegación.
 > Luego conectar Login y Dashboard.
 
+## Control de versión
+
+- **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
+- **Rama activa:** `main`
+- **Último commit:** `1e75e67` — `feat: maqueta frontend estática - 9 pantallas HTML/CSS optimizadas`
+- **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
+
 ---
 
 ## PROMPT MAESTRO — Forma de trabajo
