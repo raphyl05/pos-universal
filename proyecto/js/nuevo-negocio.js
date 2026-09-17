@@ -18,6 +18,13 @@
   var prevTipo = $("#pre-tipo");
   var btnGuardar = $("#btn-guardar");
 
+  /* Solo números en teléfono: digits, +, -, (, ), espacios */
+  if (telefono) {
+    telefono.addEventListener("input", function () {
+      telefono.value = telefono.value.replace(/[^0-9+\-() ]/g, "");
+    });
+  }
+
   /* Fecha por defecto: hoy */
   if (fecha) {
     fecha.value = new Date().toISOString().split("T")[0];
@@ -41,6 +48,7 @@
     btnGuardar.addEventListener("click", function () {
       var nombreVal = nombre.value.trim();
       var tipoVal = tipo.value;
+      var telefonoVal = telefono ? telefono.value.trim() : "";
 
       if (!nombreVal) {
         showError("El nombre del negocio es obligatorio.");
@@ -51,6 +59,12 @@
       if (!tipoVal) {
         showError("El tipo de negocio es obligatorio.");
         tipo.focus();
+        return;
+      }
+
+      if (telefonoVal && !/^[\d+\-() ]+$/.test(telefonoVal)) {
+        showError("El teléfono solo puede contener números y caracteres de formato (+ - ( ) ).");
+        telefono.focus();
         return;
       }
 

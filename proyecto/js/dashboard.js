@@ -48,7 +48,10 @@
         '</div>' +
         '<div class="card-footer">' +
           '<span class="status-badge ' + (n.estado === "Activo" ? "active" : "") + '">' + escapeHtml(n.estado) + '</span>' +
-          '<button class="btn-enter" type="button">Entrar</button>' +
+          '<div class="card-actions">' +
+            '<button class="btn-enter" type="button">Entrar</button>' +
+            '<button class="btn-delete" type="button" data-id="' + n.id + '" aria-label="Eliminar negocio">Eliminar</button>' +
+          '</div>' +
         '</div>';
 
       grid.appendChild(card);
@@ -72,6 +75,36 @@
     return div.innerHTML;
   }
 
+  /* Confirmar y eliminar negocio */
+  function eliminarNegocio(id) {
+    var negocio = POS_DATA.getNegocioById(id);
+    if (!negocio) return;
+    var mensaje = "¿Eliminar el negocio \"" + negocio.nombre + "\"?";
+    if (typeof confirm !== "undefined" && !confirm(mensaje)) return;
+
+    var result = POS_DATA.eliminarNegocio(id);
+    if (result.exito) {
+      renderNegocios();
+    } else {
+      showError(result.error);
+    }
+  }
+
+  function showError(msg) {
+    var existing = $(".error-msg");
+    if (existing) existing.remove();
+
+    var error = document.createElement("div");
+    error.className = "error-msg";
+    error.textContent = msg;
+
+    var grid = $(".business-grid");
+    var container = grid ? grid.parentElement : null;
+    if (container) {
+      container.insertBefore(error, grid);
+    }
+  }
+
   /* Ejecutar al cargar */
   function init() {
     renderNegocios();
@@ -83,6 +116,17 @@
         var card = e.target.closest(".create-new");
         if (card) {
           window.location.href = "nuevo-negocio.html";
+          return;
+        }
+        var btnDelete = e.target.closest(".btn-delete");
+        if (btnDelete) {
+          var id = parseInt(btnDelete.getAttribute("data-id"), 10);
+          if (!isNaN(id)) eliminarNegocio(id);
+          return;
+        }
+        var btnEnter = e.target.closest(".btn-enter");
+        if (btnEnter) {
+          window.location.href = "resumen.html";
         }
       });
     }

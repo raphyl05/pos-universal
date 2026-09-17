@@ -190,7 +190,10 @@
 
   /* Registra un nuevo negocio. Retorna { error } o { exito, negocio }. */
   function registrarNegocio(nombre, tipo) {
-    if (!nombre || !tipo) return { error: "Nombre y tipo son obligatorios." };
+    if (typeof nombre !== "string" || typeof tipo !== "string") {
+      return { error: "Nombre y tipo deben ser texto." };
+    }
+    if (!nombre.trim() || !tipo.trim()) return { error: "Nombre y tipo son obligatorios." };
     if (getNegocios().some(function (n) { return n.nombre === nombre; })) {
       return { error: "Ese nombre de negocio ya existe." };
     }
@@ -201,8 +204,21 @@
     return { exito: true, negocio: nuevo };
   }
 
+  /* Elimina negocio. Retorna { error } o { exito }. */
+  function eliminarNegocio(id) {
+    var numId = Number(id);
+    if (!Number.isInteger(numId) || numId <= 0) return { error: "ID de negocio inválido." };
+    var data = getData();
+    var negocio = data.negocios.find(function (n) { return n.id === numId; });
+    if (!negocio) return { error: "Negocio no encontrado." };
+
+    data.negocios = data.negocios.filter(function (n) { return n.id !== numId; });
+    setData(data);
+    return { exito: true };
+  }
+
   function getNegocioById(id) {
-    return getNegocios().find(function (n) { return n.id === id; });
+    return getNegocios().find(function (n) { return n.id === Number(id); });
   }
 
   /* Reinicia todo a datos iniciales */
@@ -220,6 +236,7 @@
       getNegocios: getNegocios, getProductos: getProductos, getVentas: getVentas, getDenominaciones: getDenominaciones,
       getUsuarios: getUsuarios, getUsuarioByUsername: getUsuarioByUsername,
       registrarNegocio: registrarNegocio, getNegocioById: getNegocioById,
+      eliminarNegocio: eliminarNegocio,
       registrarUsuario: registrarUsuario, loginUsuario: loginUsuario,
       setSession: setSession, getSession: getSession, clearSession: clearSession,
       isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,
@@ -231,6 +248,7 @@
       getNegocios: getNegocios, getProductos: getProductos, getVentas: getVentas, getDenominaciones: getDenominaciones,
       getUsuarios: getUsuarios, getUsuarioByUsername: getUsuarioByUsername,
       registrarNegocio: registrarNegocio, getNegocioById: getNegocioById,
+      eliminarNegocio: eliminarNegocio,
       registrarUsuario: registrarUsuario, loginUsuario: loginUsuario,
       setSession: setSession, getSession: getSession, clearSession: clearSession,
       isLoggedIn: isLoggedIn, isAdmin: isAdmin, logout: logout,

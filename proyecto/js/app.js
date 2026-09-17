@@ -12,7 +12,8 @@
   /* Páginas que requieren sesión activa */
   var PAGES_REQUIRE_LOGIN = [
     "dashboard.html", "resumen.html", "venta.html", "completar-pago.html",
-    "inventario.html", "nuevo-producto.html", "apertura-caja.html", "cierre-caja.html"
+    "inventario.html", "nuevo-producto.html", "nuevo-negocio.html",
+    "apertura-caja.html", "cierre-caja.html"
   ];
 
   /* Obtiene el nombre del archivo actual */
