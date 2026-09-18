@@ -418,6 +418,8 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 | `proyecto/js/resumen.js` | Init (KPIs, Gráfica, Productos, Ventas) | KPIs dinámicos, gráfica SVG, productos más vendidos y últimas ventas desde data.js |
 | `proyecto/js/nuevo-negocio.js` | Init (Preview, Guardar, Error) | Formulario "Crear nuevo negocio": preview en vivo, validación, guardado en data.js, redirect a dashboard |
 | `proyecto/js/inventario.js` | Init (Render, Filtros, CRUD, Preview, Calculadora) | Tabla dinámica, filtros, paginación, alta/edición/eliminación, vista previa en vivo, calculadora flotante |
+| `proyecto/js/apertura-caja.js` | Init (Validar, Guardar, Navegar) | Apertura: valida fondo, guarda en data.js, redirige a dashboard |
+| `proyecto/js/cierre-caja.js` | Init (Calcular, Diferencia, Confirmar) | Cierre: recalc subtotales, total contado, diferencia, alerta, guarda en data.js |
 
 ---
 

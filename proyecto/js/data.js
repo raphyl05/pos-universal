@@ -483,6 +483,32 @@
     return { exito: true };
   }
 
+  /* --- Apertura / Cierre Caja --- */
+  function getApertura() {
+    var data = getData();
+    return data.apertura || null;
+  }
+  function setApertura(fondo, cajero) {
+    var data = getData();
+    data.apertura = {
+      fondo: Number(fondo) || 0,
+      cajero: cajero || (getSession() ? getSession().nombre : "Lissette Díaz"),
+      fecha: new Date().toISOString()
+    };
+    setData(data);
+    return { exito: true };
+  }
+  function getCierre() {
+    var data = getData();
+    return data.cierre || null;
+  }
+  function setCierre(datos) {
+    var data = getData();
+    data.cierre = datos;
+    setData(data);
+    return { exito: true };
+  }
+
   /* --- Exportación --- */
   if (typeof module !== "undefined" && module.exports) {
     module.exports = {
@@ -498,7 +524,9 @@
       eliminarUsuario: eliminarUsuario, resetData: resetData,
       getCart: getCart, addToCart: addToCart, removeFromCart: removeFromCart,
       updateCartQuantity: updateCartQuantity, updateCartPrice: updateCartPrice, clearCart: clearCart, calculateCart: calculateCart,
-      registrarVenta: registrarVenta
+      registrarVenta: registrarVenta,
+      getApertura: getApertura, setApertura: setApertura,
+      getCierre: getCierre, setCierre: setCierre
     };
   } else {
     window.POS_DATA = {
@@ -514,7 +542,9 @@
       eliminarUsuario: eliminarUsuario, resetData: resetData,
       getCart: getCart, addToCart: addToCart, removeFromCart: removeFromCart,
       updateCartQuantity: updateCartQuantity, updateCartPrice: updateCartPrice, clearCart: clearCart, calculateCart: calculateCart,
-      registrarVenta: registrarVenta
+      registrarVenta: registrarVenta,
+      getApertura: getApertura, setApertura: setApertura,
+      getCierre: getCierre, setCierre: setCierre
     };
   }
 })();
