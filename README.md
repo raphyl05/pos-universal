@@ -34,8 +34,8 @@ Así la misma app web podrá envolverse en móvil + escritorio sin rehacer la l�
 | **5** | **Venta Pt.2** | Carrito funcional: add/remove/stepper, cálculo Subtotal+Descuento+Impuestos en vivo | Venta Pt.1 |
 | **6** | **Completar Pago** | Recibido/Cambio calculados, métodos de pago, confirmar → crea venta | Venta Pt.2 |
 | **7** | **Inventario + Nuevo Producto** — Búsqueda, filtros, tabla dinámica, paginación, CRUD (alta/edición/eliminación) con vista previa | data.js |
-| **8** | **Apertura Caja** — Inputs de denominaciones recalculan subtotales + total automáticamente | data.js |
-| **9** | **Cierre Caja** — Inputs de denominaciones recalculan subtotales + diferencia automáticamente | data.js |
+| **8** | **Apertura Caja** — Fondo inicial simple (sin desglose) | data.js |
+| **9** | **Cierre Caja** — Resumen + desglose por billete/moneda + diferencia | data.js |
 
 ### Principios arquitectónicos
 
@@ -74,25 +74,26 @@ POS-UNIVERSAL/
     ├── apertura-caja.html     # Apertura de caja (fondo inicial, sin desglose)
     ├── completar-pago.html   # Modal "Completar pago" sobre venta oscurecida
     ├── logo.jpg               # Logo real (única imagen usada por el código)
-    ├── js/                    # ← Parte 0 + 1 + Venta + Inventario completadas
-    │       ├── data.js            # Modelo de datos: negocios, productos, ventas, carrito (localStorage)
+    ├── js/                    # ← Parte 0 + 1 + Venta + Inventario + Caja completadas
+    │   ├── data.js            # Modelo de datos: negocios, productos, ventas, carrito, denominaciones (localStorage)
     │   ├── app.js             # Shell: menú activo, logout, navegación global
     │   ├── login.js           # Login + registro (lógica específica del login)
-    │   ├── venta.js         # Pantalla POS: catálogo, carrito, totales, facturas, menú salir
-    │   ├── inventario.js      # Inventario + Nuevo Producto: tabla dinámica, filtros, paginación, CRUD, preview
+    │   ├── venta.js           # Pantalla POS: catálogo, carrito, totales, facturas, menú salir
+    │   ├── inventario.js      # Inventario + Nuevo Producto: tabla dinámica, filtros, paginación, CRUD, preview, calculadora
     │   ├── dashboard.js       # Render dinámico de tarjetas de negocios desde data.js
     │   ├── resumen.js         # KPIs dinámicos, gráfica SVG, últimas ventas desde data.js
-    │   └── nuevo-negocio.js   # Formulario "Crear nuevo negocio" (preview, guardado, redirect)
+    │   ├── nuevo-negocio.js   # Formulario "Crear nuevo negocio" (preview, guardado, redirect)
     └── css/
-        ├── login-style.css          # Estilos del login
-        ├── dashboard-style.css      # Estilos del dashboard
-        ├── resumen-style.css        # Estilos del resumen del negocio
-        ├── nuevo-negocio-style.css  # Estilos del formulario de nuevo negocio
-        ├── cierre-caja-style.css    # Estilos del cierre de caja
-        └── venta-style.css          # Estilos de la pantalla de venta
-        └── inventario-style.css     # Estilos del inventario de productos
-        └── apertura-caja-style.css   # Estilos de la apertura de caja
-        └── completar-pago-style.css  # Estilos del modal de pago
+        ├── login-style.css
+        ├── dashboard-style.css
+        ├── resumen-style.css
+        ├── nuevo-negocio-style.css
+        ├── cierre-caja-style.css
+        ├── venta-style.css
+        ├── inventario-style.css
+        ├── apertura-caja-style.css
+        ├── completar-pago-style.css
+        └── tokens.css
 ```
 
 ## Cómo abrir
@@ -119,7 +120,36 @@ La ventana de venta ahora está **100% funcional**:
 - Ambos botones del topbar y el modal están responsivos (≤700px)
 - JS validado (sintaxis OK), CSS balanceado (205/205 braces)
 
-## Avance de la última sesión (16/09/2026)
+## Trabajo reciente (18/09/2026)
+
+### Completado
+
+| Tarea | Archivos | Detalle |
+|---|---|---|
+| **Inventario formulario** | `inventario.html`, `js/inventario.js`, `css/inventario-style.css` | Simplificado: código de barras principal, referencia/proveedor, calculadora flotante, sin stock mínimo, sin Importar |
+| **Apertura Caja simplificada** | `apertura-caja.html`, `css/apertura-caja-style.css` | Solo fondo inicial (sin desglose de denominaciones). Input grande monospace, total, botón Abrir caja |
+| **Cierre Caja** | `cierre-caja.html`, `css/cierre-caja-style.css` | Completo: resumen + desglose por billete/moneda (8 denominaciones) + total contado/diferencia + alerta + Realizar cierre |
+| **Limpieza** | `css/inventario-style.css`, `README.md` | Eliminado `.btn-secondary`/Importar, actualizado README |
+
+### Apertura Caja (`apertura-caja.html`)
+- Pantalla "Apertura de caja" simplificada. Base de estilo idéntica a `cierre-caja.html`.
+- Sidebar ≈270px con brand, menú: Dashboard activo (lavanda), Ventas, Inventario colapsado, Clientes, Reportes, **Caja activo** (lavanda + índigo).
+- Header sin búsqueda: avatar (ui-avatars), Lissette Díaz/Administrador, campana con punto rojo.
+- Contenido: título + meta, Tarjeta "Fondo inicial" (input grande monospace centrado), Total de apertura, botón "Abrir caja".
+- **Sin desglose de denominaciones** (simple).
+- Iconos SVG inline, sin CDN. 100% responsive (checkbox hamburguesa, sin JS).
+
+### Cierre Caja (`cierre-caja.html`)
+- Pantalla "Cierre de caja" según guía. Sidebar ≈270px blanco-humo, header ≈80px con buscador + usuario + campana.
+- Sidebar: brand, menú Caja activo/expandido con sub-ítem "Cierres" (conector tipo árbol CSS). Sin botón de cerrar sesión.
+- Contenido en 2 columnas:
+  - **Resumen de caja**: Fondo inicial, ventas en efectivo, entradas, salidas, total esperado
+  - **Desglose**: tabla de 8 denominaciones (RD$2,000 → RD$1) con cantidad + subtotal
+  - **Totales**: Total contado + Diferencia (badge rojo)
+- Barra de acción: alerta diferencia + botón "Realizar cierre".
+- Iconos SVG inline, sin CDN. 100% responsive.
+
+## Avance de la sesión anterior (17/09/2026)
 
 Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el código con `[opencode]`.
 
@@ -373,7 +403,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `ba11473` — `feat: apertura-caja simplificada (sin desglose, solo fondo inicial)`
+- **Último commit:** `eff39f4` — `docs: README actualizado - apertura simplificada, cierre completo, proximos pasos`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
