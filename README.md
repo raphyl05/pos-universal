@@ -109,6 +109,18 @@ Abrir `proyecto/login.html` (o cualquier pantalla) con doble clic
 
 Todas las pantallas usan iconos SVG en línea (Lucide/Feather) y avatares SVG inline → **funcionan offline**.
 
+## Ventana `venta.html` — Completada (17/09/2026) → `a5e3b5e`
+
+La ventana de venta ahora está **100% funcional**:
+
+- **`Nueva Factura`** (topbar, rosa): limpia el carrito completo con confirmación
+- **`Facturas`** (topbar, índigo): abre modal búsqueda por rango de fecha; muestra todas las ventas con estado (Pagado/Pendiente/Cancelado); click muestra detalles
+- **`Salir`** (header-right): redirige a dashboard.html
+- **Fecha actual**: visible en `#invoice-date` (ej: `17 sep 2026`)
+- **Menú 3-puntos**: opción Salir (alternativa al botón header-right)
+- Ambos botones del topbar y el modal están responsivos (≤700px)
+- JS validado (sintaxis OK), CSS balanceado (205/205 braces)
+
 ## Avance de la última sesión (16/09/2026)
 
 Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el código con `[opencode]`.
@@ -209,14 +221,11 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
 - **`updateCartTotals`**: actualiza 6 campos (subtotal, descuento, itbis, total, etc.).
 - **Fix teclado**: eliminado `keydown` duplicado en `document` que causaba salto de 2 en 2 en codeInput.
 
-### Bloque 2 — Venta: Facturación header, modal facturas, menú salir (17/09/2026) → `19dff5b`, `a85a027`
-- **Header**: "Facturación" (izq), fecha editable (centro, valor actual por defecto), código de venta (der).
-- **Botón Facturas**: estilo Stock (btn-facturas), abre modal búsqueda.
-- **Modal facturas**: overlay oscurecido, Fecha Desde/Hasta + botón Buscar, lista de facturas encontradas (número, fecha, cliente, estado, total). Click carga factura como venta actual.
-- **Menú 3 puntos**: botón en header con menú flotante → opción "Salir" → redirige a dashboard.html.
-- **`venta.js`**: `openFactModal`, `closeFactModal`, `renderFactList`, `searchFacts`, `loadFactAsCurrent`, listeners btn-facturas/fact-close/fechas, menú tres puntos con Salir.
-- **`loadFactAsCurrent`**: carga productos, datos cliente, descuento y fecha de la factura seleccionada.
-- **`renderFactList`**: renderiza facturas filtradas por rango de fecha, con `escapeHtml`.
+### Bloque 2 — Venta: Facturación header, modal facturas, menú salir (17/09/2026) → `a5e3b5e`
+- **Topbar del carrito**: `Nueva Factura` (limpia carrito con confirmación) + `Stock` (inventario overlay) + `Facturas` (modal búsqueda)
+- **Header**: "Facturación" (izq), fecha editable (centro, valor actual por defecto), código de venta (der), fecha actual en `#invoice-date`, `Salir` + menú 3-puntos (ambos en header-right)
+- **Modal facturas**: overlay oscurecido, Fecha Desde/Hasta + botón Buscar, lista de facturas encontradas (número, fecha, cliente, estado, total con icono de estado). Click muestra detalles. Filtra por rango de fecha.
+- **`venta.js`**: `openFactModal`, `closeFactModal`, `renderFactList`, `searchFacts`, `loadFactAsCurrent`, listeners btn-facturas/fact-close/fechas/btn-nueva-factura/btn-salir, menú tres puntos con Salir, fecha display en header
 
 ### Ventana nueva: `inventario.html` + `css/inventario-style.css` (16/09/2026)
 - Pantalla "Inventario → Productos" según la guía. Misma base que `cierre-caja.html`
@@ -327,25 +336,50 @@ Trabajo por partes, en orden:
 11. ✅ Venta rediseñada — carrito principal, inventario overlay, precio editable → `5dbe74c`
 12. ✅ Bloque 1 — layout cliente/totales, descuento inline, itbis/exento/gravado, fix teclado → `0d3ab89`
 13. ✅ Bloque 2 HTML/CSS — facturación header, fecha, modal búsqueda facturas, menú salir → `19dff5b`
-14. ✅ Bloque 2 JS — facturas modal, fecha, menú salir → `a85a027`
+14. ✅ Bloque 2 JS — facturas modal, fecha, nueva factura, salir → `a5e3b5e`
 15. ⏳ Inventario → Nuevo Producto → Apertura/Cierre Caja
 
-### Ventana `venta.html` — Rediseño (17/09/2026)
+### Ventana `venta.html` — Rediseño COMPLETADO (17/09/2026) → `a5e3b5e`
 
-La ventana de venta es la más usada. Se rediseña con la factura como vista principal:
+La ventana de venta está **completada** con toda la funcionalidad:
 
 | Característica | Detalle |
 |---|---|
 | **Carrito = vista principal** | La factura ocupa toda la pantalla. No es un panel lateral |
 | **Filas tipo tabla** | Código (SKU + código barras) \| Producto \| Cantidad \| Precio \| Total |
 | **Precio editable** | Cada fila permite modificar el precio unitario. Totales recalculan en vivo |
-| **Inventario overlay** | Botón "Inventario" abre catálogo completo (pestañas + buscador + grid) sobre la factura. Agregar con cantidad. El carrito permanece visible |
+| **Inventario overlay** | Botón "Stock" abre catálogo completo (pestañas + buscador + grid) sobre la factura. Agregar con cantidad. El carrito permanece visible |
 | **Foco siempre en código** | Al cargar y tras cada interacción, el cursor vuelve al campo de código. Soporte para escáner de código de barras (Enter para agregar) |
 | **Datos del cliente** | Fila opcional: Nombre, Teléfono, Cédula, Dirección. Se guardan con la venta |
+| **Nueva Factura** | Limpia el carrito completo con confirmación |
+| **Facturas** | Modal búsqueda por rango de fecha (desde/hasta). Muestra: número, cliente, total, método de pago, estado. Click muestra detalles |
 | **Cobrar** | Abre `completar-pago.html` con todos los datos en sessionStorage |
 | **Guardar venta** | Registra venta como "Pendiente" con datos del cliente |
+| **Fecha en header** | Fecha actual visible en `#invoice-date` (ej: `17 sep 2026`) |
+| **Salir** | Botón en header-right → redirige a dashboard.html. También disponible en menú 3-puntos |
 
-Las mejoras de la versión anterior (foco, teclado, orden, formato) están incluidas en este rediseño.
+Las mejoras de la versión anterior (foco, teclado, orden, formato) están incluidas.
+
+### Qué queda por hacer
+
+### Frontend (inmediato)
+| # | Tarea | Archivos |
+|---|---|---|
+| 1 | **Inventario** — búsqueda, filtros, tabla, paginación, editar/ver/eliminar | `inventario.html`, `css/inventario-style.css`, `js/inventario.js` |
+| 2 | **Nuevo Producto** — alta de producto con vista previa | `nuevo-producto.html`, `css/nuevo-producto-style.css`, `js/nuevo-producto.js` |
+| 3 | **Apertura Caja** — fondo inicial + denominaciones | `apertura-caja.html`, `css/apertura-caja-style.css` |
+| 4 | **Cierre Caja** — resumen + conteo + diferencia | `cierre-caja.html`, `css/cierre-caja-style.css` |
+| 5 | Conectar todas las pantallas al backend (API REST) | Todos los JS |
+
+### Backend (pendiente)
+- ASP.NET Core Web API con EF Core / Npgsql → PostgreSQL
+- Autenticación JWT + roles (Admin/Cajero)
+- CRUD completo: negocios, productos, ventas, usuarios, categorías, proveedores
+- Endpoints para cada pantalla del frontend
+
+### Futuro
+- App móvil (Capacitor/Ionic o PWA)
+- App escritorio (Tauri o Electron)
 
 ## Próxima apertura — dónde continuar
 
@@ -356,7 +390,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `a85a027` — `feat: bloque 2 JS - facturas modal, fecha, menu salir en venta.js`
+- **Último commit:** `a5e3b5e` — `feat: venta - ambos botones funcionales (nueva factura + busqueda facturas), fecha en header`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
@@ -366,7 +400,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 | `proyecto/js/data.js` | Sección por sección (Persistencia, Getters, Auth, Sesión, CRUD) | Modelo: negocios, productos, ventas, usuarios, denominaciones + funciones auth |
 | `proyecto/js/app.js` | Cada función documentada | Shell: verificación de sesión, navegación, menú activo, logout, render usuario |
 | `proyecto/js/login.js` | Sección por sección (Referencias, Toggle, Login, Registro, Auto-redirect) | Lógica de login/registro: validación, creación de cuentas, sesión |
-| `proyecto/js/venta.js` | Init (Referencias, Foco, Renderizar, Categorías, Totales, Pago, Facturas, Menú), keydown, actualizarTotales, carrito, calcularTotal, completarPago, registrarVenta, facturas (open/close/render/search/loadAsCurrent), menú salir | Pantalla POS: catálogo, carrito, totales, pago, facturación, menú salir |
+| `proyecto/js/venta.js` | Init (Referencias, Foco, Renderizar, Categorías, Totales, Pago, Facturas, Nueva Factura, Salir, Fecha), keydown, actualizarTotales, carrito, calcularTotal, completarPago, registrarVenta, facturas (open/close/render/search/loadAsCurrent), inventario (open/close/render), menú tres puntos | Pantalla POS completa: catálogo, carrito, totales, pago, facturación, búsqueda facturas, inventario overlay
 | `proyecto/js/dashboard.js` | Sección por sección (Iconos, Render, Escape, Init) | Render dinámico de tarjetas de negocios desde data.js |
 | `proyecto/js/resumen.js` | Init (KPIs, Gráfica, Productos, Ventas) | KPIs dinámicos, gráfica SVG, productos más vendidos y últimas ventas desde data.js |
 | `proyecto/js/nuevo-negocio.js` | Init (Preview, Guardar, Error) | Formulario "Crear nuevo negocio": preview en vivo, validación, guardado en data.js, redirect a dashboard |
