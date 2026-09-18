@@ -2,8 +2,8 @@
 
 /* ============================================================================
    apertura-caja-style.css — Estilos de la ventana "Apertura de caja"
-   Layout: sidebar fijo ≈270px + header ≈80px + contenido de ancho completo
-   (tarjeta de denominaciones + tarjeta de total con botón "Abrir caja").
+   Layout: sidebar fijo ≈270px + header ≈80px + contenido de ancho completo.
+   Formulario simple: solo fondo inicial (sin desglose de denominaciones).
    ============================================================================ */
 
 /* Reset básico */
@@ -13,37 +13,37 @@
     box-sizing: border-box;
 }
 
-/* Tokens de diseño centralizados (según la descripción de la guía) */
+/* Tokens de diseño */
 :root {
-    --bg-app: #EEF0F3;          /* Fondo del área de contenido */
-    --surface: #F8F9FB;         /* Sidebar, header y tarjetas */
-    --border-strong: #C9CDD6;   /* Borde de inputs numéricos */
-    --meta-sep: #D1D5DB;        /* Separador vertical de metadatos */
-    --table-head-bg: #ECEEF2;   /* Fondo del encabezado de tabla */
-    --navy: #2F3268;            /* Índigo navy (logo) */
-    --navy-btn: #31346B;        /* Índigo del botón "Abrir caja" */
-    --brand-text: #1E2244;      /* Texto "POSUniversal" en el sidebar */
-    --nav-active-bg: #E3E5F2;   /* Pill del ítem activo (lavanda) */
-    --nav-active-text: #3A3F77; /* Texto/ícono del ítem activo */
-    --nav-dash-text: #1F2937;   /* Texto del Dashboard activo */
-    --text-3: #6B7280;          /* Texto terciario (rol) */
-    --text-row: #1F2937;        /* Texto de filas/metadatos */
-    --radius-card: 12px;        /* Radios: tarjetas */
-    --radius-btn: 8px;          /* Radios: inputs/botones */
-    --shadow-toggle: 0 4px 12px rgba(49, 52, 107, 0.35); /* Sombra del botón flotante */
+    --bg-app: #EEF0F3;
+    --surface: #F8F9FB;
+    --border-strong: #C9CDD6;
+    --meta-sep: #D1D5DB;
+    --table-head-bg: #ECEEF2;
+    --navy: #2F3268;
+    --navy-btn: #31346B;
+    --brand-text: #1E2244;
+    --nav-active-bg: #E3E5F2;
+    --nav-active-text: #3A3F77;
+    --nav-dash-text: #1F2937;
+    --text-3: #6B7280;
+    --text-row: #1F2937;
+    --radius-card: 12px;
+    --radius-btn: 8px;
+    --shadow-toggle: 0 4px 12px rgba(49, 52, 107, 0.35);
 }
 
-/* Tipografía: Inter si está instalada, si no el stack del sistema */
+/* Tipografía */
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: var(--bg-app);
     color: var(--text);
     height: 100vh;
-    overflow: hidden;   /* El scroll ocurre dentro de .main, no en el body */
+    overflow: hidden;
     font-size: 16px;
 }
 
-/* Contenedor general: sidebar + zona principal en fila */
+/* Contenedor general */
 .app {
     display: flex;
     height: 100vh;
@@ -62,7 +62,6 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* Brand: cuadrado índigo con glifo + texto */
 .brand {
     display: flex;
     align-items: center;
@@ -96,7 +95,6 @@ body {
     overflow-y: auto;
 }
 
-/* Ítem del menú: icono de línea + texto */
 .nav-item {
     display: flex;
     align-items: center;
@@ -115,7 +113,6 @@ body {
     background: #ECEEF4;
 }
 
-/* Ítem activo (página actual): lavanda + texto/ícono índigo */
 .nav-item.active {
     background: var(--nav-active-bg);
     color: var(--nav-active-text);
@@ -125,7 +122,6 @@ body {
     color: var(--nav-active-text);
 }
 
-/* Dashboard activo: lavanda + texto oscuro (no índigo) */
 .nav-item.active-soft {
     background: var(--nav-active-bg);
     color: var(--nav-dash-text);
@@ -142,7 +138,6 @@ body {
     flex-shrink: 0;
 }
 
-/* Chevron de ítems colapsados (Inventario): a la derecha, apuntando abajo */
 .nav-item .chevron {
     width: 16px;
     height: 16px;
@@ -160,7 +155,7 @@ body {
     overflow-y: auto;
 }
 
-/* ===== Header (≈80px): sin búsqueda, usuario a la derecha ===== */
+/* ===== Header (≈80px) ===== */
 .topbar {
     min-height: 80px;
     background: var(--surface);
@@ -210,7 +205,6 @@ body {
     color: var(--text-3);
 }
 
-/* Botón de campana con punto rojo */
 .icon-btn {
     position: relative;
     width: 40px;
@@ -276,7 +270,6 @@ body {
     flex-wrap: wrap;
 }
 
-/* Separador vertical fino entre fecha y cajero */
 .meta-sep {
     width: 1px;
     height: 18px;
@@ -295,9 +288,10 @@ body {
 /* ===== Tarjeta "Fondo inicial" ===== */
 .fondo-card {
     overflow: hidden;
+    max-width: 560px;
+    margin: 0 auto;
 }
 
-/* Encabezado de la tarjeta */
 .card-head {
     padding: 20px 24px;
     border-bottom: 1px solid var(--border);
@@ -309,87 +303,61 @@ body {
     color: var(--text);
 }
 
-/* Encabezado de tabla: 3 columnas (Denominación | Cantidad | Subtotal) */
-.table-head {
-    display: grid;
-    grid-template-columns: 1fr 330px 1fr;
-    column-gap: 16px;
-    align-items: center;
-    padding: 12px 24px;
-    background: var(--table-head-bg);
-    font-size: 15px;
+/* Cuerpo: campo de fondo grande y centrado */
+.fondo-body {
+    padding: 40px 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.field-fondo {
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field-fondo label {
+    font-size: 13px;
     font-weight: 500;
     color: var(--text-2);
+    text-align: center;
 }
 
-/* Cantidad alineado sobre la columna de inputs; subtotal a la derecha */
-.col-qty { text-align: center; }
-.col-sub { text-align: right; }
-
-/* Fila de denominación (≈44px de alto, borde fino inferior) */
-.table-row {
-    display: grid;
-    grid-template-columns: 1fr 330px 1fr;
-    column-gap: 16px;
-    align-items: center;
-    min-height: 44px;
-    padding: 4px 24px;
-    border-bottom: 1px solid var(--border);
-}
-
-.table-row:last-child {
-    border-bottom: none;
-}
-
-/* Denominación (izquierda, 16px) */
-.denom {
-    font-size: 16px;
-    color: var(--text-row);
-    white-space: nowrap;
-}
-
-/* Input numérico al centro (≈325×36px, sin flechas) */
-.table-row input {
-    width: 325px;
-    max-width: 100%;
-    height: 36px;
-    justify-self: center;
-    padding: 0 8px;
+.field-fondo input {
+    width: 100%;
+    height: 80px;
+    padding: 0 16px;
     background: #FFFFFF;
-    border: 1px solid var(--border-strong);
+    border: 2px solid var(--border-input);
     border-radius: var(--radius-btn);
-    font-size: 15px;
-    font-family: inherit;
+    font-size: 28px;
+    font-weight: 700;
+    font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
     color: var(--text);
     text-align: center;
     outline: none;
-    -moz-appearance: textfield;   /* Quita las flechas de <input type=number> en Firefox */
-    appearance: textfield;
+    transition: border-color 0.2s;
 }
 
-.table-row input::-webkit-outer-spin-button,
-.table-row input::-webkit-inner-spin-button {
-    -webkit-appearance: none;     /* y en Chrome/Safari */
-    margin: 0;
-}
-
-.table-row input:focus {
+.field-fondo input:focus {
     border-color: var(--navy-btn);
+    box-shadow: 0 0 0 3px rgba(49, 52, 107, 0.1);
 }
 
-/* Subtotal (derecha, bold, 16px) */
-.subtotal {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-strong);
-    text-align: right;
-    white-space: nowrap;
+.field-fondo input::placeholder {
+    color: var(--placeholder);
+    font-weight: 400;
 }
 
 /* ===== Tarjeta inferior: total + botón ===== */
 .total-card {
     margin-top: 24px;
     padding: 20px 24px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .total-row {
@@ -397,6 +365,7 @@ body {
     align-items: baseline;
     justify-content: space-between;
     gap: 16px;
+    margin-bottom: 16px;
 }
 
 .total-label {
@@ -408,16 +377,16 @@ body {
 .total-value {
     font-size: 24px;
     font-weight: 700;
+    font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
     color: var(--text-strong);
     text-align: right;
     white-space: nowrap;
 }
 
-/* Botón "Abrir caja": navy, full-width, ≈44px */
+/* Botón "Abrir caja" */
 .btn-open {
     width: 100%;
     height: 44px;
-    margin-top: 16px;
     background: var(--navy-btn);
     color: #FFFFFF;
     border: none;
@@ -433,7 +402,7 @@ body {
     background: var(--navy);
 }
 
-/* ===== Botón flotante del menú móvil (hamburguesa) ===== */
+/* ===== Botón flotante del menú móvil ===== */
 .menu-toggle-input {
     position: absolute;
     left: -10000px;
@@ -492,7 +461,7 @@ body {
 
 /* ===== Responsive ===== */
 
-/* Laptops pequeñas: menos espacio lateral */
+/* Laptops pequeñas */
 @media (max-width: 1160px) {
     .topbar,
     .content {
@@ -534,7 +503,7 @@ body {
     }
 }
 
-/* Móvil (≤600px): título compacto, inputs que no desbordan */
+/* Móvil (≤600px) */
 @media (max-width: 600px) {
     body {
         font-size: 15px;
@@ -557,21 +526,13 @@ body {
         row-gap: 6px;
     }
 
-    /* El input de cantidad se encoge para no desbordar */
-    .table-head,
-    .table-row {
-        grid-template-columns: 1fr 96px 68px;
-        column-gap: 8px;
-        padding-left: 16px;
-        padding-right: 16px;
+    .fondo-body {
+        padding: 28px 16px;
     }
 
-    .table-row input {
-        width: 96px;
-    }
-
-    .subtotal {
-        font-size: 14px;
+    .field-fondo input {
+        height: 64px;
+        font-size: 22px;
     }
 
     .total-value {
