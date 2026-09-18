@@ -33,10 +33,9 @@ Así la misma app web podrá envolverse en móvil + escritorio sin rehacer la l�
 | **4** | **Venta Pt.1** | Catálogo dinámico (render productos), filtros por categoría, pestañas activas | data.js |
 | **5** | **Venta Pt.2** | Carrito funcional: add/remove/stepper, cálculo Subtotal+Descuento+Impuestos en vivo | Venta Pt.1 |
 | **6** | **Completar Pago** | Recibido/Cambio calculados, métodos de pago, confirmar → crea venta | Venta Pt.2 |
-| **7** | **Inventario** | Búsqueda, filtros (cat/estado/stock/proveedor), paginación, editar/ver/eliminar | data.js |
-| **8** | **Nuevo Producto** | Formulario submit → persiste en localStorage/data.js, vista previa en vivo | data.js |
-| **9** | **Apertura Caja** | Inputs de denominaciones recalculan subtotales + total automáticamente | data.js |
-| **10** | **Cierre Caja** | Inputs de denominaciones recalculan subtotales + diferencia automáticamente | data.js |
+| **7** | **Inventario + Nuevo Producto** — Búsqueda, filtros, tabla dinámica, paginación, CRUD (alta/edición/eliminación) con vista previa | data.js |
+| **8** | **Apertura Caja** — Inputs de denominaciones recalculan subtotales + total automáticamente | data.js |
+| **9** | **Cierre Caja** — Inputs de denominaciones recalculan subtotales + diferencia automáticamente | data.js |
 
 ### Principios arquitectónicos
 
@@ -71,16 +70,16 @@ POS-UNIVERSAL/
     ├── nuevo-negocio.html     # Formulario "Crear nuevo negocio"
     ├── cierre-caja.html       # Cierre de caja (resumen + conteo de denominaciones)
     ├── venta.html             # Pantalla POS: carrito principal, facturación, clientes (Block 1 + Block 2)
-    ├── inventario.html        # Inventario: listado de productos (tabla + filtros)
-    ├── nuevo-producto.html    # Formulario "Nuevo producto" (alta de producto)
+    ├── inventario.html        # Inventario + Nuevo Producto (tabla + formulario toggleable)
     ├── apertura-caja.html     # Apertura de caja (fondo inicial + denominaciones)
     ├── completar-pago.html   # Modal "Completar pago" sobre venta oscurecida
     ├── logo.jpg               # Logo real (única imagen usada por el código)
-    ├── js/                    # ← Parte 0 + 1 + Venta completadas
+    ├── js/                    # ← Parte 0 + 1 + Venta + Inventario completadas
     │       ├── data.js            # Modelo de datos: negocios, productos, ventas, carrito (localStorage)
     │   ├── app.js             # Shell: menú activo, logout, navegación global
     │   ├── login.js           # Login + registro (lógica específica del login)
     │   ├── venta.js         # Pantalla POS: catálogo, carrito, totales, facturas, menú salir
+    │   ├── inventario.js      # Inventario + Nuevo Producto: tabla dinámica, filtros, paginación, CRUD, preview
     │   ├── dashboard.js       # Render dinámico de tarjetas de negocios desde data.js
     │   ├── resumen.js         # KPIs dinámicos, gráfica SVG, últimas ventas desde data.js
     │   └── nuevo-negocio.js   # Formulario "Crear nuevo negocio" (preview, guardado, redirect)
@@ -92,7 +91,6 @@ POS-UNIVERSAL/
         ├── cierre-caja-style.css    # Estilos del cierre de caja
         └── venta-style.css          # Estilos de la pantalla de venta
         └── inventario-style.css     # Estilos del inventario de productos
-        └── nuevo-producto-style.css  # Estilos del formulario de nuevo producto
         └── apertura-caja-style.css   # Estilos de la apertura de caja
         └── completar-pago-style.css  # Estilos del modal de pago
 ```
@@ -247,24 +245,9 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
 - 100% responsive: ≤860px sidebar fuera de pantalla con botón hamburguesa ☰/✕; ≤600px filtros
   apilados y paginación en columna.
 
-### Ventana nueva: `nuevo-producto.html` + `css/nuevo-producto-style.css` (16/09/2026)
-- Pantalla "Nuevo producto" (formulario de alta) según la guía.
-- Sidebar ≈250px fondo `#ECEEF2` con brand de glifo de llave índigo #3D4DB7 + "POSUniversal",
-  menú de 12 ítems (Inicio, Ventas, **Productos activo** con fondo gris lavanda #DDE1EA,
-  Inventario, Clientes, Proveedores, Compras, Gastos, Caja, Reportes, Empleados, Configuración)
-  y pie con icono de salida + "POSUniversal".
-- Header ≈90px blanco sin contenido a la izquierda: búsqueda ≈225px, campana, avatar 32px,
-  "Raphy" + chevron-down.
-- Contenido: H1 "Nuevo producto" y grid 2 columnas (1fr / 390px) con gap 24px.
-- **Columna izquierda (formulario)**: tarjeta con 4 secciones separadas ≈28px:
-  Información básica (Nombre/SKU/Código de barras 3 columnas; Categoría/Descripción 1fr:2fr con
-  textarea enfocado borde índigo 1.5px y resize vertical), Precios (3 columnas), Inventario
-  (3 columnas) y Proveedor (2 columnas). Selects con chevron-down de fondo, controles ≈44px.
-- **Columna derecha**: tarjeta de vista previa (thumb 🥤 64px, nombre+SKU, precio bold 24px +
-  pill "Activo", fila Estado/Stock), spacer flexible y tarjeta de acciones anclada abajo
-  (`margin-top:auto`) con "Cancelar" (gris) y "Guardar producto" (índigo, flex mayor).
-- Iconos SVG en línea sin CDN. 100% responsive: ≤1080px columnas apiladas; ≤860px menú
-  hamburguesa ☰/✕; ≤600px formulario de 1 columna y búsqueda oculta.
+### Integrado en Inventario — Nuevo Producto
+
+El formulario de "Nuevo producto" se fusionó dentro de `inventario.html`. Ya no existe como ventana separada; se accede desde el botón **Nuevo producto** en la barra de título del inventario. El formulario incluye vista previa en vivo, validación y persistencia via `js/data.js` + `js/inventario.js`.
 
 ### Ventana nueva: `apertura-caja.html` + `css/apertura-caja-style.css` (16/09/2026)
 - Pantalla "Apertura de caja" según la guía. Base de estilo idéntica a `cierre-caja.html`.
@@ -337,7 +320,7 @@ Trabajo por partes, en orden:
 12. ✅ Bloque 1 — layout cliente/totales, descuento inline, itbis/exento/gravado, fix teclado → `0d3ab89`
 13. ✅ Bloque 2 HTML/CSS — facturación header, fecha, modal búsqueda facturas, menú salir → `19dff5b`
 14. ✅ Bloque 2 JS — facturas modal, fecha, nueva factura, salir → `a5e3b5e`
-15. ⏳ Inventario → Nuevo Producto → Apertura/Cierre Caja
+15. ⏳ Apertura/Cierre Caja
 
 ### Ventana `venta.html` — Rediseño COMPLETADO (17/09/2026) → `a5e3b5e`
 
@@ -365,11 +348,9 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 ### Frontend (inmediato)
 | # | Tarea | Archivos |
 |---|---|---|
-| 1 | **Inventario** — búsqueda, filtros, tabla, paginación, editar/ver/eliminar | `inventario.html`, `css/inventario-style.css`, `js/inventario.js` |
-| 2 | **Nuevo Producto** — alta de producto con vista previa | `nuevo-producto.html`, `css/nuevo-producto-style.css`, `js/nuevo-producto.js` |
-| 3 | **Apertura Caja** — fondo inicial + denominaciones | `apertura-caja.html`, `css/apertura-caja-style.css` |
-| 4 | **Cierre Caja** — resumen + conteo + diferencia | `cierre-caja.html`, `css/cierre-caja-style.css` |
-| 5 | Conectar todas las pantallas al backend (API REST) | Todos los JS |
+| 1 | **Apertura Caja** — fondo inicial + denominaciones | `apertura-caja.html`, `css/apertura-caja-style.css` |
+| 2 | **Cierre Caja** — resumen + conteo + diferencia | `cierre-caja.html`, `css/cierre-caja-style.css` |
+| 3 | Conectar todas las pantallas al backend (API REST) | Todos los JS |
 
 ### Backend (pendiente)
 - ASP.NET Core Web API con EF Core / Npgsql → PostgreSQL
@@ -390,7 +371,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `a5e3b5e` — `feat: venta - ambos botones funcionales (nueva factura + busqueda facturas), fecha en header`
+- **Último commit:** `7556b9a` — `feat: inventario + nuevo producto fusionados, CRUD dinamico, filtros, paginacion`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
@@ -400,7 +381,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 | `proyecto/js/data.js` | Sección por sección (Persistencia, Getters, Auth, Sesión, CRUD) | Modelo: negocios, productos, ventas, usuarios, denominaciones + funciones auth |
 | `proyecto/js/app.js` | Cada función documentada | Shell: verificación de sesión, navegación, menú activo, logout, render usuario |
 | `proyecto/js/login.js` | Sección por sección (Referencias, Toggle, Login, Registro, Auto-redirect) | Lógica de login/registro: validación, creación de cuentas, sesión |
-| `proyecto/js/venta.js` | Init (Referencias, Foco, Renderizar, Categorías, Totales, Pago, Facturas, Nueva Factura, Salir, Fecha), keydown, actualizarTotales, carrito, calcularTotal, completarPago, registrarVenta, facturas (open/close/render/search/loadAsCurrent), inventario (open/close/render), menú tres puntos | Pantalla POS completa: catálogo, carrito, totales, pago, facturación, búsqueda facturas, inventario overlay
+| `proyecto/js/venta.js` | Init (Referencias, Foco, Renderizar, Categorías, Totales, Pago, Facturas, Nueva Factura, Salir, Fecha), keydown, actualizarTotales, carrito, calcularTotal, completarPago, registrarVenta, facturas (open/close/render/search/loadAsCurrent), menú tres puntos | Pantalla POS completa: catálogo, carrito, totales, pago, facturación, búsqueda facturas, inventario overlay
 | `proyecto/js/dashboard.js` | Sección por sección (Iconos, Render, Escape, Init) | Render dinámico de tarjetas de negocios desde data.js |
 | `proyecto/js/resumen.js` | Init (KPIs, Gráfica, Productos, Ventas) | KPIs dinámicos, gráfica SVG, productos más vendidos y últimas ventas desde data.js |
 | `proyecto/js/nuevo-negocio.js` | Init (Preview, Guardar, Error) | Formulario "Crear nuevo negocio": preview en vivo, validación, guardado en data.js, redirect a dashboard |
