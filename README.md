@@ -70,7 +70,7 @@ POS-UNIVERSAL/
     ├── nuevo-negocio.html     # Formulario "Crear nuevo negocio"
     ├── cierre-caja.html       # Cierre de caja (resumen + conteo de denominaciones)
     ├── venta.html             # Pantalla POS: carrito principal, facturación, clientes (Block 1 + Block 2)
-    ├── inventario.html        # Inventario + Nuevo Producto (tabla + formulario toggleable)
+    ├── inventario.html        # Inventario + Nuevo Producto (tabla dinámica, filtros, formulario simplificado por código de barras)
     ├── apertura-caja.html     # Apertura de caja (fondo inicial + denominaciones)
     ├── completar-pago.html   # Modal "Completar pago" sobre venta oscurecida
     ├── logo.jpg               # Logo real (única imagen usada por el código)
