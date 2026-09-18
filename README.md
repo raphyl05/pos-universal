@@ -70,7 +70,7 @@ POS-UNIVERSAL/
     ├── nuevo-negocio.html     # Formulario "Crear nuevo negocio"
     ├── cierre-caja.html       # Cierre de caja (resumen + conteo de denominaciones)
     ├── venta.html             # Pantalla POS: carrito principal, facturación, clientes (Block 1 + Block 2)
-    ├── inventario.html        # Inventario + Nuevo Producto (tabla dinámica, filtros, formulario simplificado por código de barras)
+    ├── inventario.html        # Inventario + Nuevo Producto (tabla dinámica, filtros, formulario simplificado por código de barras, calculadora flotante, referencia/proveedor)
     ├── apertura-caja.html     # Apertura de caja (fondo inicial + denominaciones)
     ├── completar-pago.html   # Modal "Completar pago" sobre venta oscurecida
     ├── logo.jpg               # Logo real (única imagen usada por el código)
@@ -249,6 +249,15 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
 
 El formulario de "Nuevo producto" se fusionó dentro de `inventario.html`. Ya no existe como ventana separada; se accede desde el botón **Nuevo producto** en la barra de título del inventario. El formulario incluye vista previa en vivo, validación y persistencia via `js/data.js` + `js/inventario.js`.
 
+**Formulario optimizado:**
+- **Código de barras** como campo principal (foco automático al abrir)
+- **Referencia** y **Proveedor** como campos de texto en la sección Información
+- **Precio venta** y **Costo** con calculadora flotante (🧮) — click para abrir, teclado numérico también funciona
+- **Stock mínimo eliminado** del formulario
+- **Importar** eliminado del título
+- Guardar valida todos los campos y persiste vía `registrarProducto`/`editarProducto` en `data.js`
+- Cancelar vuelve a la vista de tabla
+
 ### Ventana nueva: `apertura-caja.html` + `css/apertura-caja-style.css` (16/09/2026)
 - Pantalla "Apertura de caja" según la guía. Base de estilo idéntica a `cierre-caja.html`.
 - Sidebar ≈270px con brand (glifo "P" + POSUniversal) y menú: **Dashboard activo** con
@@ -371,7 +380,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `7556b9a` — `feat: inventario + nuevo producto fusionados, CRUD dinamico, filtros, paginacion`
+- **Último commit:** `38f0ac7` — `feat: inventario - referencia/proveedor, calculadora flotante, optimizacion estilos`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
