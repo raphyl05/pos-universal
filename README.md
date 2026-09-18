@@ -379,17 +379,18 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 
 ### Qué queda por hacer
 
-#### Prioridad 1 — Navegación y Shell (18/09/2026)
+#### Prioridad 1 — Navegación y Shell (18/09/2026) ✅ COMPLETADO
 | # | Tarea | Archivos |
 |---|---|---|
 | 1 | Conectar sidebar links a pantallas existentes | Todas las HTML |
-| 2 | Fix logout en resumen.html + agregar en 5 pantallas sin él | resumen.html, venta.html, completar-pago.html, apertura-caja.html, cierre-caja.html, inventario.html |
-| 3 | Unificar sidebar a 12 ítems con navegación real | dashboard.html, nuevo-negocio.html, resumen.html, inventario.html |
+| 2 | Fix logout en resumen.html + agregar en 5 pantallas sin él | resumen.html, nuevo-negocio.html, apertura-caja.html, cierre-caja.html, inventario.html, venta.html |
+| 3 | Agregar .sidebar-footer CSS | css/apertura-caja-style.css, css/inventario-style.css, css/cierre-caja-style.css |
+| 4 | Agregar logout a venta.html (sin sidebar) | venta.html, css/venta-style.css |
 
 #### Frontend (inmediato)
 | # | Tarea | Archivos |
 |---|---|---|
-| 4 | Conectar todas las pantallas al backend (API REST) | Todos los JS |
+| 5 | Conectar todas las pantallas al backend (API REST) | Todos los JS |
 
 ### Backend (pendiente)
 - ASP.NET Core Web API con EF Core / Npgsql → PostgreSQL
