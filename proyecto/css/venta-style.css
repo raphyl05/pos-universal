@@ -128,6 +128,38 @@ body {
     white-space: nowrap;
 }
 
+.invoice-date {
+    font-size: 12px;
+    color: var(--text-3);
+    white-space: nowrap;
+    padding: 4px 10px;
+    background: var(--tile-bg);
+    border-radius: var(--radius-btn);
+}
+
+.btn-salir {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 16px;
+    background: var(--text-3);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.btn-salir:hover {
+    background: #4B5563;
+}
+
 .more-menu {
     position: absolute;
     top: 100%;
@@ -642,31 +674,13 @@ body {
 
 /* ===== Checkout Bar ===== */
 .checkout-bar {
-    grid-column: 1 / -1;
     display: flex;
     gap: 10px;
     align-items: center;
     flex-shrink: 0;
     margin-top: 4px;
-}
-
-.checkout-bar .btn-guardar {
-    height: 48px;
-    padding: 0 18px;
-    background: var(--btn-secondary);
-    color: var(--text-strong);
-    border: none;
-    border-radius: var(--radius-btn);
-    font-size: 13px;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background 0.2s;
-    flex-shrink: 0;
-}
-
-.checkout-bar .btn-guardar:hover {
-    background: #D8DBE2;
+    width: 100%;
+    min-width: 0;
 }
 
 .checkout-total {
@@ -674,7 +688,8 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex: 1;
+    flex: 1 1 50%;
+    min-width: 0;
     background: linear-gradient(90deg, #2caf08 0%, #e3d2f3 100%);
     border-radius: var(--radius-btn);
     padding: 12px 24px;
@@ -698,23 +713,25 @@ body {
 }
 
 .checkout-select {
-    height: 48px; padding: 0 8px; min-width: 100px;
+    height: 48px; padding: 0 8px; min-width: 110px;
     font-size: 13px;
     -moz-appearance: none; appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
     padding-right: 24px;
+    flex-shrink: 0;
 }
 
 .btn-cobrar {
-    flex: 1;
-    height: 56px;
+    flex: 0 0 auto;
+    height: 48px;
+    padding: 0 22px;
     background: var(--indigo-btn);
     color: #FFFFFF;
     border: none;
     border-radius: var(--radius-btn);
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 800;
     font-family: inherit;
     cursor: pointer;
@@ -727,7 +744,72 @@ body {
     background: var(--indigo);
 }
 
-/* ===== Facturas Modal ===== */
+.btn-guardar {
+    flex: 0 0 auto;
+    height: 48px;
+    padding: 0 18px;
+    background: var(--btn-secondary);
+    color: var(--text-strong);
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.btn-guardar:hover {
+    background: #D8DBE2;
+}
+
+/* ===== Botones del topbar ===== */
+.btn-nueva-factura {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 20px;
+    background: #D83B7A;
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.btn-nueva-factura:hover {
+    background: #B02E63;
+}
+
+.btn-salir-top {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 20px;
+    background: var(--text-3);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.btn-salir-top:hover {
+    background: #4B5563;
+}
+
+/* ===== Modal Facturas ===== */
 .fact-overlay {
     position: fixed; inset: 0;
     background: rgba(15, 23, 42, 0.5);
@@ -745,64 +827,196 @@ body {
 }
 
 .fact-head {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 24px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
 }
 
-.fact-head h2 { font-size: 22px; font-weight: 700; color: var(--text-strong); }
+.fact-head h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-strong);
+}
+
+.fact-close {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--btn-secondary);
+    border: none;
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    color: var(--text-2);
+    transition: background 0.2s;
+}
+
+.fact-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+.fact-close:hover {
+    background: var(--border);
+}
 
 .fact-filters {
-    display: flex; align-items: center; gap: 8px;
-    padding: 16px 24px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
 }
 
 .fact-date {
-    height: 36px; padding: 0 8px;
-    border: 1px solid var(--border-input); border-radius: var(--radius-btn);
-    font-size: 13px; font-family: inherit; color: var(--text); background: var(--surface);
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--surface);
+    flex: 1 1 0;
+    min-width: 0;
 }
 
-.fact-sep { color: var(--text-3); font-size: 13px; }
+.fact-date:focus {
+    outline: none;
+    border-color: var(--indigo);
+}
+
+.fact-sep {
+    color: var(--text-3);
+    flex-shrink: 0;
+}
 
 .fact-search-btn {
-    height: 36px; padding: 0 16px;
-    background: var(--indigo-btn); color: #FFFFFF;
-    border: none; border-radius: var(--radius-btn);
-    font-size: 13px; font-weight: 700; font-family: inherit;
-    cursor: pointer; transition: background 0.2s;
+    height: 40px;
+    padding: 0 20px;
+    background: var(--indigo-btn);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-.fact-search-btn:hover { background: var(--indigo); }
+.fact-search-btn:hover {
+    background: var(--indigo);
+}
 
 .fact-list {
-    overflow-y: auto; flex: 1; padding: 8px 24px 24px; min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 24px 24px;
+    min-height: 0;
 }
 
 .fact-item {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 12px; border-bottom: 1px solid var(--border-soft);
-    cursor: pointer; border-radius: var(--radius-btn);
-    transition: background 0.15s; gap: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border-soft);
+    cursor: pointer;
+    transition: background 0.15s;
 }
 
-.fact-item:hover { background: var(--selected-bg); }
-
-.fact-info { display: flex; flex-direction: column; gap: 2px; }
-.fact-numero { font-size: 14px; font-weight: 700; color: var(--indigo); }
-.fact-detail { font-size: 12px; color: var(--text-2); }
-.fact-total { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; }
-.fact-estado {
-    font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px;
-    white-space: nowrap;
+.fact-item:hover {
+    background: var(--selected-bg);
+    border-radius: var(--radius-btn);
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-left: -8px;
+    margin-right: -8px;
 }
-.fact-estado.Pagado { background: #D7F2E3; color: #17803D; }
-.fact-estado.Pendiente { background: #FEF3CD; color: #856404; }
-.fact-estado.Cancelado { background: #F8D7DA; color: #721C24; }
+
+.fact-item:last-child {
+    border-bottom: none;
+}
+
+.fact-item-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--tile-bg);
+    border-radius: var(--radius-thumb);
+}
+
+.fact-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.fact-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.fact-item-num {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.fact-item-total {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--indigo);
+    flex-shrink: 0;
+}
+
+.fact-item-meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-3);
+}
+
+.fact-item-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.fact-item-status.pagado {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.fact-item-status.pendiente {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
 .fact-empty {
-    text-align: center; padding: 40px; color: var(--text-3); font-size: 14px;
+    text-align: center;
+    padding: 40px;
+    color: var(--text-3);
+    font-size: 15px;
 }
 
-/* ===== Stock Modal Flotante ===== */
 .inv-overlay {
     position: fixed; inset: 0;
     background: rgba(15, 23, 42, 0.5);
@@ -1116,6 +1330,24 @@ body {
         display: none;
     }
 
+    .btn-nueva-factura {
+        padding: 0 12px;
+        font-size: 12px;
+    }
+
+    .btn-nueva-factura span {
+        display: none;
+    }
+
+    .btn-facturas {
+        padding: 0 12px;
+        font-size: 12px;
+    }
+
+    .btn-facturas svg {
+        display: none;
+    }
+
     .cart-row {
         grid-template-columns: 80px 1fr 55px 70px 75px;
         gap: 4px;
@@ -1180,10 +1412,28 @@ body {
         gap: 8px;
     }
 
+    .checkout-bar {
+        flex-wrap: wrap;
+    }
+
+    .checkout-total {
+        min-height: 60px;
+        padding: 8px 16px;
+    }
+
+    .checkout-value {
+        font-size: 24px;
+    }
+
     .btn-cobrar,
     .btn-guardar {
         height: 46px;
         font-size: 13px;
+        flex: 1 1 30%;
+    }
+
+    .checkout-select {
+        min-width: 80px;
     }
 
     .inv-modal {

@@ -256,6 +256,98 @@
     }
   }
 
+  /* ===== Facturas ===== */
+  function openFactModal() {
+    var overlay = $("#fact-overlay");
+    if (overlay) {
+      overlay.classList.add("open");
+      var fromEl = $("#fact-date-from");
+      var toEl = $("#fact-date-to");
+      if (fromEl && toEl && !fromEl.value && !toEl.value) {
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, "0");
+        var dd = String(today.getDate()).padStart(2, "0");
+        fromEl.value = yyyy + "-" + mm + dd;
+        toEl.value = yyyy + "-" + mm + dd;
+      }
+      searchFacts();
+    }
+  }
+
+  function closeFactModal() {
+    var overlay = $("#fact-overlay");
+    if (overlay) {
+      overlay.classList.remove("open");
+      focusSearch();
+    }
+  }
+
+  function searchFacts() {
+    var listEl = $("#fact-list");
+    if (!listEl) return;
+    var fromEl = $("#fact-date-from");
+    var toEl = $("#fact-date-to");
+    var fromDate = fromEl ? fromEl.value : "";
+    var toDate = toEl ? toEl.value : "";
+    var ventas = POS_DATA.getVentas() || [];
+    var filtered = ventas.filter(function (v) {
+      var fecha = v.fecha ? v.fecha.slice(0, 10) : "";
+      if (fromDate && fecha < fromDate) return false;
+      if (toDate && fecha > toDate) return false;
+      return true;
+    });
+    renderFactList(filtered);
+  }
+
+  function renderFactList(data) {
+    var listEl = $("#fact-list");
+    if (!listEl) return;
+    if (!data || data.length === 0) {
+      listEl.innerHTML = '<div class="fact-empty">No se encontraron facturas en el rango seleccionado.</div>';
+      return;
+    }
+    listEl.innerHTML = "";
+    data.forEach(function (v) {
+      var fecha = v.fecha ? v.fecha.slice(0, 10) : "—";
+      var statusClass = v.estado === "Pagado" ? "pagado" : v.estado === "Cancelado" ? "" : "pendiente";
+      var icon = v.estado === "Pagado" ? "✅" : v.estado === "Cancelado" ? "❌" : "⏳";
+      var item = document.createElement("div");
+      item.className = "fact-item";
+      item.setAttribute("data-id", v.id);
+      item.innerHTML =
+        '<span class="fact-item-icon">' + icon + '</span>' +
+        '<div class="fact-item-info">' +
+          '<div class="fact-item-top">' +
+            '<span class="fact-item-num">Factura #' + escapeHtml(v.numero || "") + '</span>' +
+            '<span class="fact-item-total">RD$ ' + Number(v.total).toFixed(2) + '</span>' +
+          '</div>' +
+          '<div class="fact-item-meta">' +
+            '<span>' + escapeHtml(v.cliente || "") + '</span>' +
+            '<span>' + escapeHtml(v.pago || "") + '</span>' +
+            '<span>' + fecha + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<span class="fact-item-status ' + statusClass + '">' + escapeHtml(v.estado || "") + '</span>';
+      item.addEventListener("click", function () {
+        loadFactAsCurrent(v);
+      });
+      listEl.appendChild(item);
+    });
+  }
+
+  function loadFactAsCurrent(factura) {
+    if (!factura) return;
+    var msg = "Factura #" + (factura.numero || "") + "\n" +
+      "Cliente: " + (factura.cliente || "") + "\n" +
+      "Total: RD$ " + Number(factura.total).toFixed(2) + "\n" +
+      "Pago: " + (factura.pago || "") + "\n" +
+      "Estado: " + (factura.estado || "") + "\n" +
+      "Fecha: " + (factura.fecha || "");
+    alert(msg);
+    closeFactModal();
+  }
+
   /* ===== Sugerencias ===== */
   function renderSuggestions(term) {
     var dropdown = $("#code-suggestions");
@@ -431,6 +523,38 @@
       });
     }
 
+    /* Facturas modal */
+    var factBtn = $("#btn-facturas");
+    if (factBtn) { factBtn.addEventListener("click", function () { openFactModal(); }); }
+
+    var factClose = $("#fact-close");
+    if (factClose) { factClose.addEventListener("click", function () { closeFactModal(); }); }
+
+    var factOverlay = $("#fact-overlay");
+    if (factOverlay) {
+      factOverlay.addEventListener("click", function (e) {
+        if (e.target === factOverlay) closeFactModal();
+      });
+    }
+
+    var factSearchBtn = $("#fact-search-btn");
+    if (factSearchBtn) { factSearchBtn.addEventListener("click", function () { searchFacts(); }); }
+
+    var factDateFrom = $("#fact-date-from");
+    if (factDateFrom) { factDateFrom.addEventListener("change", function () { searchFacts(); }); }
+
+    var factDateTo = $("#fact-date-to");
+    if (factDateTo) { factDateTo.addEventListener("change", function () { searchFacts(); }); }
+
+    /* Fecha actual en header */
+    var invoiceDate = $("#invoice-date");
+    if (invoiceDate) {
+      var today = new Date();
+      var day = today.getDate();
+      var months = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+      invoiceDate.textContent = day + " " + months[today.getMonth()] + " " + today.getFullYear();
+    }
+
     /* Descuento */
     var discountInput = $("#discount-input");
     if (discountInput) { discountInput.addEventListener("input", updateCartTotals); discountInput.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); var cb = $(".btn-cobrar"); if (cb) cb.click(); } }); }
@@ -443,7 +567,7 @@
     if (cobrarBtn) {
       cobrarBtn.addEventListener("click", function () {
         var cart = POS_DATA.getCart();
-        if (cart.length === 0) { alert("El carrito est vacio."); return; }
+        if (cart.length === 0) { alert("El carrito está vacío."); return; }
         var clientData = getClientData();
         var method = paymentSelect ? paymentSelect.value : "Efectivo";
         var discount = discountInput ? parseFloat(discountInput.value) || 0 : 0;
@@ -459,7 +583,7 @@
     if (guardarBtn) {
       guardarBtn.addEventListener("click", function () {
         var cart = POS_DATA.getCart();
-        if (cart.length === 0) { alert("El carrito est vacio."); return; }
+        if (cart.length === 0) { alert("El carrito está vacío."); return; }
         var clientData = getClientData();
         var method = paymentSelect ? paymentSelect.value : "Pendiente";
         var discount = discountInput ? parseFloat(discountInput.value) || 0 : 0;
@@ -467,6 +591,36 @@
         if (result.error) { alert(result.error); return; }
         alert("Venta " + result.venta.numero + " guardada como pendiente.\nTotal: RD$ " + result.venta.total.toFixed(2));
         renderCartTable();
+      });
+    }
+
+    /* Nueva Factura — limpiar carrito */
+    var nuevaFacturaBtn = $("#btn-nueva-factura");
+    if (nuevaFacturaBtn) {
+      nuevaFacturaBtn.addEventListener("click", function () {
+        var cart = POS_DATA.getCart();
+        if (cart.length === 0) { alert("La factura ya está vacía."); return; }
+        var confirmado = confirm("¿Deseas limpiar la factura actual?\nSe eliminarán todos los productos del carrito.");
+        if (confirmado) {
+          POS_DATA.clearCart();
+          renderCartTable();
+          var clientNombre = $("#client-nombre");
+          var clientTelefono = $("#client-telefono");
+          var clientCedula = $("#client-cedula");
+          var clientDireccion = $("#client-direccion");
+          if (clientNombre) clientNombre.value = "";
+          if (clientTelefono) clientTelefono.value = "";
+          if (clientCedula) clientCedula.value = "";
+          if (clientDireccion) clientDireccion.value = "";
+        }
+      });
+    }
+
+    /* Salir — volver al dashboard */
+    var salirBtn = $("#btn-salir");
+    if (salirBtn) {
+      salirBtn.addEventListener("click", function () {
+        window.location.href = "dashboard.html";
       });
     }
 
@@ -485,12 +639,11 @@
     /* Teclado global */
     document.addEventListener("keydown", function (e) {
       var tag = (e.target.tagName || "").toLowerCase();
-      var inInput = tag === "input" || tag === "textarea" || tag === "select";
 
       if (e.key === "Escape") {
-        e.preventDefault();
         var dropdown = $("#code-suggestions");
         if (dropdown) dropdown.classList.remove("open");
+        closeFactModal();
         closeInventory();
         return;
       }
@@ -510,7 +663,6 @@
       }
     });
 
-
     /* Numero de factura */
     var invNum = $("#invoice-number");
     if (invNum) { invNum.textContent = POS_DATA.getNumeroVenta(); }
@@ -518,150 +670,42 @@
     /* Fecha actual */
     var saleDate = $("#sale-date");
     if (saleDate) {
-        var today = new Date();
-        var yyyy = today.getFullYear();
-        var mm = String(today.getMonth() + 1).padStart(2, "0");
-        var dd = String(today.getDate()).padStart(2, "0");
-        saleDate.value = yyyy + "-" + mm + dd;
+      var today = new Date();
+      var yyyy = today.getFullYear();
+      var mm = String(today.getMonth() + 1).padStart(2, "0");
+      var dd = String(today.getDate()).padStart(2, "0");
+      saleDate.value = yyyy + "-" + mm + dd;
     }
 
-    /* Boton Facturas */
-    var btnFacturas = $("#btn-facturas");
-    var factOverlay = $("#fact-overlay");
-    var factClose = $("#fact-close");
-    var factDateFrom = $("#fact-date-from");
-    var factDateTo = $("#fact-date-to");
-    var factSearchBtn = $("#fact-search-btn");
-    var factList = $("#fact-list");
-
-    function openFactModal() {
-        if (factOverlay) {
-            factOverlay.classList.add("open");
-            factOverlay.setAttribute("aria-hidden", "false");
-            var d = new Date();
-            var df = factDateFrom ? factDateFrom.value : "";
-            var dt = factDateTo ? factDateTo.value : "";
-            if (!df) { factDateFrom.value = d.toISOString().slice(0, 10); }
-            if (!dt) { factDateTo.value = d.toISOString().slice(0, 10); }
-            searchFacts();
-        }
-    }
-
-    function closeFactModal() {
-        if (factOverlay) {
-            factOverlay.classList.remove("open");
-            factOverlay.setAttribute("aria-hidden", "true");
-        }
-    }
-
-    function renderFactList(ventas) {
-        if (!factList) return;
-        factList.innerHTML = "";
-        if (!ventas || ventas.length === 0) {
-            var empty = document.createElement("div");
-            empty.className = "fact-empty";
-            empty.textContent = "No se encontraron facturas.";
-            factList.appendChild(empty);
-            return;
-        }
-        ventas.forEach(function (v) {
-            var item = document.createElement("div");
-            item.className = "fact-item";
-            var estado = v.estado || "Pendiente";
-            var detail = "Fecha: " + (v.fecha ? new Date(v.fecha).toLocaleDateString() : "N/A");
-            if (v.cliente && v.cliente !== "Contado") {
-                detail += " | Cliente: " + v.cliente;
-            }
-            item.innerHTML = '<div class="fact-info"><span class="fact-numero">Venta #' + escapeHtml(String(v.numero)) + '</span><span class="fact-detail">' + escapeHtml(detail) + '</span></div><span class="fact-estado ' + estado + '">' + escapeHtml(estado) + '</span><span class="fact-total">RD$ ' + Number(v.total).toFixed(2) + '</span>';
-            item.addEventListener("click", function () {
-                loadFactAsCurrent(v);
-                closeFactModal();
-            });
-            factList.appendChild(item);
-        });
-    }
-
-    function searchFacts() {
-        var fromDate = factDateFrom ? factDateFrom.value : "";
-        var toDate = factDateTo ? factDateTo.value : "";
-        var ventas = POS_DATA.getVentas() || [];
-        var filtered = ventas;
-        if (fromDate || toDate) {
-            filtered = ventas.filter(function (v) {
-                var dateStr = v.fecha ? v.fecha.slice(0, 10) : "";
-                if (fromDate && dateStr < fromDate) return false;
-                if (toDate && dateStr > toDate) return false;
-                return true;
-            });
-        }
-        renderFactList(filtered);
-    }
-
-    function loadFactAsCurrent(fact) {
-        var cart = [];
-        if (fact.productos && fact.productos.length > 0) {
-            fact.productos.forEach(function (p) {
-                cart.push({ id: p.id, quantity: p.quantity, priceOverride: p.price });
-            });
-        }
-        POS_DATA.setCart(cart);
-        var invNum2 = $("#invoice-number");
-        if (invNum2) { invNum2.textContent = POS_DATA.getNumeroVenta(); }
-        var cn = $("#client-nombre"), ct = $("#client-telefono"), cc = $("#client-cedula"), cd = $("#client-direccion");
-        if (fact.clienteData && typeof fact.clienteData === "object") {
-            if (cn) cn.value = fact.clienteData.nombre || "";
-            if (ct) ct.value = fact.clienteData.telefono || "";
-            if (cc) cc.value = fact.clienteData.cedula || "";
-            if (cd) cd.value = fact.clienteData.direccion || "";
-        } else if (fact.cliente && fact.cliente !== "Contado") {
-            if (cn) cn.value = fact.cliente;
-        }
-        var discInput = $("#discount-input");
-        if (discInput && fact.descuento && fact.subtotal) {
-            discInput.value = ((fact.descuento / fact.subtotal) * 100).toFixed(1);
-        }
-        if (saleDate && fact.fecha) {
-            saleDate.value = fact.fecha.slice(0, 10);
-        }
-        updateCartTotals();
-        renderCartTable();
-    }
-
-    if (btnFacturas) { btnFacturas.addEventListener("click", openFactModal); }
-    if (factClose) { factClose.addEventListener("click", closeFactModal); }
-    if (factSearchBtn) { factSearchBtn.addEventListener("click", searchFacts); }
-    if (factDateFrom) { factDateFrom.addEventListener("change", searchFacts); }
-    if (factDateTo) { factDateTo.addEventListener("change", searchFacts); }
-
-    /* Menu tres puntos */
+    /* Menu tres puntos — Salir */
     var moreBtn = $("#more-btn");
     if (moreBtn) {
-        var moreMenu = null;
-        document.addEventListener("click", function () {
-            if (moreMenu) { moreMenu.remove(); moreMenu = null; }
-        });
-        moreBtn.addEventListener("click", function (e) {
+      var moreMenu = null;
+      document.addEventListener("click", function () {
+        if (moreMenu) { moreMenu.remove(); moreMenu = null; }
+      });
+      moreBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (moreMenu) { moreMenu.remove(); moreMenu = null; return; }
+        moreMenu = document.createElement("div");
+        moreMenu.className = "more-menu";
+        moreMenu.innerHTML = '<button id="btn-salir-menu" type="button">Salir</button>';
+        var headerRight = $(".header-right");
+        if (headerRight) {
+          headerRight.appendChild(moreMenu);
+        } else {
+          var pageHead = $(".page-head");
+          if (pageHead) { pageHead.appendChild(moreMenu); }
+          else { document.body.appendChild(moreMenu); }
+        }
+        var salirMenuBtn = $("#btn-salir-menu");
+        if (salirMenuBtn) {
+          salirMenuBtn.addEventListener("click", function (e) {
             e.stopPropagation();
-            if (moreMenu) { moreMenu.remove(); moreMenu = null; return; }
-            moreMenu = document.createElement("div");
-            moreMenu.className = "more-menu";
-            moreMenu.innerHTML = '<button id="btn-salir" type="button">Salir</button>';
-            var headerRight = $(".header-right");
-            if (headerRight) {
-                headerRight.appendChild(moreMenu);
-            } else {
-                var pageHead = $(".page-head");
-                if (pageHead) { pageHead.appendChild(moreMenu); }
-                else { document.body.appendChild(moreMenu); }
-            }
-            var salirBtn = $("#btn-salir");
-            if (salirBtn) {
-                salirBtn.addEventListener("click", function (e) {
-                    e.stopPropagation();
-                    window.location.href = "dashboard.html";
-                });
-            }
-        });
+            window.location.href = "dashboard.html";
+          });
+        }
+      });
     }
 
     focusSearch();

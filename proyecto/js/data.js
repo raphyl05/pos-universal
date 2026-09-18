@@ -36,10 +36,10 @@
     ],
 
     ventas: [
-      { id: 1, numero: "1220500", cliente: "Jona de Frnte", pago: "Domicilio", total: 250, estado: "Pagado" },
-      { id: 2, numero: "1220302", cliente: "Calonda Innhez", pago: "Efectivo", total: 250, estado: "En espera" },
-      { id: 3, numero: "1220302", cliente: "Colmado La Bendición", pago: "Efectivo", total: 250, estado: "Cancelado" },
-      { id: 4, numero: "1220303", cliente: "Café Santo Domingo", pago: "Efectivo", total: 250, estado: "Cancelado" }
+      { id: 1, numero: "1220500", cliente: "Jona de Frnte", pago: "Domicilio", total: 250, estado: "Pagado", fecha: "2026-09-14T10:30:00.000Z" },
+      { id: 2, numero: "1220302", cliente: "Calonda Innhez", pago: "Efectivo", total: 250, estado: "En espera", fecha: "2026-09-15T14:20:00.000Z" },
+      { id: 3, numero: "1220302", cliente: "Colmado La Bendición", pago: "Efectivo", total: 250, estado: "Cancelado", fecha: "2026-09-17T09:15:00.000Z" },
+      { id: 4, numero: "1220303", cliente: "Café Santo Domingo", pago: "Efectivo", total: 250, estado: "Cancelado", fecha: "2026-09-17T11:45:00.000Z" }
     ],
 
     /* 2 usuarios seed: admin (Administrador) y cajero1 (Cajero) */
