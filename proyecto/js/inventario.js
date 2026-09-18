@@ -8,6 +8,9 @@
   var itemsPerPage = 10;
   var editingId = null;
   var allFiltered = [];
+  var calcTarget = null;
+  var calcExpr = "";
+  var calcFresh = true;
 
   function escapeHtml(text) {
     if (!text) return "";
@@ -198,7 +201,8 @@
         $("#p-venta").value = product.precioVenta || "";
         $("#p-costo").value = product.precioCosto || "";
         $("#p-stock").value = product.stock || "";
-        $("#p-stock-min").value = product.stockMinimo || "";
+        $("#p-referencia").value = product.referencia || "";
+        $("#p-proveedor").value = product.proveedor || "";
         var uniSel = $("#p-unidad");
         if (uniSel) {
           for (var j = 0; j < uniSel.options.length; j++) {
@@ -251,7 +255,7 @@
   }
 
   function resetForm() {
-    ["#p-barras", "#p-nombre", "#p-venta", "#p-costo", "#p-stock", "#p-stock-min"].forEach(function (sel) {
+    ["#p-barras", "#p-nombre", "#p-referencia", "#p-proveedor", "#p-venta", "#p-costo", "#p-stock"].forEach(function (sel) {
       var el = $(sel);
       if (el) el.value = "";
     });
@@ -269,9 +273,10 @@
     var venta = parseFloat($("#p-venta").value) || 0;
     var costo = parseFloat($("#p-costo").value) || 0;
     var stock = parseInt($("#p-stock").value, 10);
-    var stockMin = parseInt($("#p-stock-min").value, 10);
     var unidad = $("#p-unidad").value;
     var estado = $("#p-estado") ? $("#p-estado").value : "Activo";
+    var referencia = $("#p-referencia").value.trim();
+    var proveedor = $("#p-proveedor").value.trim();
 
     if (!barras) { alert("El código de barras es obligatorio."); return; }
     if (!nombre) { alert("El nombre es obligatorio."); return; }
@@ -279,7 +284,6 @@
     if (!Number.isFinite(venta) || venta < 0) { alert("El precio de venta es inválido."); return; }
     if (!Number.isFinite(costo) || costo < 0) { alert("El costo es inválido."); return; }
     if (!Number.isInteger(stock) || stock < 0) { alert("El stock es inválido."); return; }
-    if (!Number.isInteger(stockMin) || stockMin < 0) { alert("El stock mínimo es inválido."); return; }
     if (!unidad) { alert("La unidad de medida es obligatoria."); return; }
     if (!POS_DATA.getProductos) { alert("POS_DATA no disponible."); return; }
 
@@ -292,9 +296,11 @@
       precioCosto: costo,
       precioMayorista: 0,
       stock: stock,
-      stockMinimo: stockMin,
+      stockMinimo: 0,
       unidad: unidad,
       estado: estado,
+      referencia: referencia,
+      proveedor: proveedor,
       exento: false,
       icono: getIconForCategory(categoria)
     };
@@ -334,6 +340,95 @@
     select.innerHTML = '<option value="">Seleccionar...</option>' + cats.map(function (c) { return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>'; }).join("");
   }
 
+  /* ===== Calculadora flotante ===== */
+  function openCalc(targetId) {
+    calcTarget = targetId;
+    calcExpr = "";
+    calcPrev = 0;
+    calcOp = null;
+    calcFresh = true;
+    var overlay = $("#calc-overlay");
+    var display = $("#calc-display");
+    if (overlay) overlay.style.display = "flex";
+    if (display) display.value = "0";
+    var el = $(targetId);
+    if (el) el.focus();
+  }
+
+  function closeCalc() {
+    var overlay = $("#calc-overlay");
+    if (overlay) overlay.style.display = "none";
+    calcTarget = null;
+    calcExpr = "";
+    calcOp = null;
+  }
+
+  function calcEvaluate() {
+    if (!calcExpr) return;
+    try {
+      var expr = calcExpr.replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
+      var result = Function('"use strict"; return (' + expr + ')')();
+      if (Number.isFinite(result)) {
+        var display = $("#calc-display");
+        var formatted = result % 1 === 0 ? String(result) : result.toFixed(2);
+        display.value = formatted;
+        calcExpr = formatted;
+        calcFresh = true;
+        syncCalcToField();
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  function calcKey(val) {
+    var display = $("#calc-display");
+    if (!display) return;
+    if (calcFresh && val !== ".") {
+      display.value = val;
+      calcExpr = String(val);
+      calcFresh = false;
+    } else {
+      display.value += val;
+      calcExpr += val;
+    }
+  }
+
+  function calcOpAction(op) {
+    var symbols = { add: "+", subtract: "−", multiply: "×", divide: "÷" };
+    var symbol = symbols[op] || op;
+    var display = $("#calc-display");
+    if (!display) return;
+    display.value += " " + symbol + " ";
+    calcExpr += " " + symbol + " ";
+    calcFresh = true;
+  }
+
+  function syncCalcToField() {
+    if (!calcTarget) return;
+    var el = $(calcTarget);
+    var display = $("#calc-display");
+    if (el && display) el.value = display.value;
+  }
+
+  function calcClear() {
+    calcExpr = "";
+    calcFresh = true;
+    var display = $("#calc-display");
+    if (display) display.value = "0";
+  }
+
+  function calcBackspace() {
+    var display = $("#calc-display");
+    if (!display) return;
+    var v = display.value;
+    if (v === "0" || v.length <= 1) {
+      display.value = "0";
+      calcExpr = "";
+    } else {
+      display.value = v.slice(0, -1);
+      calcExpr = calcExpr.slice(0, -1);
+    }
+  }
+
   /* ===== Event Listeners ===== */
   function init() {
     renderTable();
@@ -350,7 +445,7 @@
     var saveBtn = $("#btn-form-save");
     if (saveBtn) { saveBtn.addEventListener("click", saveProduct); }
 
-    var previewFields = ["#p-barras", "#p-nombre", "#p-categoria", "#p-venta", "#p-costo", "#p-stock", "#p-stock-min", "#p-unidad", "#p-estado"];
+    var previewFields = ["#p-barras", "#p-nombre", "#p-categoria", "#p-referencia", "#p-proveedor", "#p-venta", "#p-costo", "#p-stock", "#p-unidad", "#p-estado"];
     previewFields.forEach(function (sel) {
       var el = $(sel);
       if (el) el.addEventListener("input", updatePreview);
@@ -373,6 +468,47 @@
     ["#f-categoria", "#f-estado", "#f-stock"].forEach(function (sel) {
       var el = $(sel);
       if (el) el.addEventListener("change", function () { currentPage = 1; renderTable(); });
+    });
+
+    var calcBtns = $$(".calc-btn[data-target]");
+    calcBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () { openCalc(btn.getAttribute("data-target")); });
+    });
+
+    var calcClose = $("#calc-close");
+    if (calcClose) calcClose.addEventListener("click", closeCalc);
+
+    var calcKeys = $$(".calc-btn-key, .calc-eq, .calc-op");
+    calcKeys.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var action = btn.getAttribute("data-action");
+        var val = btn.getAttribute("data-val");
+        if (action === "clear") { calcClear(); return; }
+        if (action === "backspace") { calcBackspace(); return; }
+        if (action === "equals") { calcEvaluate(); return; }
+        if (action === "add" || action === "subtract" || action === "multiply" || action === "divide") { calcOpAction(action); return; }
+        if (val !== null && val !== undefined) { calcKey(val); return; }
+      });
+    });
+
+    var calcOverlay = $("#calc-overlay");
+    if (calcOverlay) {
+      calcOverlay.addEventListener("click", function (e) {
+        if (e.target === calcOverlay) closeCalc();
+      });
+    }
+
+    document.addEventListener("keydown", function (e) {
+      if ($("#calc-overlay").style.display !== "none") {
+        if (e.key === "Escape") { closeCalc(); return; }
+        if (e.key >= "0" && e.key <= "9") { calcKey(e.key); e.preventDefault(); return; }
+        if (e.key === ".") { calcKey("."); e.preventDefault(); return; }
+        if (e.key === "+" || e.key === "-") { calcOpAction(e.key === "+" ? "add" : "subtract"); e.preventDefault(); return; }
+        if (e.key === "*") { calcOpAction("multiply"); e.preventDefault(); return; }
+        if (e.key === "/") { calcOpAction("divide"); e.preventDefault(); return; }
+        if (e.key === "Enter" || e.key === "=") { calcEvaluate(); e.preventDefault(); return; }
+        if (e.key === "Backspace") { calcBackspace(); e.preventDefault(); return; }
+      }
     });
   }
 

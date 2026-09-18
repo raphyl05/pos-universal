@@ -421,28 +421,40 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row-col-2">
+                        <div class="field">
+                            <label for="p-referencia">Referencia</label>
+                            <input type="text" id="p-referencia" placeholder="Referencia interna">
+                        </div>
+                        <div class="field">
+                            <label for="p-proveedor">Proveedor</label>
+                            <input type="text" id="p-proveedor" placeholder="Nombre del proveedor">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-section">
                     <h2>Precios y stock</h2>
                     <div class="row-col-3">
-                        <div class="field">
+                        <div class="field field-calc">
                             <label for="p-venta">Precio venta</label>
-                            <input type="text" id="p-venta" placeholder="0.00">
+                            <div class="calc-input-wrap">
+                                <input type="text" id="p-venta" placeholder="0.00">
+                                <button class="calc-btn" type="button" data-target="p-venta" aria-label="Calculadora">🧮</button>
+                            </div>
                         </div>
-                        <div class="field">
+                        <div class="field field-calc">
                             <label for="p-costo">Costo</label>
-                            <input type="text" id="p-costo" placeholder="0.00">
+                            <div class="calc-input-wrap">
+                                <input type="text" id="p-costo" placeholder="0.00">
+                                <button class="calc-btn" type="button" data-target="p-costo" aria-label="Calculadora">🧮</button>
+                            </div>
                         </div>
                         <div class="field">
                             <label for="p-stock">Stock</label>
                             <input type="number" id="p-stock" placeholder="0" min="0">
                         </div>
                     </div>
-                    <div class="row-col-3">
-                        <div class="field">
-                            <label for="p-stock-min">Stock mín.</label>
-                            <input type="number" id="p-stock-min" placeholder="0" min="0">
-                        </div>
+                    <div class="row-col-2">
                         <div class="field">
                             <label for="p-unidad">Unidad</label>
                             <select id="p-unidad">
@@ -488,6 +500,35 @@
                     <button class="btn-save" id="btn-form-save" type="button">Guardar</button>
                 </section>
             </aside>
+        </div>
+        <div class="calc-overlay" id="calc-overlay" style="display:none">
+            <div class="calc-popup">
+                <div class="calc-header">
+                    <strong>Calculadora</strong>
+                    <button class="calc-close" type="button" id="calc-close" aria-label="Cerrar">✕</button>
+                </div>
+                <input type="text" class="calc-display" id="calc-display" readonly value="0">
+                <div class="calc-grid">
+                    <button class="calc-btn-key" type="button" data-action="clear">C</button>
+                    <button class="calc-btn-key" type="button" data-action="backspace">⌫</button>
+                    <button class="calc-btn-key calc-op" type="button" data-action="divide">÷</button>
+                    <button class="calc-btn-key calc-op" type="button" data-action="multiply">×</button>
+                    <button class="calc-btn-key" type="button" data-val="7">7</button>
+                    <button class="calc-btn-key" type="button" data-val="8">8</button>
+                    <button class="calc-btn-key" type="button" data-val="9">9</button>
+                    <button class="calc-btn-key calc-op" type="button" data-action="subtract">−</button>
+                    <button class="calc-btn-key" type="button" data-val="4">4</button>
+                    <button class="calc-btn-key" type="button" data-val="5">5</button>
+                    <button class="calc-btn-key" type="button" data-val="6">6</button>
+                    <button class="calc-btn-key calc-op" type="button" data-action="add">+</button>
+                    <button class="calc-btn-key" type="button" data-val="1">1</button>
+                    <button class="calc-btn-key" type="button" data-val="2">2</button>
+                    <button class="calc-btn-key" type="button" data-val="3">3</button>
+                    <button class="calc-btn-eq" type="button" data-action="equals">=</button>
+                    <button class="calc-btn-key calc-zero" type="button" data-val="0">0</button>
+                    <button class="calc-btn-key" type="button" data-action="decimal">.</button>
+                </div>
+            </div>
         </div>
     </section>
     </div>

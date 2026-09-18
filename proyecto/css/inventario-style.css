@@ -441,6 +441,23 @@ body {
     border-color: var(--navy-btn);
 }
 
+.field input {
+    height: 40px;
+    padding: 0 12px;
+    background: var(--surface-w);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.field input:focus {
+    border-color: var(--navy-btn);
+}
+
 /* ===== Tarjeta de tabla ===== */
 .card {
     background: var(--surface);
@@ -1008,6 +1025,7 @@ body {
 .actions-card {
     padding: 16px;
     display: flex;
+    flex-direction: column;
     gap: 10px;
     margin-top: auto;
 }
@@ -1028,6 +1046,148 @@ body {
 
 .btn-save:hover {
     background: var(--navy);
+}
+
+.btn-cancel {
+    height: 48px;
+    background: #F3F4F6;
+    color: var(--text-2);
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+    background: #E5E7EB;
+}
+
+/* ===== Calculadora flotante ===== */
+.calc-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.calc-popup {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-modal);
+    width: 260px;
+    overflow: hidden;
+}
+.calc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--table-head-bg);
+    font-size: 14px;
+}
+.calc-close {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--text-3);
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.calc-close:hover {
+    background: var(--border);
+    color: var(--text);
+}
+.calc-display {
+    width: 100%;
+    height: 56px;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-w);
+    text-align: right;
+    padding: 0 16px;
+    font-size: 24px;
+    font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+    color: var(--text);
+    outline: none;
+}
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border-soft);
+    padding: 1px;
+}
+.calc-btn-key,
+.calc-eq,
+.calc-op,
+.calc-zero {
+    height: 48px;
+    border: none;
+    background: var(--surface-w);
+    font-size: 16px;
+    font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+    cursor: pointer;
+    color: var(--text);
+    transition: background 0.1s;
+}
+.calc-btn-key:hover,
+.calc-zero:hover {
+    background: #F3F4F6;
+}
+.calc-op {
+    background: #EEF1F5;
+    color: var(--navy-btn);
+    font-weight: 700;
+}
+.calc-op:hover {
+    background: #E2E7ED;
+}
+.calc-eq {
+    background: var(--navy-btn);
+    color: #FFFFFF;
+    font-weight: 700;
+}
+.calc-eq:hover {
+    background: var(--navy);
+}
+.calc-zero {
+    grid-column: span 2;
+}
+.field-calc {
+    position: relative;
+}
+.calc-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.calc-input-wrap input {
+    flex: 1;
+}
+.calc-btn {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    background: var(--surface-w);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+.calc-btn:hover {
+    background: #F3F4F6;
 }
 
 /* Preview state pill */
