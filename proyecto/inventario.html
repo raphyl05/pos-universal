@@ -118,7 +118,7 @@
             </header>
 
             <!-- Contenido principal -->
-            <main class="content">
+            <main class="content" id="list-view">
                 <!-- Fila de título + botones de acción -->
                 <div class="title-row">
                     <h1>Productos</h1>
@@ -387,10 +387,144 @@
                     </footer>
                 </section>
             </main>
+
+    <!-- ===== Formulario Nuevo Producto (oculto por defecto) ===== -->
+    <section class="content" id="form-content" style="display:none">
+        <h1>Nuevo producto</h1>
+
+        <div class="columns">
+            <!-- Columna izquierda: formulario -->
+            <section class="card form-card" aria-label="Formulario de producto">
+                <div class="form-section">
+                    <h2>Información básica</h2>
+                    <div class="row-col-3">
+                        <div class="field">
+                            <label for="f-nombre">Nombre del producto</label>
+                            <input type="text" id="f-nombre">
+                        </div>
+                        <div class="field">
+                            <label for="f-sku">Código / SKU</label>
+                            <input type="text" id="f-sku">
+                        </div>
+                        <div class="field">
+                            <label for="f-barras">Código de barras</label>
+                            <input type="text" id="f-barras">
+                        </div>
+                    </div>
+                    <div class="row-col-2">
+                        <div class="field">
+                            <label for="f-categoria">Categoría</label>
+                            <select id="f-categoria">
+                                <option value="">Seleccionar...</option>
+                                <option value="Bebidas">Bebidas</option>
+                                <option value="Alimentos">Alimentos</option>
+                                <option value="Limpieza">Limpieza</option>
+                                <option value="Lácteos">Lácteos</option>
+                                <option value="Abarrotes">Abarrotes</option>
+                                <option value="Cuidado personal">Cuidado personal</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="f-descripcion">Descripción</label>
+                            <textarea id="f-descripcion" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Precios</h2>
+                    <div class="row-col-3">
+                        <div class="field">
+                            <label for="f-costo">Costo</label>
+                            <input type="text" id="f-costo">
+                        </div>
+                        <div class="field">
+                            <label for="f-venta">Precio de venta</label>
+                            <input type="text" id="f-venta">
+                        </div>
+                        <div class="field">
+                            <label for="f-mayorista">Precio mayorista</label>
+                            <input type="text" id="f-mayorista">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Inventario</h2>
+                    <div class="row-col-3">
+                        <div class="field">
+                            <label for="f-stock">Stock actual</label>
+                            <input type="text" id="f-stock">
+                        </div>
+                        <div class="field">
+                            <label for="f-stock-min">Stock mínimo</label>
+                            <input type="text" id="f-stock-min">
+                        </div>
+                        <div class="field">
+                            <label for="f-unidad">Unidad de medida</label>
+                            <select id="f-unidad">
+                                <option value="und" selected>und</option>
+                                <option value="kg">kg</option>
+                                <option value="l">L</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Proveedor</h2>
+                    <div class="row-col-2">
+                        <div class="field">
+                            <label for="f-proveedor">Proveedor</label>
+                            <select id="f-proveedor">
+                                <option value="Distribuidora del Caribe" selected>Distribuidora del Caribe</option>
+                                <option value="Distribuidora Nacional">Distribuidora Nacional</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="f-referencia">Referencia</label>
+                            <input type="text" id="f-referencia">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Columna derecha: vista previa + acciones -->
+            <aside class="side-col">
+                <section class="card preview-card" aria-label="Vista previa">
+                    <div class="preview-top">
+                        <div class="preview-thumb" aria-hidden="true" id="preview-icon">📦</div>
+                        <div>
+                            <h3 id="preview-name">—</h3>
+                            <p id="preview-sku">—</p>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="preview-row price-row">
+                        <strong id="preview-price">RD$ 0.00</strong>
+                        <span class="pill pill-ok" id="preview-state">Activo</span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="preview-row status-row">
+                        <span class="status-label">Estado</span>
+                        <span class="stock-stack">
+                            <span class="stock-label">Stock actual</span>
+                            <strong id="preview-stock">0 und</strong>
+                        </span>
+                    </div>
+                </section>
+
+                <section class="card actions-card">
+                    <button class="btn-cancel" id="btn-form-cancel" type="button">Cancelar</button>
+                    <button class="btn-save" id="btn-form-save" type="button">Guardar producto</button>
+                </section>
+            </aside>
         </div>
+    </section>
+    </div>
     </div>
 
-    <!-- Botón flotante del menú móvil (hamburguesa ☰/✕, truco checkbox) -->
     <label for="menu-toggle" class="menu-toggle" aria-label="Abrir menú">
         <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6" /><line
@@ -404,5 +538,6 @@
 
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
+<script src="js/inventario.js"></script>
 
 </html>

@@ -12,7 +12,7 @@
   /* Páginas que requieren sesión activa */
   var PAGES_REQUIRE_LOGIN = [
     "dashboard.html", "resumen.html", "venta.html", "completar-pago.html",
-    "inventario.html", "nuevo-producto.html", "nuevo-negocio.html",
+    "inventario.html", "nuevo-negocio.html",
     "apertura-caja.html", "cierre-caja.html"
   ];
 
@@ -41,7 +41,6 @@
       "venta.html": "Ventas",
       "completar-pago.html": "Ventas",
       "inventario.html": "Inventario",
-      "nuevo-producto.html": "Productos",
       "apertura-caja.html": "Caja",
       "cierre-caja.html": "Caja"
     };
@@ -50,6 +49,7 @@
     if (!target) return;
 
     $$(".nav-item").forEach(function (item) {
+      if (item.classList.contains("sub-item")) return;
       var span = item.querySelector("span");
       var text = span ? span.textContent.trim() : "";
       if (text === target) item.classList.add("active");

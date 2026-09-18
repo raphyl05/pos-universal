@@ -829,3 +829,230 @@ body {
         flex-wrap: wrap;
     }
 }
+
+/* ===== Vista formulario Nuevo Producto ===== */
+
+/* Toggle entre lista y formulario */
+#form-content {
+    padding: 40px 44px;
+    background: var(--bg-app);
+}
+
+/* Grid de dos columnas: formulario / columna derecha */
+.columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 390px;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Form card */
+.form-card {
+    padding: 24px;
+}
+
+.form-section + .form-section {
+    margin-top: 28px;
+}
+
+.form-section h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+}
+
+/* Filas de campos */
+.row-col-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.row-col-2 {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+/* Textarea */
+.field textarea {
+    min-height: 70px;
+    padding: 10px 12px;
+    resize: vertical;
+    line-height: 1.45;
+    width: 100%;
+    background: var(--surface-w);
+    border: 1px solid var(--border-input);
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.field textarea:focus {
+    border-color: var(--navy);
+    box-shadow: 0 0 0 0.5px var(--navy);
+}
+
+/* Columna derecha (preview + actions) */
+.side-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+/* Preview card */
+.preview-card {
+    overflow: hidden;
+}
+
+.preview-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+}
+
+.preview-thumb {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: var(--radius-logo);
+    background: var(--thumb-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    line-height: 1;
+}
+
+.preview-top h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+}
+
+.preview-top p {
+    font-size: 15px;
+    color: var(--text-3);
+}
+
+.preview-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.preview-row.price-row strong {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-strong);
+}
+
+.status-row .status-label {
+    font-size: 15px;
+    color: var(--text-2);
+}
+
+.stock-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.stock-stack .stock-label {
+    font-size: 15px;
+    color: var(--text-2);
+}
+
+.stock-stack strong {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* Divider */
+.divider {
+    height: 1px;
+    background: var(--border);
+    margin: 12px 0;
+}
+
+/* Actions card */
+.actions-card {
+    padding: 16px;
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.btn-save {
+    flex: 1.5;
+    height: 48px;
+    background: var(--navy-btn);
+    color: #FFFFFF;
+    border: none;
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-save:hover {
+    background: var(--navy);
+}
+
+/* Preview state pill */
+.preview-state {
+    font-size: 13px;
+}
+
+/* ===== Responsive form view ===== */
+
+@media (max-width: 1080px) {
+    #form-content {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .columns {
+        grid-template-columns: 1fr;
+    }
+
+    .side-col {
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 600px) {
+    #form-content {
+        padding: 16px;
+    }
+
+    #form-content h1 {
+        font-size: 24px;
+    }
+
+    .row-col-3,
+    .row-col-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .actions-card {
+        flex-direction: column;
+    }
+
+    .form-card {
+        padding: 16px;
+    }
+}

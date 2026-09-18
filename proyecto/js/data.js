@@ -389,12 +389,107 @@
     return { exito: true, venta: sale };
   }
 
+  /* --- CRUD Productos --- */
+  function registrarProducto(data) {
+    if (!data) return { error: "Datos del producto inválidos." };
+    if (!data.nombre || typeof data.nombre !== "string" || data.nombre.trim() === "") return { error: "El nombre es obligatorio." };
+    if (!data.sku || typeof data.sku !== "string" || data.sku.trim() === "") return { error: "El SKU es obligatorio." };
+    if (!data.categoria || typeof data.categoria !== "string") return { error: "La categoría es obligatoria." };
+    if (!Number.isFinite(Number(data.precioVenta)) || Number(data.precioVenta) < 0) return { error: "Precio de venta inválido." };
+    if (!Number.isFinite(Number(data.precioCosto)) || Number(data.precioCosto) < 0) return { error: "Precio de costo inválido." };
+    if (!Number.isInteger(Number(data.stock)) || Number(data.stock) < 0) return { error: "Stock inválido." };
+    if (!data.unidad || typeof data.unidad !== "string") return { error: "La unidad de medida es obligatoria." };
+
+    var products = getProductos();
+    var skuLower = data.sku.trim().toLowerCase();
+    var duplicate = products.find(function (p) {
+      return p.sku && p.sku.toLowerCase() === skuLower;
+    });
+    if (duplicate) return { error: "Ya existe un producto con ese SKU." };
+
+    var newProduct = {
+      id: Date.now(),
+      nombre: data.nombre.trim(),
+      sku: data.sku.trim(),
+      codigoBarras: data.codigoBarras || "",
+      categoria: data.categoria,
+      precioVenta: Number(data.precioVenta),
+      precioCosto: Number(data.precioCosto),
+      precioMayorista: Number(data.precioMayorista) || 0,
+      stock: Number(data.stock),
+      stockMinimo: Number(data.stockMinimo) || 0,
+      unidad: data.unidad,
+      proveedor: data.proveedor || "",
+      referencia: data.referencia || "",
+      estado: data.estado || "Activo",
+      exento: Boolean(data.exento),
+      icono: data.icono || "📦"
+    };
+
+    var dataObj = getData();
+    dataObj.productos.push(newProduct);
+    setData(dataObj);
+    return { exito: true, producto: newProduct };
+  }
+
+  function editarProducto(id, data) {
+    var numId = Number(id);
+    if (!Number.isInteger(numId) || numId <= 0) return { error: "ID de producto inválido." };
+    if (!data) return { error: "Datos del producto inválidos." };
+
+    var products = getProductos();
+    var index = products.findIndex(function (p) { return p.id === numId; });
+    if (index === -1) return { error: "Producto no encontrado." };
+
+    if (data.nombre !== undefined && (typeof data.nombre !== "string" || data.nombre.trim() === "")) return { error: "El nombre no puede estar vacío." };
+    if (data.sku !== undefined && (typeof data.sku !== "string" || data.sku.trim() === "")) return { error: "El SKU no puede estar vacío." };
+    if (data.categoria !== undefined && typeof data.categoria !== "string") return { error: "La categoría es inválida." };
+
+    if (data.precioVenta !== undefined && (!Number.isFinite(Number(data.precioVenta)) || Number(data.precioVenta) < 0)) return { error: "Precio de venta inválido." }
+    if (data.precioCosto !== undefined && (!Number.isFinite(Number(data.precioCosto)) || Number(data.precioCosto) < 0)) return { error: "Precio de costo inválido." }
+    if (data.stock !== undefined && (!Number.isInteger(Number(data.stock)) || Number(data.stock) < 0)) return { error: "Stock inválido." }
+
+    if (data.sku !== undefined) {
+      var skuLower = data.sku.trim().toLowerCase();
+      var duplicate = products.find(function (p) { return p.id !== numId && p.sku && p.sku.toLowerCase() === skuLower; });
+      if (duplicate) return { error: "Ya existe otro producto con ese SKU." };
+    }
+
+    var updates = ["nombre", "sku", "codigoBarras", "categoria", "precioVenta", "precioCosto", "precioMayorista", "stock", "stockMinimo", "unidad", "proveedor", "referencia", "estado", "exento", "icono"];
+    updates.forEach(function (field) {
+      if (data[field] !== undefined) {
+        products[index][field] = data[field];
+      }
+    });
+
+    var dataObj = getData();
+    var prodIndex = dataObj.productos.findIndex(function (p) { return p.id === numId; });
+    if (prodIndex !== -1) dataObj.productos[prodIndex] = products[index];
+    setData(dataObj);
+    return { exito: true, producto: products[index] };
+  }
+
+  function eliminarProducto(id) {
+    var numId = Number(id);
+    if (!Number.isInteger(numId) || numId <= 0) return { error: "ID de producto inválido." };
+
+    var products = getProductos();
+    var index = products.findIndex(function (p) { return p.id === numId; });
+    if (index === -1) return { error: "Producto no encontrado." };
+
+    var dataObj = getData();
+    dataObj.productos.splice(index, 1);
+    setData(dataObj);
+    return { exito: true };
+  }
+
   /* --- Exportación --- */
   if (typeof module !== "undefined" && module.exports) {
     module.exports = {
       getData: getData, setData: setData,
       getNegocios: getNegocios, getProductos: getProductos, getVentas: getVentas, getDenominaciones: getDenominaciones,
       getUsuarios: getUsuarios, getUsuarioByUsername: getUsuarioByUsername,
+      registrarProducto: registrarProducto, editarProducto: editarProducto, eliminarProducto: eliminarProducto,
       registrarNegocio: registrarNegocio, getNegocioById: getNegocioById,
       eliminarNegocio: eliminarNegocio,
       registrarUsuario: registrarUsuario, loginUsuario: loginUsuario,
@@ -410,6 +505,7 @@
       getData: getData, setData: setData,
       getNegocios: getNegocios, getProductos: getProductos, getVentas: getVentas, getDenominaciones: getDenominaciones,
       getUsuarios: getUsuarios, getUsuarioByUsername: getUsuarioByUsername,
+      registrarProducto: registrarProducto, editarProducto: editarProducto, eliminarProducto: eliminarProducto,
       registrarNegocio: registrarNegocio, getNegocioById: getNegocioById,
       eliminarNegocio: eliminarNegocio,
       registrarUsuario: registrarUsuario, loginUsuario: loginUsuario,
