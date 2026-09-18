@@ -94,10 +94,27 @@ body {
     white-space: nowrap;
 }
 
-/* Menú vertical: flex:1 empuja el contenido hacia arriba (sin logout al pie) */
+/* Menú vertical: flex:1 empuja el contenido hacia arriba (pie de sidebar con logout) */
 .nav-menu {
     flex: 1;
     overflow-y: auto;
+}
+
+/* Pie del sidebar: cerrar sesión */
+.sidebar-footer {
+    margin-top: auto;
+    padding: 16px 12px;
+    border-top: 1px solid var(--border);
+    color: var(--text-2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-footer svg {
+    width: 20px;
+    height: 20px;
 }
 
 /* Ítem del menú: icono de línea + texto, pill redondeada en hover/activo */

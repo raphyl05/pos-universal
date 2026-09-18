@@ -191,6 +191,30 @@ body {
     background: var(--selected-bg);
 }
 
+.btn-logout {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    color: var(--text-2);
+    flex-shrink: 0;
+}
+
+.btn-logout:hover {
+    background: #F5F5F5;
+    color: #B02A37;
+}
+
+.btn-logout svg {
+    width: 18px;
+    height: 18px;
+}
+
 .more-btn {
     width: 36px;
     height: 36px;
