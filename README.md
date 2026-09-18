@@ -225,7 +225,7 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
 - **Modal facturas**: overlay oscurecido, Fecha Desde/Hasta + botón Buscar, lista de facturas encontradas (número, fecha, cliente, estado, total con icono de estado). Click muestra detalles. Filtra por rango de fecha.
 - **`venta.js`**: `openFactModal`, `closeFactModal`, `renderFactList`, `searchFacts`, `loadFactAsCurrent`, listeners btn-facturas/fact-close/fechas/btn-nueva-factura/btn-salir, menú tres puntos con Salir, fecha display en header
 
-### Ventana nueva: `inventario.html` + `css/inventario-style.css` (16/09/2026)
+### Ventana nueva: `inventario.html` + `css/inventario-style.css` (16/09/2026, actualizado 18/09/2026)
 - Pantalla "Inventario → Productos" según la guía. Misma base que `cierre-caja.html`
   (sidebar ≈270px + header ≈80px + contenido sobre `#EEF0F3`).
 - Sidebar: brand (glifo "P" + POSUniversal), Dashboard, Ventas, **Inventario activo/expandido**
@@ -233,7 +233,7 @@ Trabajado en el **frontend** únicamente (HTML y CSS). Cambios marcados en el c�
   Reportes, Configuración. Header sin búsqueda: avatar (ui-avatars), Lissette Díaz/Administrador
   y campana con punto rojo.
 - Contenido:
-  - Fila de título "Productos" + botones primario "＋ Nuevo producto" (navy) y secundario "Importar".
+  - Fila de título "Productos" + botón primario "＋ Nuevo producto" (navy).
   - Fila de filtros: buscador ≈310px + 4 selects con etiqueta encima (Categoría "All" / Estado
     "Activo" / Stock "Low" / Proveedor "Distribuidora del Caribe", este último más ancho).
   - Tarjeta de tabla (8 columnas vía CSS grid con scroll horizontal en pantallas angostas):
@@ -380,7 +380,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `38f0ac7` — `feat: inventario - referencia/proveedor, calculadora flotante, optimizacion estilos`
+- **Último commit:** `4fd4b01` — `docs: README actualizado - calculadora, referencia, proveedor`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
@@ -394,6 +394,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 | `proyecto/js/dashboard.js` | Sección por sección (Iconos, Render, Escape, Init) | Render dinámico de tarjetas de negocios desde data.js |
 | `proyecto/js/resumen.js` | Init (KPIs, Gráfica, Productos, Ventas) | KPIs dinámicos, gráfica SVG, productos más vendidos y últimas ventas desde data.js |
 | `proyecto/js/nuevo-negocio.js` | Init (Preview, Guardar, Error) | Formulario "Crear nuevo negocio": preview en vivo, validación, guardado en data.js, redirect a dashboard |
+| `proyecto/js/inventario.js` | Init (Render, Filtros, CRUD, Preview, Calculadora) | Tabla dinámica, filtros, paginación, alta/edición/eliminación, vista previa en vivo, calculadora flotante |
 
 ---
 

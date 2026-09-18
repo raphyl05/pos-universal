@@ -330,26 +330,6 @@ body {
     background: var(--navy);
 }
 
-/* Botón secundario "Importar" */
-.btn-secondary {
-    height: 44px;
-    padding: 0 24px;
-    background: var(--surface-w);
-    border: 1px solid var(--border-input);
-    border-radius: var(--radius-btn);
-    font-size: 15px;
-    font-weight: 500;
-    font-family: inherit;
-    color: var(--text);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s;
-}
-
-.btn-secondary:hover {
-    background: #EDEFF2;
-}
-
 /* ===== Fila de filtros ===== */
 .filters {
     display: flex;
@@ -814,8 +794,7 @@ body {
         width: 100%;
     }
 
-    .btn-primary,
-    .btn-secondary {
+    .btn-primary {
         flex: 1;
         justify-content: center;
     }
