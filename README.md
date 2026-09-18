@@ -71,7 +71,7 @@ POS-UNIVERSAL/
     ├── cierre-caja.html       # Cierre de caja (resumen + conteo de denominaciones)
     ├── venta.html             # Pantalla POS: carrito principal, facturación, clientes (Block 1 + Block 2)
     ├── inventario.html        # Inventario + Nuevo Producto (tabla dinámica, filtros, formulario simplificado por código de barras, calculadora flotante, referencia/proveedor)
-    ├── apertura-caja.html     # Apertura de caja (fondo inicial + denominaciones)
+    ├── apertura-caja.html     # Apertura de caja (fondo inicial, sin desglose)
     ├── completar-pago.html   # Modal "Completar pago" sobre venta oscurecida
     ├── logo.jpg               # Logo real (única imagen usada por el código)
     ├── js/                    # ← Parte 0 + 1 + Venta + Inventario completadas
@@ -267,16 +267,10 @@ El formulario de "Nuevo producto" se fusionó dentro de `inventario.html`. Ya no
 - Header sin búsqueda: avatar (ui-avatars), Lissette Díaz/Administrador y campana con punto rojo.
 - Contenido de ancho completo:
   - Fila de título "Apertura de caja" + metadatos (fecha | Cajero: Lissette Díaz).
-  - Tarjeta "Fondo inicial": encabezado bold 18px, tabla de 8 denominaciones
-    (grid `1fr / 330px / 1fr` con inputs numéricos centrados ≈325×36px sin flechas
-    `appearance:textfield` y subtotales right-aligned) con encabezado `#ECEEF2`.
-  - Tarjeta inferior: fila "Total de apertura" → "RD$ 10,500.00" bold 24px + botón
-    full-width "Abrir caja" navy ≈44px.
-  - Nota `[opencode]` en el HTML: la fila de RD$25 venía con subtotal "RD$ 250.00" (OCR);
-     con cantidad 0 debe ser RD$ 0.00 (0×25=0), de modo que la columna suma exactamente
-     RD$ 10,500.00 (consistente con el total de la tarjeta inferior).
+  - Tarjeta "Fondo inicial": label + input grande monospace centrado (RD$ 0.00).
+  - Tarjeta inferior: "Total de apertura" + botón "Abrir caja" navy full-width.
 - Iconos SVG en línea sin CDN. 100% responsive: ≤860px sidebar fuera de pantalla con botón
-  hamburguesa ☰/✕; ≤600px columna central de inputs más angosta para no desbordar.
+  hamburguesa ☰/✕; ≤600px input más angosto para no desbordar.
 
 ### Ventana nueva: `completar-pago.html` + `css/completar-pago-style.css` (16/09/2026)
 - Modal "Completar pago" sobre una pantalla de venta simplificada (según la guía).
@@ -329,7 +323,8 @@ Trabajo por partes, en orden:
 12. ✅ Bloque 1 — layout cliente/totales, descuento inline, itbis/exento/gravado, fix teclado → `0d3ab89`
 13. ✅ Bloque 2 HTML/CSS — facturación header, fecha, modal búsqueda facturas, menú salir → `19dff5b`
 14. ✅ Bloque 2 JS — facturas modal, fecha, nueva factura, salir → `a5e3b5e`
-15. ⏳ Apertura/Cierre Caja
+15. ✅ Apertura Caja (simple) — `ba11473`
+16. ✅ Cierre Caja (con desglose)
 
 ### Ventana `venta.html` — Rediseño COMPLETADO (17/09/2026) → `a5e3b5e`
 
@@ -357,9 +352,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 ### Frontend (inmediato)
 | # | Tarea | Archivos |
 |---|---|---|
-| 1 | **Apertura Caja** — fondo inicial + denominaciones | `apertura-caja.html`, `css/apertura-caja-style.css` |
-| 2 | **Cierre Caja** — resumen + conteo + diferencia | `cierre-caja.html`, `css/cierre-caja-style.css` |
-| 3 | Conectar todas las pantallas al backend (API REST) | Todos los JS |
+| 1 | Conectar todas las pantallas al backend (API REST) | Todos los JS |
 
 ### Backend (pendiente)
 - ASP.NET Core Web API con EF Core / Npgsql → PostgreSQL
@@ -380,7 +373,7 @@ Las mejoras de la versión anterior (foco, teclado, orden, formato) están inclu
 
 - **Repositorio:** `https://github.com/raphyl05/pos-universal.git`
 - **Rama activa:** `main`
-- **Último commit:** `4fd4b01` — `docs: README actualizado - calculadora, referencia, proveedor`
+- **Último commit:** `ba11473` — `feat: apertura-caja simplificada (sin desglose, solo fondo inicial)`
 - **Regla:** Git manual. Solo hacer commits cuando el usuario lo indique. Sugerir mensaje claro al terminar cada funcionalidad importante.
 
 ### Estructura JS comentada
