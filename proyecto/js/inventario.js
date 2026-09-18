@@ -4,13 +4,11 @@
   function $(sel) { return document.querySelector(sel); }
   function $$(sel) { return document.querySelectorAll(sel); }
 
-  /* ===== Estado ===== */
   var currentPage = 1;
   var itemsPerPage = 10;
   var editingId = null;
   var allFiltered = [];
 
-  /* ===== Utilidades ===== */
   function escapeHtml(text) {
     if (!text) return "";
     var div = document.createElement("div");
@@ -60,7 +58,7 @@
           '<span class="p-thumb" aria-hidden="true">' + escapeHtml(icon) + '</span>' +
           '<span class="p-name">' + escapeHtml(p.nombre) + '</span>' +
         '</div>' +
-        '<span class="cell-text">' + escapeHtml(p.sku || "") + '</span>' +
+        '<span class="cell-text">' + escapeHtml(p.codigoBarras || "") + '</span>' +
         '<span class="cell-text">' + escapeHtml(p.categoria || "") + '</span>' +
         '<span class="cell-text strong">' + formatPrice(p.precioVenta) + '</span>' +
         '<span class="cell-text">' + formatPrice(p.precioCosto) + '</span>' +
@@ -70,7 +68,7 @@
           '<button class="action-btn" type="button" aria-label="Editar" data-action="edit" data-id="' + p.id + '">' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>' +
           '</button>' +
-          '<button class="action-btn" type="button" aria-label="Eliminar" data-action="delete" data-id="' + p.id + '">' +
+          '<button class="action-btn danger" type="button" aria-label="Eliminar" data-action="delete" data-id="' + p.id + '">' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
           '</button>' +
         '</div>';
@@ -148,14 +146,12 @@
     var catFilter = ($("#f-categoria") ? $("#f-categoria").value : "all");
     var estadoFilter = ($("#f-estado") ? $("#f-estado").value : "all");
     var stockFilter = ($("#f-stock") ? $("#f-stock").value : "all");
-    var proveedorFilter = ($("#f-proveedor") ? $("#f-proveedor").value : "all");
 
     return products.filter(function (p) {
       if (searchTerm) {
         var nombre = (p.nombre || "").toLowerCase();
-        var sku = (p.sku || "").toLowerCase();
         var barras = (p.codigoBarras || "").toLowerCase();
-        if (nombre.indexOf(searchTerm) === -1 && sku.indexOf(searchTerm) === -1 && barras.indexOf(searchTerm) === -1) return false;
+        if (nombre.indexOf(searchTerm) === -1 && barras.indexOf(searchTerm) === -1) return false;
       }
       if (catFilter !== "all" && p.categoria !== catFilter) return false;
       if (estadoFilter !== "all") {
@@ -165,11 +161,6 @@
       if (stockFilter !== "all") {
         if (stockFilter === "low" && p.stock >= (p.stockMinimo || 0)) return false;
         if (stockFilter === "high" && p.stock < (p.stockMinimo || 0)) return false;
-      }
-      if (proveedorFilter !== "all") {
-        var provMap = { "caribe": "Distribuidora del Caribe", "nacional": "Distribuidora Nacional" };
-        var prov = provMap[proveedorFilter] || proveedorFilter;
-        if (p.proveedor !== prov) return false;
       }
       return true;
     });
@@ -196,52 +187,60 @@
       var product = (POS_DATA.getProductos() || []).find(function (p) { return p.id === editId; });
       if (product) {
         editingId = editId;
-        $("#f-nombre").value = product.nombre || "";
-        $("#f-sku").value = product.sku || "";
-        $("#f-barras").value = product.codigoBarras || "";
-        $("#f-categoria").value = product.categoria || "";
-        $("#f-descripcion").value = product.referencia || "";
-        $("#f-costo").value = product.precioCosto || "";
-        $("#f-venta").value = product.precioVenta || "";
-        $("#f-mayorista").value = product.precioMayorista || "";
-        $("#f-stock").value = product.stock || "";
-        $("#f-stock-min").value = product.stockMinimo || "";
-        $("#f-unidad").value = product.unidad || "und";
-        var provSelect = $("#f-proveedor");
-        if (provSelect) {
-          for (var i = 0; i < provSelect.options.length; i++) {
-            if (provSelect.options[i].value === product.proveedor) { provSelect.selectedIndex = i; break; }
+        $("#p-barras").value = product.codigoBarras || "";
+        $("#p-nombre").value = product.nombre || "";
+        var catSel = $("#p-categoria");
+        if (catSel) {
+          for (var i = 0; i < catSel.options.length; i++) {
+            if (catSel.options[i].value === product.categoria) { catSel.selectedIndex = i; break; }
           }
         }
-        $("#f-referencia").value = product.referencia || "";
+        $("#p-venta").value = product.precioVenta || "";
+        $("#p-costo").value = product.precioCosto || "";
+        $("#p-stock").value = product.stock || "";
+        $("#p-stock-min").value = product.stockMinimo || "";
+        var uniSel = $("#p-unidad");
+        if (uniSel) {
+          for (var j = 0; j < uniSel.options.length; j++) {
+            if (uniSel.options[j].value === (product.unidad || "und")) { uniSel.selectedIndex = j; break; }
+          }
+        }
+        var estSel = $("#p-estado");
+        if (estSel) {
+          for (var k = 0; k < estSel.options.length; k++) {
+            if (estSel.options[k].value === (product.estado || "Activo")) { estSel.selectedIndex = k; break; }
+          }
+        }
       }
     } else {
       editingId = null;
       resetForm();
     }
     updatePreview();
+
+    /* Auto-focus en código de barras */
+    setTimeout(function () { var barras = $("#p-barras"); if (barras) barras.focus(); }, 100);
   }
 
   /* ===== Preview en vivo ===== */
   function updatePreview() {
-    var nombre = $("#f-nombre").value.trim() || "—";
-    var sku = $("#f-sku").value.trim() || "—";
-    var venta = $("#f-venta").value.trim();
-    var stock = $("#f-stock").value.trim();
-    var categoria = $("#f-categoria").value;
+    var barras = $("#p-barras").value.trim() || "—";
+    var nombre = $("#p-nombre").value.trim() || "—";
+    var venta = $("#p-venta").value.trim();
+    var stock = $("#p-stock").value.trim();
+    var categoria = $("#p-categoria").value;
+    var estadoVal = $("#p-estado") ? $("#p-estado").value : "Activo";
     var icon = getIconForCategory(categoria);
 
     $("#preview-name").textContent = nombre;
-    $("#preview-sku").textContent = sku;
+    $("#preview-barcode").textContent = barras;
     $("#preview-price").textContent = venta ? formatPrice(venta) : "RD$ 0.00";
     $("#preview-icon").textContent = icon;
     $("#preview-stock").textContent = (stock ? stock : "0") + " und";
 
-    var estadoSelect = $("#f-estado");
-    var estadoVal = estadoSelect ? estadoSelect.value : "Activo";
     var pill = $("#preview-state");
     if (pill) {
-      pill.textContent = estadoVal || "Activo";
+      pill.textContent = estadoVal;
       pill.className = "pill " + (estadoVal === "Bajo Stock" ? "pill-warn" : "pill-ok");
     }
   }
@@ -252,41 +251,50 @@
   }
 
   function resetForm() {
-    ["#f-nombre", "#f-sku", "#f-barras", "#f-descripcion", "#f-costo", "#f-venta", "#f-mayorista", "#f-stock", "#f-stock-min", "#f-referencia"].forEach(function (sel) {
+    ["#p-barras", "#p-nombre", "#p-venta", "#p-costo", "#p-stock", "#p-stock-min"].forEach(function (sel) {
       var el = $(sel);
       if (el) el.value = "";
     });
-    var cat = $("#f-categoria"); if (cat) cat.selectedIndex = 0;
-    var unidad = $("#f-unidad"); if (unidad) unidad.selectedIndex = 0;
-    var proveedor = $("#f-proveedor"); if (proveedor) proveedor.selectedIndex = 0;
+    var cat = $("#p-categoria"); if (cat) cat.selectedIndex = 0;
+    var uni = $("#p-unidad"); if (uni) uni.selectedIndex = 0;
+    var est = $("#p-estado"); if (est) est.selectedIndex = 0;
     updatePreview();
   }
 
   /* ===== Guardar producto ===== */
   function saveProduct() {
-    var nombre = $("#f-nombre").value.trim();
-    var sku = $("#f-sku").value.trim();
-    var categoria = $("#f-categoria").value;
+    var barras = $("#p-barras").value.trim();
+    var nombre = $("#p-nombre").value.trim();
+    var categoria = $("#p-categoria").value;
+    var venta = parseFloat($("#p-venta").value) || 0;
+    var costo = parseFloat($("#p-costo").value) || 0;
+    var stock = parseInt($("#p-stock").value, 10);
+    var stockMin = parseInt($("#p-stock-min").value, 10);
+    var unidad = $("#p-unidad").value;
+    var estado = $("#p-estado") ? $("#p-estado").value : "Activo";
 
+    if (!barras) { alert("El código de barras es obligatorio."); return; }
     if (!nombre) { alert("El nombre es obligatorio."); return; }
-    if (!sku) { alert("El SKU es obligatorio."); return; }
     if (!categoria) { alert("La categoría es obligatoria."); return; }
+    if (!Number.isFinite(venta) || venta < 0) { alert("El precio de venta es inválido."); return; }
+    if (!Number.isFinite(costo) || costo < 0) { alert("El costo es inválido."); return; }
+    if (!Number.isInteger(stock) || stock < 0) { alert("El stock es inválido."); return; }
+    if (!Number.isInteger(stockMin) || stockMin < 0) { alert("El stock mínimo es inválido."); return; }
+    if (!unidad) { alert("La unidad de medida es obligatoria."); return; }
     if (!POS_DATA.getProductos) { alert("POS_DATA no disponible."); return; }
 
     var data = {
+      codigoBarras: barras,
+      sku: barras,
       nombre: nombre,
-      sku: sku,
-      codigoBarras: $("#f-barras").value.trim(),
       categoria: categoria,
-      precioVenta: parseFloat($("#f-venta").value) || 0,
-      precioCosto: parseFloat($("#f-costo").value) || 0,
-      precioMayorista: parseFloat($("#f-mayorista").value) || 0,
-      stock: parseInt($("#f-stock").value, 10) || 0,
-      stockMinimo: parseInt($("#f-stock-min").value, 10) || 0,
-      unidad: $("#f-unidad").value,
-      proveedor: $("#f-proveedor").value,
-      referencia: $("#f-referencia").value.trim(),
-      estado: $("#f-estado") ? $("#f-estado").value : "Activo",
+      precioVenta: venta,
+      precioCosto: costo,
+      precioMayorista: 0,
+      stock: stock,
+      stockMinimo: stockMin,
+      unidad: unidad,
+      estado: estado,
       exento: false,
       icono: getIconForCategory(categoria)
     };
@@ -317,7 +325,7 @@
 
   /* ===== Categorías dinámicas ===== */
   function populateCategorySelect() {
-    var select = $("#f-categoria");
+    var select = $("#p-categoria");
     if (!select) return;
     var products = POS_DATA.getProductos() || [];
     var cats = [];
@@ -326,61 +334,28 @@
     select.innerHTML = '<option value="">Seleccionar...</option>' + cats.map(function (c) { return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>'; }).join("");
   }
 
-  /* ===== Proveedores dinámicos ===== */
-  function populateProveedorSelect() {
-    var select = $("#f-proveedor");
-    if (!select) return;
-    var products = POS_DATA.getProductos() || [];
-    var provs = [];
-    products.forEach(function (p) { if (p.proveedor && provs.indexOf(p.proveedor) === -1) provs.push(p.proveedor); });
-    ["Distribuidora del Caribe", "Distribuidora Nacional"].forEach(function (p) { if (provs.indexOf(p) === -1) provs.push(p); });
-    select.innerHTML = provs.map(function (p) { return '<option value="' + escapeHtml(p) + '">' + escapeHtml(p) + '</option>'; }).join("");
-  }
-
-  /* ===== Estado filter ===== */
-  function populateEstadoFilter() {
-    var select = $("#f-estado");
-    if (!select) return;
-    select.innerHTML = '<option value="all">All</option>' + '<option value="activo">Activo</option>' + '<option value="bajo">Bajo Stock</option>';
-  }
-
-  /* ===== Stock filter ===== */
-  function populateStockFilter() {
-    var select = $("#f-stock");
-    if (!select) return;
-    select.innerHTML = '<option value="all">Low</option><option value="low">Low</option><option value="high">High</option>';
-  }
-
   /* ===== Event Listeners ===== */
   function init() {
-    /* Render inicial */
     renderTable();
     populateCategorySelect();
-    populateProveedorSelect();
-    populateEstadoFilter();
-    populateStockFilter();
 
-    /* Toggle: Nuevo Producto */
     var nuevoBtn = $(".title-actions .btn-primary");
     if (nuevoBtn) {
       nuevoBtn.addEventListener("click", function () { showFormView(null); });
     }
 
-    /* Cancelar */
     var cancelBtn = $("#btn-form-cancel");
     if (cancelBtn) { cancelBtn.addEventListener("click", showListView); }
 
-    /* Guardar */
     var saveBtn = $("#btn-form-save");
     if (saveBtn) { saveBtn.addEventListener("click", saveProduct); }
 
-    /* Preview en vivo */
-    ["#f-nombre", "#f-sku", "#f-barras", "#f-categoria", "#f-descripcion", "#f-costo", "#f-venta", "#f-mayorista", "#f-stock", "#f-stock-min", "#f-unidad", "#f-proveedor", "#f-referencia", "#f-estado"].forEach(function (sel) {
+    var previewFields = ["#p-barras", "#p-nombre", "#p-categoria", "#p-venta", "#p-costo", "#p-stock", "#p-stock-min", "#p-unidad", "#p-estado"];
+    previewFields.forEach(function (sel) {
       var el = $(sel);
       if (el) el.addEventListener("input", updatePreview);
     });
 
-    /* Acciones de tabla (editar, eliminar) — delegación de eventos */
     var tableScroll = $(".table-scroll");
     if (tableScroll) {
       tableScroll.addEventListener("click", function (e) {
@@ -393,10 +368,9 @@
       });
     }
 
-    /* Filtros */
     var searchInput = $(".filter-search input");
     if (searchInput) { searchInput.addEventListener("input", function () { currentPage = 1; renderTable(); }); }
-    ["#f-categoria", "#f-estado", "#f-stock", "#f-proveedor"].forEach(function (sel) {
+    ["#f-categoria", "#f-estado", "#f-stock"].forEach(function (sel) {
       var el = $(sel);
       if (el) el.addEventListener("change", function () { currentPage = 1; renderTable(); });
     });

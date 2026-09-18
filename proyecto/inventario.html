@@ -122,15 +122,14 @@
                 <!-- Fila de título + botones de acción -->
                 <div class="title-row">
                     <h1>Productos</h1>
-                    <div class="title-actions">
-                        <button class="btn-primary" type="button">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                                stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5"
-                                x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                            Nuevo producto
-                        </button>
-                        <button class="btn-secondary" type="button">Importar</button>
-                    </div>
+                <div class="title-actions">
+                    <button class="btn-primary" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5"
+                            x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                        Nuevo producto
+                    </button>
+                </div>
                 </div>
 
                 <!-- Fila de filtros -->
@@ -388,33 +387,29 @@
                 </section>
             </main>
 
-    <!-- ===== Formulario Nuevo Producto (oculto por defecto) ===== -->
+    <!-- ===== Formulario Nuevo Producto ===== -->
     <section class="content" id="form-content" style="display:none">
         <h1>Nuevo producto</h1>
 
         <div class="columns">
-            <!-- Columna izquierda: formulario -->
             <section class="card form-card" aria-label="Formulario de producto">
                 <div class="form-section">
-                    <h2>Información básica</h2>
-                    <div class="row-col-3">
-                        <div class="field">
-                            <label for="f-nombre">Nombre del producto</label>
-                            <input type="text" id="f-nombre">
-                        </div>
-                        <div class="field">
-                            <label for="f-sku">Código / SKU</label>
-                            <input type="text" id="f-sku">
-                        </div>
-                        <div class="field">
-                            <label for="f-barras">Código de barras</label>
-                            <input type="text" id="f-barras">
-                        </div>
+                    <h2>Código de barras</h2>
+                    <div class="field field-barcode">
+                            <label for="p-barras">Escanear o escribir código</label>
+                            <input type="text" id="p-barras" placeholder="Ej: 123445666789">
                     </div>
+                </div>
+                <div class="form-section">
+                    <h2>Información</h2>
                     <div class="row-col-2">
                         <div class="field">
-                            <label for="f-categoria">Categoría</label>
-                            <select id="f-categoria">
+                            <label for="p-nombre">Nombre</label>
+                            <input type="text" id="p-nombre" placeholder="Nombre del producto">
+                        </div>
+                        <div class="field">
+                            <label for="p-categoria">Categoría</label>
+                            <select id="p-categoria">
                                 <option value="">Seleccionar...</option>
                                 <option value="Bebidas">Bebidas</option>
                                 <option value="Alimentos">Alimentos</option>
@@ -425,79 +420,54 @@
                                 <option value="Otros">Otros</option>
                             </select>
                         </div>
-                        <div class="field">
-                            <label for="f-descripcion">Descripción</label>
-                            <textarea id="f-descripcion" rows="3"></textarea>
-                        </div>
                     </div>
                 </div>
-
                 <div class="form-section">
-                    <h2>Precios</h2>
+                    <h2>Precios y stock</h2>
                     <div class="row-col-3">
                         <div class="field">
-                            <label for="f-costo">Costo</label>
-                            <input type="text" id="f-costo">
+                            <label for="p-venta">Precio venta</label>
+                            <input type="text" id="p-venta" placeholder="0.00">
                         </div>
                         <div class="field">
-                            <label for="f-venta">Precio de venta</label>
-                            <input type="text" id="f-venta">
+                            <label for="p-costo">Costo</label>
+                            <input type="text" id="p-costo" placeholder="0.00">
                         </div>
                         <div class="field">
-                            <label for="f-mayorista">Precio mayorista</label>
-                            <input type="text" id="f-mayorista">
+                            <label for="p-stock">Stock</label>
+                            <input type="number" id="p-stock" placeholder="0" min="0">
                         </div>
                     </div>
-                </div>
-
-                <div class="form-section">
-                    <h2>Inventario</h2>
                     <div class="row-col-3">
                         <div class="field">
-                            <label for="f-stock">Stock actual</label>
-                            <input type="text" id="f-stock">
+                            <label for="p-stock-min">Stock mín.</label>
+                            <input type="number" id="p-stock-min" placeholder="0" min="0">
                         </div>
                         <div class="field">
-                            <label for="f-stock-min">Stock mínimo</label>
-                            <input type="text" id="f-stock-min">
-                        </div>
-                        <div class="field">
-                            <label for="f-unidad">Unidad de medida</label>
-                            <select id="f-unidad">
+                            <label for="p-unidad">Unidad</label>
+                            <select id="p-unidad">
                                 <option value="und" selected>und</option>
                                 <option value="kg">kg</option>
                                 <option value="l">L</option>
                             </select>
                         </div>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h2>Proveedor</h2>
-                    <div class="row-col-2">
                         <div class="field">
-                            <label for="f-proveedor">Proveedor</label>
-                            <select id="f-proveedor">
-                                <option value="Distribuidora del Caribe" selected>Distribuidora del Caribe</option>
-                                <option value="Distribuidora Nacional">Distribuidora Nacional</option>
+                            <label for="p-estado">Estado</label>
+                            <select id="p-estado">
+                                <option value="Activo" selected>Activo</option>
+                                <option value="Bajo Stock">Bajo Stock</option>
                             </select>
-                        </div>
-                        <div class="field">
-                            <label for="f-referencia">Referencia</label>
-                            <input type="text" id="f-referencia">
                         </div>
                     </div>
                 </div>
             </section>
-
-            <!-- Columna derecha: vista previa + acciones -->
             <aside class="side-col">
                 <section class="card preview-card" aria-label="Vista previa">
                     <div class="preview-top">
                         <div class="preview-thumb" aria-hidden="true" id="preview-icon">📦</div>
                         <div>
                             <h3 id="preview-name">—</h3>
-                            <p id="preview-sku">—</p>
+                            <p id="preview-barcode">—</p>
                         </div>
                     </div>
                     <div class="divider"></div>
@@ -507,17 +477,15 @@
                     </div>
                     <div class="divider"></div>
                     <div class="preview-row status-row">
-                        <span class="status-label">Estado</span>
                         <span class="stock-stack">
-                            <span class="stock-label">Stock actual</span>
+                            <span class="stock-label">Stock</span>
                             <strong id="preview-stock">0 und</strong>
                         </span>
                     </div>
                 </section>
-
                 <section class="card actions-card">
                     <button class="btn-cancel" id="btn-form-cancel" type="button">Cancelar</button>
-                    <button class="btn-save" id="btn-form-save" type="button">Guardar producto</button>
+                    <button class="btn-save" id="btn-form-save" type="button">Guardar</button>
                 </section>
             </aside>
         </div>
